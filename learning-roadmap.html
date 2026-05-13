@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Web Dev Learning Roadmap — From Zero to the Masjid Site</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: { extend: {
+      colors: {
+        masjid: { 50:'#f1f7f3', 100:'#dcecde', 500:'#1a7a4f', 600:'#0e5c3b', 700:'#0a4a2f', 800:'#073522', 900:'#042217' },
+        gold:   { 400:'#d8b766', 500:'#c9a14a', 600:'#a98432' },
+        ink:    { 900:'#0c1a14', 800:'#1a2d24', 700:'#27403a' }
+      },
+      fontFamily: { display:['"Cormorant Garamond"','Georgia','serif'], sans:['Inter','sans-serif'] }
+    } }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'Inter', sans-serif; background: #fbfaf6; color:#0c1a14; }
+  .dark body, body.dark { background:#07140e; color:#e8eee9; }
+  h1,h2,h3 { font-family:'Cormorant Garamond', serif; }
+  .phase { scroll-margin-top: 80px; }
+  /* Custom checkbox */
+  .task { display:flex; align-items:flex-start; gap:.75rem; padding:.5rem .25rem; border-radius:.5rem; cursor:pointer; transition: background .15s; }
+  .task:hover { background: rgba(14,92,59,0.04); }
+  .dark .task:hover { background: rgba(216,183,102,0.06); }
+  .task input { margin-top:.25rem; width:1.1rem; height:1.1rem; cursor:pointer; accent-color:#0e5c3b; flex-shrink:0; }
+  .dark .task input { accent-color:#d8b766; }
+  .task.done span.task-label { text-decoration: line-through; opacity:.55; }
+  .progress-bar-fill { transition: width .4s ease; }
+  a.ext { color:#0e5c3b; text-decoration: underline; text-underline-offset:3px; }
+  .dark a.ext { color:#d8b766; }
+  a.ext:hover { color:#c9a14a; }
+  .pill { display:inline-block; font-size:.7rem; padding:.15rem .55rem; border-radius:9999px; background:#e7f0ea; color:#0a4a2f; font-weight:600; letter-spacing:.05em; text-transform:uppercase; }
+  .dark .pill { background:#1a2d24; color:#d8b766; }
+  .resource-list li { padding:.25rem 0; }
+  .resource-list { padding-left:1rem; }
+  details summary { cursor:pointer; list-style:none; }
+  details summary::-webkit-details-marker { display:none; }
+  details[open] .chev { transform: rotate(90deg); }
+  .chev { transition: transform .2s; display:inline-block; }
+  .card { background:#fff; border:1px solid rgba(14,92,59,0.08); border-radius:1rem; padding:1.5rem 1.75rem; box-shadow:0 10px 30px -12px rgba(14,92,59,0.12); }
+  .dark .card { background:#0e1f17; border-color:rgba(216,183,102,0.12); }
+  /* Sidebar */
+  @media (min-width: 1024px) {
+    .sidebar { position: sticky; top: 5rem; max-height: calc(100vh - 6rem); overflow-y:auto; }
+  }
+  .nav-item.active { background:#e7f0ea; color:#0a4a2f; font-weight:600; }
+  .dark .nav-item.active { background:#1a2d24; color:#d8b766; }
+  /* nicer scrollbar */
+  ::-webkit-scrollbar { width:8px; }
+  ::-webkit-scrollbar-thumb { background:#cdd9d2; border-radius:8px; }
+  .dark ::-webkit-scrollbar-thumb { background:#1a2d24; }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- TOP BAR -->
+<header class="sticky top-0 z-30 backdrop-blur bg-white/85 dark:bg-ink-900/85 border-b border-masjid-600/10">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-10 h-10 rounded-full bg-masjid-600 text-white flex items-center justify-center text-sm font-bold shrink-0">📘</div>
+      <div class="min-w-0">
+        <div class="text-sm font-semibold text-masjid-700 dark:text-gold-400 truncate">Web Dev Roadmap</div>
+        <div class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400">From Zero → Pro</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 flex-1 max-w-md">
+      <div class="flex-1">
+        <div class="flex justify-between text-xs mb-1">
+          <span class="font-medium">Progress</span>
+          <span><span id="done-count">0</span> / <span id="total-count">0</span> · <strong id="percent">0%</strong></span>
+        </div>
+        <div class="h-2 bg-masjid-50 dark:bg-ink-800 rounded-full overflow-hidden">
+          <div id="progress-bar" class="progress-bar-fill h-full bg-gradient-to-r from-masjid-600 to-gold-500" style="width:0%"></div>
+        </div>
+      </div>
+      <button id="theme-toggle" class="p-2 rounded hover:bg-masjid-600/10" title="Toggle dark mode">
+        <svg id="moon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg id="sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </button>
+      <button id="reset" class="text-xs px-3 py-1.5 rounded-full border border-red-500/40 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" title="Clear all progress">Reset</button>
+    </div>
+  </div>
+</header>
+
+<div class="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-[260px_1fr] gap-8">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar hidden lg:block">
+    <nav class="space-y-1 text-sm">
+      <a href="#intro"      class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Introduction</a>
+      <a href="#phase-0"    class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Phase 0 — Setup</a>
+      <a href="#phase-1"    class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Phase 1 — HTML</a>
+      <a href="#phase-2"    class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Phase 2 — CSS</a>
+      <a href="#phase-3"    class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Phase 3 — JavaScript</a>
+      <a href="#phase-4"    class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Phase 4 — Git &amp; GitHub</a>
+      <a href="#phase-5"    class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Phase 5 — Tailwind</a>
+      <a href="#phase-6"    class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Phase 6 — APIs</a>
+      <a href="#phase-7"    class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Phase 7 — Deployment</a>
+      <a href="#phase-8"    class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Phase 8 — Capstone</a>
+      <a href="#phase-9"    class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Phase 9 — Going Further</a>
+      <a href="#resources"  class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Master Resources</a>
+      <a href="#sane"       class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800 transition">Staying Sane</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="space-y-10">
+
+    <section id="intro" class="phase">
+      <h1 class="text-4xl md:text-5xl font-semibold text-masjid-800 dark:text-white">From Zero → Building Websites Like a Pro</h1>
+      <p class="mt-3 text-lg text-ink-700 dark:text-gray-300">A complete, free, self-paced roadmap. Tick off each item as you genuinely grasp it — your progress is saved automatically in your browser.</p>
+
+      <div class="mt-6 card">
+        <div class="grid sm:grid-cols-2 gap-6">
+          <div>
+            <h3 class="text-xl font-semibold text-masjid-700 dark:text-gold-400">⏱ Time estimate</h3>
+            <p class="text-sm mt-2">5–7 months at 1–2 focused hours/day. Longer is fine — skipping isn't.</p>
+          </div>
+          <div>
+            <h3 class="text-xl font-semibold text-masjid-700 dark:text-gold-400">📐 How to use this</h3>
+            <ol class="text-sm mt-2 list-decimal list-inside space-y-1">
+              <li>Work through phases in order.</li>
+              <li>Don't move on until the phase's project works <em>without</em> copying tutorial code.</li>
+              <li>Keep a notebook of things that confuse you. Revisit weekly.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================== PHASE 0 ================== -->
+    <section id="phase-0" class="phase card">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="pill">Week 1</span>
+        <h2 class="text-3xl font-semibold text-masjid-800 dark:text-white">Phase 0 — Setup &amp; Mindset</h2>
+      </div>
+      <p class="text-ink-700 dark:text-gray-300">Get your environment right and understand the territory before writing any code.</p>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Concepts to grasp</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p0c1"><span class="task-label">How the web works: client/server, HTTP, URL → DNS → server → HTML → browser renders</span></label>
+        <label class="task"><input type="checkbox" data-task="p0c2"><span class="task-label">What "front-end" vs "back-end" vs "full-stack" means</span></label>
+        <label class="task"><input type="checkbox" data-task="p0c3"><span class="task-label">What HTML, CSS, and JavaScript each do (structure / style / behaviour)</span></label>
+        <label class="task"><input type="checkbox" data-task="p0c4"><span class="task-label">What a "framework" is and why people use them</span></label>
+        <label class="task"><input type="checkbox" data-task="p0c5"><span class="task-label">What "open source" means</span></label>
+      </div>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Tools to install</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p0t1"><span class="task-label">VS Code — the editor: <a class="ext" href="https://code.visualstudio.com" target="_blank">code.visualstudio.com</a></span></label>
+        <label class="task"><input type="checkbox" data-task="p0t2"><span class="task-label">Google Chrome or Firefox — and learn to open DevTools (right-click → Inspect)</span></label>
+        <label class="task"><input type="checkbox" data-task="p0t3"><span class="task-label">Git — version control: <a class="ext" href="https://git-scm.com" target="_blank">git-scm.com</a></span></label>
+        <label class="task"><input type="checkbox" data-task="p0t4"><span class="task-label">A GitHub account: <a class="ext" href="https://github.com" target="_blank">github.com</a></span></label>
+        <label class="task"><input type="checkbox" data-task="p0t5"><span class="task-label">Node.js (LTS): <a class="ext" href="https://nodejs.org" target="_blank">nodejs.org</a></span></label>
+        <label class="task"><input type="checkbox" data-task="p0t6"><span class="task-label">VS Code extensions: Live Server, Prettier, Tailwind CSS IntelliSense</span></label>
+      </div>
+
+      <details class="mt-6">
+        <summary class="text-sm font-semibold text-gold-600 dark:text-gold-400">📚 Resources <span class="chev">›</span></summary>
+        <ul class="resource-list list-disc text-sm mt-2 space-y-1">
+          <li><a class="ext" href="https://www.youtube.com/watch?v=7_LPdttKXPc" target="_blank">How the Internet Works</a> — 13-min video</li>
+          <li><a class="ext" href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Getting_started/Web_standards/How_the_web_works" target="_blank">MDN: How the Web Works</a></li>
+          <li><a class="ext" href="https://www.theodinproject.com/paths/foundations/courses/foundations" target="_blank">The Odin Project — Foundations</a></li>
+        </ul>
+      </details>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">✅ Self-test</h3>
+      <label class="task"><input type="checkbox" data-task="p0s1"><span class="task-label">I can explain out loud what happens between typing <code>google.com</code> and the page appearing.</span></label>
+    </section>
+
+    <!-- ================== PHASE 1 ================== -->
+    <section id="phase-1" class="phase card">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="pill">Weeks 2–3</span>
+        <h2 class="text-3xl font-semibold text-masjid-800 dark:text-white">Phase 1 — HTML: The Skeleton</h2>
+      </div>
+      <p class="text-ink-700 dark:text-gray-300">The structure of every web page. Once you internalise it, it never changes much.</p>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Concepts to grasp</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p1c1"><span class="task-label">Document structure: <code>&lt;!doctype html&gt;</code>, <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, <code>&lt;body&gt;</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p1c2"><span class="task-label">The role of <code>&lt;head&gt;</code>: <code>&lt;title&gt;</code>, <code>&lt;meta&gt;</code> tags, linking CSS &amp; JS</span></label>
+        <label class="task"><input type="checkbox" data-task="p1c3"><span class="task-label">Block vs inline elements</span></label>
+        <label class="task"><input type="checkbox" data-task="p1c4"><span class="task-label">Headings <code>&lt;h1&gt;</code>–<code>&lt;h6&gt;</code> and why hierarchy matters</span></label>
+        <label class="task"><input type="checkbox" data-task="p1c5"><span class="task-label">Paragraphs, links, images, lists</span></label>
+        <label class="task"><input type="checkbox" data-task="p1c6"><span class="task-label">Semantic tags: <code>header, nav, main, section, article, aside, footer</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p1c7"><span class="task-label">Attributes: <code>id, class, href, src, alt, target, rel</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p1c8"><span class="task-label">Forms: <code>form, input</code> (all types), <code>textarea, button, label, select</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p1c9"><span class="task-label">Tables: <code>table, tr, td, th</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p1c10"><span class="task-label">Embedding: <code>iframe, video, audio</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p1c11"><span class="task-label">Accessibility basics: alt text, label-for-input pairing, ARIA, keyboard nav</span></label>
+        <label class="task"><input type="checkbox" data-task="p1c12"><span class="task-label">Validating HTML with the <a class="ext" href="https://validator.w3.org" target="_blank">W3C validator</a></span></label>
+      </div>
+
+      <details class="mt-6">
+        <summary class="text-sm font-semibold text-gold-600 dark:text-gold-400">📚 Resources <span class="chev">›</span></summary>
+        <ul class="resource-list list-disc text-sm mt-2 space-y-1">
+          <li><a class="ext" href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content" target="_blank">MDN — Introduction to HTML</a> (the gold standard)</li>
+          <li><a class="ext" href="https://www.freecodecamp.org/learn/2022/responsive-web-design/" target="_blank">freeCodeCamp — Responsive Web Design</a></li>
+          <li><a class="ext" href="https://www.theodinproject.com/lessons/foundations-introduction-to-html-and-css" target="_blank">The Odin Project — HTML Foundations</a></li>
+        </ul>
+      </details>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">🛠 Project &amp; self-test</h3>
+      <label class="task"><input type="checkbox" data-task="p1p1"><span class="task-label">Build a personal homepage in HTML only (no styling). Header, nav of 4 sections, About, hobbies list, contact form, footer. Pass W3C validator with zero errors.</span></label>
+      <label class="task"><input type="checkbox" data-task="p1p2"><span class="task-label">From memory, write the skeleton of an HTML page including doctype, lang, charset, viewport, title, body, and semantic structure.</span></label>
+    </section>
+
+    <!-- ================== PHASE 2 ================== -->
+    <section id="phase-2" class="phase card">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="pill">Weeks 4–7</span>
+        <h2 class="text-3xl font-semibold text-masjid-800 dark:text-white">Phase 2 — CSS: The Look</h2>
+      </div>
+      <p class="text-ink-700 dark:text-gray-300">Where most beginners struggle. Don't rush this. The masjid site lives or dies by good CSS.</p>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Fundamentals</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p2f1"><span class="task-label">Linking a CSS file (<code>&lt;link rel="stylesheet"&gt;</code>)</span></label>
+        <label class="task"><input type="checkbox" data-task="p2f2"><span class="task-label">Selectors: element, class, ID, descendant, child, sibling</span></label>
+        <label class="task"><input type="checkbox" data-task="p2f3"><span class="task-label">Specificity &amp; the cascade (why your style isn't applying)</span></label>
+        <label class="task"><input type="checkbox" data-task="p2f4"><span class="task-label">The box model: content, padding, border, margin</span></label>
+        <label class="task"><input type="checkbox" data-task="p2f5"><span class="task-label"><code>box-sizing: border-box</code> on <code>*</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p2f6"><span class="task-label">Units: <code>px, %, em, rem, vh, vw, fr</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p2f7"><span class="task-label">Colours: hex, rgb, hsl, rgba, named, <code>currentColor</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p2f8"><span class="task-label">Typography: <code>font-family, font-size, font-weight, line-height, letter-spacing</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p2f9"><span class="task-label">Web fonts via Google Fonts</span></label>
+        <label class="task"><input type="checkbox" data-task="p2f10"><span class="task-label">Pseudo-classes: <code>:hover, :focus, :active, :first-child, :nth-child(), :not()</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p2f11"><span class="task-label">Pseudo-elements: <code>::before, ::after</code></span></label>
+      </div>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Layout (the hardest part)</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p2l1"><span class="task-label"><code>display</code>: <code>block, inline, inline-block, none</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p2l2"><span class="task-label"><code>position</code>: <code>static, relative, absolute, fixed, sticky</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p2l3"><span class="task-label"><code>z-index</code> and stacking contexts</span></label>
+        <label class="task"><input type="checkbox" data-task="p2l4"><span class="task-label"><strong>Flexbox</strong> — master this. <code>flex-direction, justify-content, align-items, gap, flex-wrap, flex-grow, flex-shrink, flex-basis</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p2l5"><span class="task-label"><strong>CSS Grid</strong> — <code>grid-template-columns/rows, gap, grid-column, grid-row, grid-area</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p2l6"><span class="task-label">When to use Flexbox vs Grid (Flex = 1D, Grid = 2D)</span></label>
+      </div>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Modern CSS</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p2m1"><span class="task-label">Responsive design with media queries</span></label>
+        <label class="task"><input type="checkbox" data-task="p2m2"><span class="task-label">Mobile-first approach</span></label>
+        <label class="task"><input type="checkbox" data-task="p2m3"><span class="task-label">CSS custom properties (variables)</span></label>
+        <label class="task"><input type="checkbox" data-task="p2m4"><span class="task-label">Transitions</span></label>
+        <label class="task"><input type="checkbox" data-task="p2m5"><span class="task-label">Animations with <code>@keyframes</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p2m6"><span class="task-label">Transforms: <code>translate, rotate, scale</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p2m7"><span class="task-label">Shadows: <code>box-shadow, text-shadow</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p2m8"><span class="task-label">Gradients: linear and radial</span></label>
+        <label class="task"><input type="checkbox" data-task="p2m9"><span class="task-label">Backgrounds, multi-layer backgrounds</span></label>
+        <label class="task"><input type="checkbox" data-task="p2m10"><span class="task-label"><code>filter</code> and <code>backdrop-filter</code> (frosted glass)</span></label>
+      </div>
+
+      <details class="mt-6">
+        <summary class="text-sm font-semibold text-gold-600 dark:text-gold-400">📚 Resources <span class="chev">›</span></summary>
+        <ul class="resource-list list-disc text-sm mt-2 space-y-1">
+          <li><a class="ext" href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics" target="_blank">MDN — CSS first steps</a></li>
+          <li><a class="ext" href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank">CSS Tricks — Complete Guide to Flexbox</a> (bookmark)</li>
+          <li><a class="ext" href="https://css-tricks.com/snippets/css/complete-guide-grid/" target="_blank">CSS Tricks — Complete Guide to Grid</a></li>
+          <li><a class="ext" href="https://www.youtube.com/@KevinPowell" target="_blank">Kevin Powell on YouTube</a> — best CSS teacher alive</li>
+          <li><a class="ext" href="https://flexboxfroggy.com" target="_blank">Flexbox Froggy</a> — learn Flexbox by playing</li>
+          <li><a class="ext" href="https://cssgridgarden.com" target="_blank">Grid Garden</a> — same for Grid</li>
+          <li><a class="ext" href="https://www.freecodecamp.org/learn/2022/responsive-web-design/" target="_blank">freeCodeCamp — Responsive Web Design</a></li>
+        </ul>
+      </details>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">🛠 Projects &amp; self-tests</h3>
+      <label class="task"><input type="checkbox" data-task="p2p1"><span class="task-label">Restyle your Phase 1 homepage. Use Flexbox/Grid. Make it responsive.</span></label>
+      <label class="task"><input type="checkbox" data-task="p2p2"><span class="task-label">Build a card component with hover, shadow, transition (like the prayer cards).</span></label>
+      <label class="task"><input type="checkbox" data-task="p2p3"><span class="task-label">Recreate a real webpage you admire from a screenshot — no peeking at their code. Try a <a class="ext" href="https://www.frontendmentor.io" target="_blank">Frontend Mentor</a> challenge.</span></label>
+      <label class="task"><input type="checkbox" data-task="p2p4"><span class="task-label">From memory: write CSS to centre a div horizontally and vertically using Flexbox.</span></label>
+    </section>
+
+    <!-- ================== PHASE 3 ================== -->
+    <section id="phase-3" class="phase card">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="pill">Weeks 8–18</span>
+        <h2 class="text-3xl font-semibold text-masjid-800 dark:text-white">Phase 3 — JavaScript: The Brain</h2>
+      </div>
+      <p class="text-ink-700 dark:text-gray-300">The biggest phase. JS is what makes the prayer countdown tick and the API data load. Don't rush.</p>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Fundamentals</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p3f1"><span class="task-label">Where JS runs: <code>&lt;script&gt;</code> tag or <code>.js</code> file</span></label>
+        <label class="task"><input type="checkbox" data-task="p3f2"><span class="task-label"><code>console.log()</code> and DevTools console</span></label>
+        <label class="task"><input type="checkbox" data-task="p3f3"><span class="task-label">Variables: <code>let, const</code> (avoid <code>var</code>)</span></label>
+        <label class="task"><input type="checkbox" data-task="p3f4"><span class="task-label">Types: string, number, boolean, null, undefined, object, array</span></label>
+        <label class="task"><input type="checkbox" data-task="p3f5"><span class="task-label">Operators: arithmetic, comparison (<code>===</code> vs <code>==</code>), logical, ternary</span></label>
+        <label class="task"><input type="checkbox" data-task="p3f6"><span class="task-label">String methods + template literals</span></label>
+        <label class="task"><input type="checkbox" data-task="p3f7"><span class="task-label">Conditionals: <code>if / else if / else</code>, <code>switch</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p3f8"><span class="task-label">Loops: <code>for, while, for...of, forEach</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p3f9"><span class="task-label">Functions: declarations, expressions, arrow functions</span></label>
+        <label class="task"><input type="checkbox" data-task="p3f10"><span class="task-label">Scope: global vs function vs block</span></label>
+        <label class="task"><input type="checkbox" data-task="p3f11"><span class="task-label">Array methods: <code>map, filter, reduce, find, includes, sort</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p3f12"><span class="task-label">Objects: keys, values, destructuring, dot vs bracket</span></label>
+        <label class="task"><input type="checkbox" data-task="p3f13"><span class="task-label">Spread operator (<code>...</code>)</span></label>
+        <label class="task"><input type="checkbox" data-task="p3f14"><span class="task-label">Truthy vs falsy values</span></label>
+      </div>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">DOM manipulation</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p3d1"><span class="task-label"><code>querySelector / querySelectorAll / getElementById</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p3d2"><span class="task-label">Reading/changing content: <code>textContent, innerHTML</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p3d3"><span class="task-label">Attributes: <code>getAttribute, setAttribute, classList</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p3d4"><span class="task-label">Creating elements: <code>createElement, appendChild</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p3d5"><span class="task-label">Events: <code>addEventListener</code> for click, submit, input, change, keydown, scroll</span></label>
+        <label class="task"><input type="checkbox" data-task="p3d6"><span class="task-label">The event object: <code>event.target, event.preventDefault()</code></span></label>
+      </div>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Async &amp; APIs (critical)</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p3a1"><span class="task-label">What "async" means and why JS is single-threaded</span></label>
+        <label class="task"><input type="checkbox" data-task="p3a2"><span class="task-label">Callbacks (understand them — prefer the next two)</span></label>
+        <label class="task"><input type="checkbox" data-task="p3a3"><span class="task-label">Promises: <code>.then() / .catch()</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p3a4"><span class="task-label"><code>async / await</code> (modern, much cleaner)</span></label>
+        <label class="task"><input type="checkbox" data-task="p3a5"><span class="task-label">The Fetch API</span></label>
+        <label class="task"><input type="checkbox" data-task="p3a6"><span class="task-label">What JSON is and how to read/write it</span></label>
+        <label class="task"><input type="checkbox" data-task="p3a7"><span class="task-label">Reading from a public API (Aladhan in the masjid site)</span></label>
+        <label class="task"><input type="checkbox" data-task="p3a8"><span class="task-label">Error handling with <code>try / catch</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p3a9"><span class="task-label">CORS — what it is, why fetch fails sometimes</span></label>
+      </div>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Modern browser APIs (used in the masjid site)</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p3b1"><span class="task-label"><code>localStorage</code> (dark-mode preference)</span></label>
+        <label class="task"><input type="checkbox" data-task="p3b2"><span class="task-label"><code>setInterval / setTimeout</code> (the countdown)</span></label>
+        <label class="task"><input type="checkbox" data-task="p3b3"><span class="task-label"><code>IntersectionObserver</code> (scroll-reveal)</span></label>
+        <label class="task"><input type="checkbox" data-task="p3b4"><span class="task-label"><code>Intl.DateTimeFormat</code> (Hijri date)</span></label>
+        <label class="task"><input type="checkbox" data-task="p3b5"><span class="task-label">Forms: <code>FormData, submit events, preventDefault</code></span></label>
+      </div>
+
+      <details class="mt-6">
+        <summary class="text-sm font-semibold text-gold-600 dark:text-gold-400">📚 Resources <span class="chev">›</span></summary>
+        <ul class="resource-list list-disc text-sm mt-2 space-y-1">
+          <li><a class="ext" href="https://javascript.info" target="_blank">JavaScript.info</a> — best free written course on the language</li>
+          <li><a class="ext" href="https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/" target="_blank">freeCodeCamp — JS Algorithms &amp; DS</a></li>
+          <li><a class="ext" href="https://www.theodinproject.com/paths/foundations/courses/foundations" target="_blank">The Odin Project — JavaScript</a></li>
+          <li><a class="ext" href="https://javascript30.com" target="_blank">JavaScript30 (Wes Bos)</a> — 30 free vanilla-JS projects</li>
+          <li><a class="ext" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide" target="_blank">MDN — JS Guide</a></li>
+          <li><a class="ext" href="https://www.youtube.com/playlist?list=PL4cUxeGkcC9haFPT7J25Q9GRB_ZkFrQAc" target="_blank">Net Ninja — Modern JS</a></li>
+          <li><a class="ext" href="https://www.codewars.com" target="_blank">Codewars</a> — practice (start at 8 kyu)</li>
+          <li><a class="ext" href="https://exercism.org/tracks/javascript" target="_blank">Exercism JavaScript track</a></li>
+        </ul>
+      </details>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">🛠 Projects (build in this order)</h3>
+      <label class="task"><input type="checkbox" data-task="p3p1"><span class="task-label">Counter — button that increments/decrements a number</span></label>
+      <label class="task"><input type="checkbox" data-task="p3p2"><span class="task-label">To-do list — add, remove, mark complete, save to localStorage</span></label>
+      <label class="task"><input type="checkbox" data-task="p3p3"><span class="task-label">Tip calculator</span></label>
+      <label class="task"><input type="checkbox" data-task="p3p4"><span class="task-label">Weather app — fetch from <a class="ext" href="https://open-meteo.com" target="_blank">Open-Meteo</a> (no API key needed)</span></label>
+      <label class="task"><input type="checkbox" data-task="p3p5"><span class="task-label">Quote generator from <a class="ext" href="https://api.quotable.io" target="_blank">api.quotable.io</a></span></label>
+      <label class="task"><input type="checkbox" data-task="p3p6"><span class="task-label">Image carousel with arrow buttons</span></label>
+      <label class="task"><input type="checkbox" data-task="p3p7"><span class="task-label">Stopwatch / countdown timer (= the prayer countdown)</span></label>
+      <label class="task"><input type="checkbox" data-task="p3p8"><span class="task-label">Dark-mode toggle that remembers via localStorage</span></label>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">✅ Final self-test</h3>
+      <label class="task"><input type="checkbox" data-task="p3s1"><span class="task-label">Write a JS function (without looking at the masjid site) that fetches today's prayer times from Aladhan and console.logs them.</span></label>
+    </section>
+
+    <!-- ================== PHASE 4 ================== -->
+    <section id="phase-4" class="phase card">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="pill">Week 19</span>
+        <h2 class="text-3xl font-semibold text-masjid-800 dark:text-white">Phase 4 — Git &amp; GitHub</h2>
+      </div>
+      <p class="text-ink-700 dark:text-gray-300">Short but essential. You need this before deploying.</p>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Concepts</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p4c1"><span class="task-label">What version control is and why it matters</span></label>
+        <label class="task"><input type="checkbox" data-task="p4c2"><span class="task-label"><code>git init, status, add, commit, log, diff</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p4c3"><span class="task-label">Branches: <code>branch, checkout, merge</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p4c4"><span class="task-label">Remotes: <code>remote add origin, push, pull, clone</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p4c5"><span class="task-label"><code>.gitignore</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p4c6"><span class="task-label">Pushing to GitHub, pull requests</span></label>
+        <label class="task"><input type="checkbox" data-task="p4c7"><span class="task-label">Fixing "oh no I committed something I shouldn't have"</span></label>
+      </div>
+
+      <details class="mt-6">
+        <summary class="text-sm font-semibold text-gold-600 dark:text-gold-400">📚 Resources <span class="chev">›</span></summary>
+        <ul class="resource-list list-disc text-sm mt-2 space-y-1">
+          <li><a class="ext" href="https://www.theodinproject.com/lessons/foundations-git-basics" target="_blank">Odin Project — Git Basics</a></li>
+          <li><a class="ext" href="https://learngitbranching.js.org" target="_blank">Learn Git Branching</a> — interactive, gamified</li>
+          <li><a class="ext" href="https://education.github.com/git-cheat-sheet-education.pdf" target="_blank">GitHub Git cheat sheet (PDF)</a></li>
+        </ul>
+      </details>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">🛠 Project</h3>
+      <label class="task"><input type="checkbox" data-task="p4p1"><span class="task-label">Push every Phase 1–3 project to its own GitHub repo with a README.</span></label>
+    </section>
+
+    <!-- ================== PHASE 5 ================== -->
+    <section id="phase-5" class="phase card">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="pill">Weeks 20–21</span>
+        <h2 class="text-3xl font-semibold text-masjid-800 dark:text-white">Phase 5 — Tailwind CSS</h2>
+      </div>
+      <p class="text-ink-700 dark:text-gray-300">Only start Tailwind <em>after</em> you understand vanilla CSS. Otherwise it feels like magic and you can't debug it.</p>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Concepts</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p5c1"><span class="task-label">What "utility-first CSS" means</span></label>
+        <label class="task"><input type="checkbox" data-task="p5c2"><span class="task-label">Tailwind via CDN vs proper install</span></label>
+        <label class="task"><input type="checkbox" data-task="p5c3"><span class="task-label">Layout utilities: <code>flex, grid, gap-*, items-*, justify-*</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p5c4"><span class="task-label">Spacing utilities: <code>p-*, m-*, px-*, space-x-*</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p5c5"><span class="task-label">Typography utilities</span></label>
+        <label class="task"><input type="checkbox" data-task="p5c6"><span class="task-label">Colours and opacity (<code>/50, /80</code>)</span></label>
+        <label class="task"><input type="checkbox" data-task="p5c7"><span class="task-label">Responsive prefixes: <code>md:, lg:</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p5c8"><span class="task-label">Hover/focus states</span></label>
+        <label class="task"><input type="checkbox" data-task="p5c9"><span class="task-label">Dark mode: <code>dark:</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p5c10"><span class="task-label">Customising <code>tailwind.config</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p5c11"><span class="task-label">Mixing Tailwind with regular CSS</span></label>
+      </div>
+
+      <details class="mt-6">
+        <summary class="text-sm font-semibold text-gold-600 dark:text-gold-400">📚 Resources <span class="chev">›</span></summary>
+        <ul class="resource-list list-disc text-sm mt-2 space-y-1">
+          <li><a class="ext" href="https://tailwindcss.com/docs" target="_blank">Tailwind docs</a> — genuinely some of the best docs ever written</li>
+          <li><a class="ext" href="https://www.youtube.com/playlist?list=PL4cUxeGkcC9gpXORlEHjc5bgnIi5HEGhw" target="_blank">Net Ninja — Tailwind tutorial</a></li>
+          <li><a class="ext" href="https://play.tailwindcss.com" target="_blank">Tailwind Play</a> — playground</li>
+        </ul>
+      </details>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">🛠 Project</h3>
+      <label class="task"><input type="checkbox" data-task="p5p1"><span class="task-label">Convert one of your earlier projects from vanilla CSS to Tailwind.</span></label>
+    </section>
+
+    <!-- ================== PHASE 6 ================== -->
+    <section id="phase-6" class="phase card">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="pill">Week 22</span>
+        <h2 class="text-3xl font-semibold text-masjid-800 dark:text-white">Phase 6 — APIs &amp; Working with Data</h2>
+      </div>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Concepts</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p6c1"><span class="task-label">REST API basics: GET, POST, PUT, DELETE</span></label>
+        <label class="task"><input type="checkbox" data-task="p6c2"><span class="task-label">Reading API docs (Aladhan, Open-Meteo, GitHub)</span></label>
+        <label class="task"><input type="checkbox" data-task="p6c3"><span class="task-label">Query params vs path params</span></label>
+        <label class="task"><input type="checkbox" data-task="p6c4"><span class="task-label">API keys: when needed, keeping them out of public repos</span></label>
+        <label class="task"><input type="checkbox" data-task="p6c5"><span class="task-label">Rate limiting</span></label>
+        <label class="task"><input type="checkbox" data-task="p6c6"><span class="task-label">Caching responses</span></label>
+        <label class="task"><input type="checkbox" data-task="p6c7"><span class="task-label">Graceful error handling</span></label>
+      </div>
+
+      <details class="mt-6">
+        <summary class="text-sm font-semibold text-gold-600 dark:text-gold-400">🆓 Free APIs to play with <span class="chev">›</span></summary>
+        <ul class="resource-list list-disc text-sm mt-2 space-y-1">
+          <li><a class="ext" href="https://open-meteo.com" target="_blank">Open-Meteo</a> — weather, no API key</li>
+          <li><a class="ext" href="https://aladhan.com/prayer-times-api" target="_blank">Aladhan</a> — prayer times (used by the masjid site)</li>
+          <li><a class="ext" href="https://pokeapi.co" target="_blank">PokeAPI</a> — silly but fun</li>
+          <li><a class="ext" href="https://docs.github.com/en/rest" target="_blank">GitHub API</a></li>
+        </ul>
+      </details>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">🛠 Project</h3>
+      <label class="task"><input type="checkbox" data-task="p6p1"><span class="task-label">Mini prayer-time card: any UK city the user types → fetch times → show next prayer + countdown. (= 80% of the masjid site)</span></label>
+    </section>
+
+    <!-- ================== PHASE 7 ================== -->
+    <section id="phase-7" class="phase card">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="pill">Week 23</span>
+        <h2 class="text-3xl font-semibold text-masjid-800 dark:text-white">Phase 7 — Hosting, Domains &amp; Deployment</h2>
+      </div>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Concepts</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p7c1"><span class="task-label">Static hosting vs server hosting</span></label>
+        <label class="task"><input type="checkbox" data-task="p7c2"><span class="task-label">What a "build step" is</span></label>
+        <label class="task"><input type="checkbox" data-task="p7c3"><span class="task-label">DNS: A records, CNAME, nameservers</span></label>
+        <label class="task"><input type="checkbox" data-task="p7c4"><span class="task-label">HTTPS / SSL (free with Let's Encrypt)</span></label>
+        <label class="task"><input type="checkbox" data-task="p7c5"><span class="task-label">Pointing a domain at a host</span></label>
+      </div>
+
+      <details class="mt-6">
+        <summary class="text-sm font-semibold text-gold-600 dark:text-gold-400">📚 Free hosts <span class="chev">›</span></summary>
+        <ul class="resource-list list-disc text-sm mt-2 space-y-1">
+          <li><a class="ext" href="https://www.netlify.com" target="_blank">Netlify</a> — easiest, drag-and-drop</li>
+          <li><a class="ext" href="https://vercel.com" target="_blank">Vercel</a> — great for Next.js later</li>
+          <li><a class="ext" href="https://pages.github.com" target="_blank">GitHub Pages</a> — built into GitHub</li>
+          <li><a class="ext" href="https://pages.cloudflare.com" target="_blank">Cloudflare Pages</a> — fast and free</li>
+          <li><a class="ext" href="https://app.netlify.com/drop" target="_blank">Netlify Drop</a> — literally drag a folder</li>
+        </ul>
+      </details>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">🛠 Projects</h3>
+      <label class="task"><input type="checkbox" data-task="p7p1"><span class="task-label">Deploy every project you've built. Share the links.</span></label>
+      <label class="task"><input type="checkbox" data-task="p7p2"><span class="task-label">Buy a cheap domain (£8/year on Namecheap / Cloudflare / Porkbun) and point it at a project.</span></label>
+    </section>
+
+    <!-- ================== PHASE 8 — CAPSTONE ================== -->
+    <section id="phase-8" class="phase card border-2 border-gold-500/40">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="pill" style="background:#c9a14a; color:#fff;">Capstone · Weeks 24–28</span>
+        <h2 class="text-3xl font-semibold text-masjid-800 dark:text-white">Phase 8 — Rebuild the Masjid Site</h2>
+      </div>
+      <p class="text-ink-700 dark:text-gray-300">Build from scratch. Look at my version only when genuinely stuck — and understand the code before copying.</p>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Stages</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p8s1"><span class="task-label">Blank <code>index.html</code> with a <code>&lt;title&gt;</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p8s2"><span class="task-label">Semantic HTML for every section — no styling</span></label>
+        <label class="task"><input type="checkbox" data-task="p8s3"><span class="task-label">Add Tailwind via CDN, style header + nav</span></label>
+        <label class="task"><input type="checkbox" data-task="p8s4"><span class="task-label">Build the hero section</span></label>
+        <label class="task"><input type="checkbox" data-task="p8s5"><span class="task-label">Prayer times grid — hardcoded first, then Aladhan fetch</span></label>
+        <label class="task"><input type="checkbox" data-task="p8s6"><span class="task-label">Next-prayer countdown banner with <code>setInterval</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p8s7"><span class="task-label">Dark-mode toggle with localStorage</span></label>
+        <label class="task"><input type="checkbox" data-task="p8s8"><span class="task-label">Hijri date with <code>Intl.DateTimeFormat</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p8s9"><span class="task-label">Activities / Events / Downloads (JS templating)</span></label>
+        <label class="task"><input type="checkbox" data-task="p8s10"><span class="task-label">Contact form</span></label>
+        <label class="task"><input type="checkbox" data-task="p8s11"><span class="task-label">MasjidBox iframe</span></label>
+        <label class="task"><input type="checkbox" data-task="p8s12"><span class="task-label">Footer</span></label>
+        <label class="task"><input type="checkbox" data-task="p8s13"><span class="task-label">Deploy to Netlify</span></label>
+        <label class="task"><input type="checkbox" data-task="p8s14"><span class="task-label">Custom domain (or Netlify subdomain)</span></label>
+      </div>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">✅ Self-test</h3>
+      <label class="task"><input type="checkbox" data-task="p8t1"><span class="task-label">Compare your version with mine. Pick ONE thing yours does better.</span></label>
+    </section>
+
+    <!-- ================== PHASE 9 ================== -->
+    <section id="phase-9" class="phase card">
+      <div class="flex items-center gap-3 mb-3">
+        <span class="pill">Beyond beginner</span>
+        <h2 class="text-3xl font-semibold text-masjid-800 dark:text-white">Phase 9 — Going Further</h2>
+      </div>
+      <p class="text-ink-700 dark:text-gray-300">Branch out based on what excites you.</p>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Path A — Modern frontend (most common next step)</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p9a1"><span class="task-label"><a class="ext" href="https://react.dev/learn" target="_blank">React</a> — official tutorial</span></label>
+        <label class="task"><input type="checkbox" data-task="p9a2"><span class="task-label"><a class="ext" href="https://nextjs.org/learn" target="_blank">Next.js</a> — React + routing + SSR + production tooling</span></label>
+        <label class="task"><input type="checkbox" data-task="p9a3"><span class="task-label"><a class="ext" href="https://www.typescriptlang.org/docs/handbook/intro.html" target="_blank">TypeScript</a> — JS with types</span></label>
+        <label class="task"><input type="checkbox" data-task="p9a4"><span class="task-label">Component libraries: <a class="ext" href="https://ui.shadcn.com" target="_blank">shadcn/ui</a>, Radix, Headless UI</span></label>
+        <label class="task"><input type="checkbox" data-task="p9a5"><span class="task-label"><a class="ext" href="https://www.theodinproject.com/paths/full-stack-javascript" target="_blank">Odin Project — Full Stack JS path</a></span></label>
+      </div>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Path B — Backend with Node.js</h3>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p9b1"><span class="task-label">Node.js basics, <code>npm</code>, <code>package.json</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p9b2"><span class="task-label">Express.js — minimal web framework</span></label>
+        <label class="task"><input type="checkbox" data-task="p9b3"><span class="task-label">REST API design (build your own)</span></label>
+        <label class="task"><input type="checkbox" data-task="p9b4"><span class="task-label">Databases: SQLite → PostgreSQL</span></label>
+        <label class="task"><input type="checkbox" data-task="p9b5"><span class="task-label">Authentication: sessions, JWTs, OAuth</span></label>
+        <label class="task"><input type="checkbox" data-task="p9b6"><span class="task-label">Deployment: Render, Railway, Fly.io</span></label>
+      </div>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Path C — Python (you asked about this)</h3>
+      <p class="text-sm text-ink-700 dark:text-gray-300 mt-1">Python isn't used for frontend web. It's the best <em>second</em> language — dominant in scripting, data, AI, and automation.</p>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p9c1"><span class="task-label">Python basics: syntax, types, control flow, functions, lists, dicts</span></label>
+        <label class="task"><input type="checkbox" data-task="p9c2"><span class="task-label">Standard library: <code>os, sys, json, requests</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p9c3"><span class="task-label">File handling, CSV, working with APIs</span></label>
+        <label class="task"><input type="checkbox" data-task="p9c4"><span class="task-label">Automation scripts (the joy of Python)</span></label>
+        <label class="task"><input type="checkbox" data-task="p9c5"><span class="task-label">Flask (small) or Django (huge) for web</span></label>
+        <label class="task"><input type="checkbox" data-task="p9c6"><span class="task-label">Data: <code>pandas, numpy, matplotlib</code></span></label>
+        <label class="task"><input type="checkbox" data-task="p9c7"><span class="task-label">AI/ML — only once you've done the above</span></label>
+      </div>
+      <details class="mt-3">
+        <summary class="text-sm font-semibold text-gold-600 dark:text-gold-400">📚 Python resources <span class="chev">›</span></summary>
+        <ul class="resource-list list-disc text-sm mt-2 space-y-1">
+          <li><a class="ext" href="https://automatetheboringstuff.com" target="_blank">Automate the Boring Stuff with Python</a> — FREE, best intro for non-CS people</li>
+          <li><a class="ext" href="https://cs50.harvard.edu/python/" target="_blank">CS50P</a> — Harvard's intro to Python, free</li>
+          <li><a class="ext" href="https://realpython.com" target="_blank">Real Python</a></li>
+          <li><a class="ext" href="https://flask.palletsprojects.com/en/3.0.x/quickstart/" target="_blank">Flask quickstart</a></li>
+        </ul>
+      </details>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Path D — Java</h3>
+      <p class="text-sm text-ink-700 dark:text-gray-300 mt-1">Heavyweight, used in big enterprise and Android. Probably skip Java <em>unless</em> you want a corporate job or Android dev.</p>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p9d1"><span class="task-label"><a class="ext" href="https://www.codecademy.com/learn/learn-java" target="_blank">Codecademy — Learn Java</a></span></label>
+        <label class="task"><input type="checkbox" data-task="p9d2"><span class="task-label"><a class="ext" href="https://java-programming.mooc.fi" target="_blank">MOOC.fi — Java I &amp; II</a> (free, university-grade)</span></label>
+      </div>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">Path E — Computer Science fundamentals</h3>
+      <p class="text-sm text-ink-700 dark:text-gray-300 mt-1">After 6 months of building, do this. Everything will click.</p>
+      <div class="mt-2">
+        <label class="task"><input type="checkbox" data-task="p9e1"><span class="task-label"><a class="ext" href="https://cs50.harvard.edu/x/" target="_blank">CS50x</a> — Harvard's intro to CS (free, world-class)</span></label>
+        <label class="task"><input type="checkbox" data-task="p9e2"><span class="task-label">Data structures &amp; algorithms (LeetCode easy problems — no grinding)</span></label>
+      </div>
+    </section>
+
+    <!-- ================== MASTER RESOURCES ================== -->
+    <section id="resources" class="phase card">
+      <h2 class="text-3xl font-semibold text-masjid-800 dark:text-white">Master Resource List</h2>
+      <p class="text-ink-700 dark:text-gray-300 mt-1">A short, opinionated list. Don't drown in too many.</p>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">📖 Documentation (forever)</h3>
+      <ul class="resource-list list-disc text-sm mt-1 space-y-1">
+        <li><a class="ext" href="https://developer.mozilla.org" target="_blank">MDN Web Docs</a></li>
+        <li><a class="ext" href="https://css-tricks.com" target="_blank">CSS Tricks</a></li>
+        <li><a class="ext" href="https://tailwindcss.com/docs" target="_blank">Tailwind docs</a></li>
+        <li><a class="ext" href="https://react.dev" target="_blank">React docs</a></li>
+      </ul>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">🎓 Full courses (free)</h3>
+      <ul class="resource-list list-disc text-sm mt-1 space-y-1">
+        <li><a class="ext" href="https://www.theodinproject.com" target="_blank">The Odin Project</a> — most thorough free curriculum</li>
+        <li><a class="ext" href="https://www.freecodecamp.org" target="_blank">freeCodeCamp</a> — largest free coding platform</li>
+        <li><a class="ext" href="https://cs50.harvard.edu" target="_blank">CS50</a> — Harvard, free</li>
+        <li><a class="ext" href="https://javascript.info" target="_blank">JavaScript.info</a></li>
+        <li><a class="ext" href="https://scrimba.com" target="_blank">Scrimba</a> — interactive, some free</li>
+      </ul>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">📺 YouTube channels (free)</h3>
+      <ul class="resource-list list-disc text-sm mt-1 space-y-1">
+        <li><a class="ext" href="https://www.youtube.com/@KevinPowell" target="_blank">Kevin Powell</a> — CSS</li>
+        <li><a class="ext" href="https://www.youtube.com/@WebDevSimplified" target="_blank">Web Dev Simplified</a> — JS, React</li>
+        <li><a class="ext" href="https://www.youtube.com/@NetNinja" target="_blank">Net Ninja</a> — broad</li>
+        <li><a class="ext" href="https://www.youtube.com/@TraversyMedia" target="_blank">Traversy Media</a> — broad</li>
+        <li><a class="ext" href="https://www.youtube.com/@Fireship" target="_blank">Fireship</a> — short, sharp, modern</li>
+        <li><a class="ext" href="https://www.youtube.com/@t3dotgg" target="_blank">Theo - t3.gg</a> — modern frontend, opinionated</li>
+      </ul>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">🛠 Practice (free)</h3>
+      <ul class="resource-list list-disc text-sm mt-1 space-y-1">
+        <li><a class="ext" href="https://www.frontendmentor.io" target="_blank">Frontend Mentor</a> — HTML/CSS design challenges</li>
+        <li><a class="ext" href="https://javascript30.com" target="_blank">JavaScript30</a> — 30 vanilla JS projects</li>
+        <li><a class="ext" href="https://www.codewars.com" target="_blank">Codewars</a> — algorithm puzzles</li>
+        <li><a class="ext" href="https://exercism.org" target="_blank">Exercism</a> — practice with mentors</li>
+        <li><a class="ext" href="https://adventofcode.com" target="_blank">Advent of Code</a> — annual puzzle challenge</li>
+      </ul>
+
+      <h3 class="mt-6 font-semibold text-lg text-masjid-700 dark:text-gold-400">👥 Communities (free)</h3>
+      <ul class="resource-list list-disc text-sm mt-1 space-y-1">
+        <li><a class="ext" href="https://www.reddit.com/r/learnprogramming" target="_blank">r/learnprogramming</a></li>
+        <li><a class="ext" href="https://www.reddit.com/r/webdev" target="_blank">r/webdev</a></li>
+        <li>The Odin Project Discord (invite on their site)</li>
+        <li><a class="ext" href="https://stackoverflow.com" target="_blank">Stack Overflow</a></li>
+      </ul>
+    </section>
+
+    <!-- ================== STAYING SANE ================== -->
+    <section id="sane" class="phase card">
+      <h2 class="text-3xl font-semibold text-masjid-800 dark:text-white">How to stay sane</h2>
+      <ol class="mt-4 space-y-3 text-sm leading-relaxed list-decimal list-inside">
+        <li><strong>Build, build, build.</strong> 70% building, 30% reading/watching.</li>
+        <li><strong>Get comfortable being stuck.</strong> Every dev Googles things daily. The skill is knowing what to search for.</li>
+        <li><strong>Don't switch courses constantly.</strong> Tutorial hell is real. Finish one before starting another.</li>
+        <li><strong>Ship small things often.</strong> Deploy something every week, even if tiny.</li>
+        <li><strong>Use the masjid project as a goal post.</strong> Every new concept: "could this improve the masjid site?"</li>
+        <li><strong>Take breaks.</strong> Coding is a marathon. Rested brains learn faster.</li>
+        <li><strong>Teach back.</strong> Explain what you learned to a non-coder. If you can't, you don't fully understand it yet.</li>
+      </ol>
+
+      <div class="mt-8 p-5 rounded-xl bg-masjid-50 dark:bg-ink-800/60 text-center">
+        <p class="font-display text-2xl text-masjid-700 dark:text-gold-400">May Allah make it easy for you.</p>
+        <p class="text-sm mt-1 italic text-ink-700 dark:text-gray-300">Bismillah — take the first step today.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+/* =========================================================
+   PROGRESS TRACKING — persists in browser localStorage
+   ========================================================= */
+const STORAGE_KEY = 'spm-roadmap-progress-v1';
+const THEME_KEY   = 'spm-roadmap-theme';
+
+// Theme
+const root = document.documentElement;
+if (localStorage.getItem(THEME_KEY) === 'dark' ||
+    (!localStorage.getItem(THEME_KEY) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+  root.classList.add('dark');
+}
+function updateThemeIcons() {
+  const isDark = root.classList.contains('dark');
+  document.getElementById('moon').classList.toggle('hidden', isDark);
+  document.getElementById('sun').classList.toggle('hidden', !isDark);
+}
+updateThemeIcons();
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  root.classList.toggle('dark');
+  localStorage.setItem(THEME_KEY, root.classList.contains('dark') ? 'dark' : 'light');
+  updateThemeIcons();
+});
+
+// Load saved progress
+let progress = {};
+try { progress = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch (e) {}
+
+const checkboxes = document.querySelectorAll('input[type="checkbox"][data-task]');
+const totalCount = checkboxes.length;
+document.getElementById('total-count').textContent = totalCount;
+
+function refreshProgress() {
+  const doneCount = Array.from(checkboxes).filter(c => c.checked).length;
+  document.getElementById('done-count').textContent = doneCount;
+  const pct = totalCount ? Math.round(doneCount / totalCount * 100) : 0;
+  document.getElementById('percent').textContent = pct + '%';
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+checkboxes.forEach(cb => {
+  const id = cb.dataset.task;
+  if (progress[id]) cb.checked = true;
+  cb.parentElement.classList.toggle('done', cb.checked);
+
+  cb.addEventListener('change', () => {
+    progress[id] = cb.checked;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    cb.parentElement.classList.toggle('done', cb.checked);
+    refreshProgress();
+  });
+});
+refreshProgress();
+
+// Reset
+document.getElementById('reset').addEventListener('click', () => {
+  if (!confirm('Clear ALL progress? This cannot be undone.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  checkboxes.forEach(cb => { cb.checked = false; cb.parentElement.classList.remove('done'); });
+  refreshProgress();
+});
+
+// Sidebar active section highlight
+const sections = document.querySelectorAll('section.phase');
+const navItems = document.querySelectorAll('.nav-item');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navItems.forEach(n => n.classList.toggle('active', n.getAttribute('href') === '#' + e.target.id));
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+sections.forEach(s => obs.observe(s));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1371 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Shahporan Masjid & Islamic Centre — 444 Hackney Road, London E2 6QL. Daily prayer times, Jumu'ah, Madrasah, weekly circles, and community activities." />
+  <meta name="theme-color" content="#0e5c3b" />
+  <title>Shahporan Masjid &amp; Islamic Centre — London</title>
+
+  <!-- Tailwind (CDN, no build step) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            masjid: {
+              50:  '#f1f7f3',
+              100: '#dcecde',
+              500: '#1a7a4f',
+              600: '#0e5c3b',
+              700: '#0a4a2f',
+              800: '#073522',
+              900: '#042217'
+            },
+            gold: {
+              400: '#d8b766',
+              500: '#c9a14a',
+              600: '#a98432'
+            },
+            ink: {
+              900: '#0c1a14',
+              800: '#1a2d24',
+              700: '#27403a'
+            }
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            arabic: ['"Amiri"', 'serif']
+          },
+          boxShadow: {
+            soft: '0 10px 30px -12px rgba(14,92,59,0.18)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@300;400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Custom styles -->
+  <style>
+    :root{
+      --pattern-color: rgba(14,92,59,0.06);
+    }
+    .dark{
+      --pattern-color: rgba(216,183,102,0.08);
+    }
+    body{
+      background-color: #fbfaf6;
+      color: #0c1a14;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .dark body{
+      background-color: #07140e;
+      color: #e8eee9;
+    }
+
+    /* Subtle geometric Islamic-style background accent */
+    .geo-bg{
+      background-image:
+        radial-gradient(circle at 20% 10%, var(--pattern-color) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 80% 30%, var(--pattern-color) 0 1px, transparent 1.5px),
+        radial-gradient(circle at 50% 70%, var(--pattern-color) 0 1px, transparent 1.5px);
+      background-size: 60px 60px, 80px 80px, 70px 70px;
+    }
+
+    .arabesque{
+      background:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><path d='M40 4 L76 40 L40 76 L4 40 Z M40 16 L64 40 L40 64 L16 40 Z' fill='none' stroke='%230e5c3b' stroke-opacity='0.07' stroke-width='1'/></svg>");
+      background-size: 80px 80px;
+    }
+    .dark .arabesque{
+      background:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'><path d='M40 4 L76 40 L40 76 L4 40 Z M40 16 L64 40 L40 64 L16 40 Z' fill='none' stroke='%23d8b766' stroke-opacity='0.10' stroke-width='1'/></svg>");
+      background-size: 80px 80px;
+    }
+
+    .gold-divider{
+      height:1px;
+      background: linear-gradient(90deg, transparent, #c9a14a, transparent);
+    }
+
+    /* Hide scrollbar on horizontal scroll cards */
+    .no-scrollbar::-webkit-scrollbar{display:none}
+    .no-scrollbar{scrollbar-width:none}
+
+    /* Smooth section reveal */
+    .reveal{opacity:0; transform: translateY(16px); transition: opacity .7s ease, transform .7s ease}
+    .reveal.visible{opacity:1; transform:none}
+
+    /* Nav link underline */
+    .nav-link{position:relative}
+    .nav-link::after{
+      content:''; position:absolute; left:0; bottom:-6px; height:2px; width:0;
+      background:#c9a14a; transition: width .25s ease;
+    }
+    .nav-link:hover::after, .nav-link.active::after{width:100%}
+
+    /* Prayer time card highlight (current/next) */
+    .prayer-card.next{
+      background: linear-gradient(135deg, #0e5c3b, #1a7a4f);
+      color:#fff;
+      box-shadow: 0 12px 30px -10px rgba(14,92,59,0.45);
+    }
+    .prayer-card.next .label,
+    .prayer-card.next .time,
+    .prayer-card.next .jamaah{color:#fff}
+    .prayer-card.next .gold-accent{color:#f0d28a}
+
+    .btn-primary{
+      background:#0e5c3b; color:#fff; padding:.75rem 1.5rem; border-radius:9999px;
+      font-weight:600; transition: all .2s ease; display:inline-flex; align-items:center; gap:.5rem;
+    }
+    .btn-primary:hover{background:#0a4a2f; transform: translateY(-1px)}
+    .btn-gold{
+      background:#c9a14a; color:#0c1a14; padding:.75rem 1.5rem; border-radius:9999px;
+      font-weight:600; transition: all .2s ease; display:inline-flex; align-items:center; gap:.5rem;
+    }
+    .btn-gold:hover{background:#a98432; color:#fff}
+    .btn-outline{
+      border:1.5px solid #0e5c3b; color:#0e5c3b; padding:.65rem 1.4rem; border-radius:9999px;
+      font-weight:600; transition: all .2s ease; display:inline-flex; align-items:center; gap:.5rem;
+    }
+    .btn-outline:hover{background:#0e5c3b; color:#fff}
+    .dark .btn-outline{border-color:#d8b766; color:#d8b766}
+    .dark .btn-outline:hover{background:#d8b766; color:#0c1a14}
+
+    .card{
+      background:#fff; border-radius: 1rem; padding:1.5rem;
+      box-shadow: 0 10px 30px -12px rgba(14,92,59,0.18);
+      border: 1px solid rgba(14,92,59,0.06);
+    }
+    .dark .card{
+      background:#0e1f17; border-color: rgba(216,183,102,0.12);
+    }
+
+    .section-title{
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      letter-spacing: -0.01em;
+    }
+
+    .eyebrow{
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      font-size: .75rem;
+      color:#c9a14a;
+      font-weight:600;
+    }
+
+    /* Mobile menu */
+    #mobile-menu.open{ max-height: 600px; }
+    #mobile-menu{ max-height:0; overflow:hidden; transition: max-height .35s ease; }
+
+    /* ============================================
+       MOBILE APP-LIKE STYLES (phones only)
+       ============================================ */
+    @media (max-width: 767px) {
+      body {
+        padding-bottom: calc(70px + env(safe-area-inset-bottom));
+      }
+      /* Tighter container padding */
+      .max-w-7xl { padding-left: 1rem; padding-right: 1rem; }
+
+      /* Punchier cards on mobile */
+      .card {
+        border-radius: 1.25rem;
+        box-shadow: 0 8px 24px -8px rgba(14,92,59,0.15);
+      }
+
+      /* Prayer card: bigger, more tappable on mobile */
+      .prayer-card {
+        padding: 1.1rem 0.9rem;
+        min-height: 110px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .prayer-card .time {
+        font-size: 1.5rem !important;
+      }
+
+      /* Section titles slightly smaller on mobile */
+      .section-title { font-size: 1.6rem !important; }
+
+      /* Compact section padding */
+      section[id]:not(#home) { padding-top: 3rem; padding-bottom: 3rem; }
+    }
+
+    /* ============================================
+       MOBILE BOTTOM NAVIGATION BAR
+       ============================================ */
+    #bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 50;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(14,92,59,0.12);
+      padding-bottom: env(safe-area-inset-bottom);
+      box-shadow: 0 -8px 24px -8px rgba(14,92,59,0.12);
+    }
+    .dark #bottom-nav {
+      background: rgba(7,20,14,0.96);
+      border-top-color: rgba(216,183,102,0.15);
+    }
+    .bottom-nav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 0.55rem 0.25rem 0.7rem;
+      font-size: 0.65rem; font-weight: 500;
+      color: #4a5d54; text-decoration: none;
+      transition: color .15s ease;
+      position: relative;
+    }
+    .dark .bottom-nav-item { color: #a8b5af; }
+    .bottom-nav-item svg { width: 22px; height: 22px; }
+    .bottom-nav-item:hover { color: #0e5c3b; }
+    .dark .bottom-nav-item:hover { color: #d8b766; }
+    .bottom-nav-item.active { color: #0e5c3b; font-weight: 600; }
+    .dark .bottom-nav-item.active { color: #d8b766; }
+    .bottom-nav-item.active::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 28px; height: 3px;
+      background: #c9a14a;
+      border-radius: 0 0 4px 4px;
+    }
+  </style>
+</head>
+
+<body class="antialiased">
+
+  <!-- ============================================ -->
+  <!-- TOP BAR: Next-prayer countdown + Hijri date  -->
+  <!-- ============================================ -->
+  <div id="top-bar" class="bg-masjid-700 dark:bg-ink-900 text-white text-sm">
+    <div class="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-2">
+          <svg class="w-4 h-4 text-gold-400" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 5h-2v6l5 3 1-1.5-4-2.5z"/></svg>
+          <span>Next: <strong id="next-prayer-name">—</strong></span>
+          <span class="opacity-75">in <span id="next-prayer-countdown">--:--:--</span></span>
+        </span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span id="hijri-date" class="hidden sm:inline opacity-90">—</span>
+        <span id="gregorian-date" class="hidden md:inline opacity-75">—</span>
+        <button id="theme-toggle" aria-label="Toggle dark mode"
+                class="rounded-full p-1.5 hover:bg-white/10 transition">
+          <svg id="icon-sun" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          <svg id="icon-moon" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!-- NAVIGATION                                    -->
+  <!-- ============================================ -->
+  <header class="sticky top-0 z-40 backdrop-blur bg-white/85 dark:bg-ink-900/85 border-b border-masjid-600/10">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="#home" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-masjid-600 flex items-center justify-center text-white shadow-soft">
+          <svg viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor"><path d="M12 2l2 4h-1v3h2V7h2l-1-2 1-2h-3v2h-2zM4 22V11l8-5 8 5v11h-5v-6h-6v6H4z"/></svg>
+        </div>
+        <div class="leading-tight">
+          <div class="font-display text-lg font-semibold text-masjid-700 dark:text-gold-400">Shahporan Masjid</div>
+          <div class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400">&amp; Islamic Centre</div>
+        </div>
+      </a>
+
+      <nav class="hidden lg:flex items-center gap-8 text-sm font-medium">
+        <a href="#home" class="nav-link">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#prayer-times" class="nav-link">Prayer Times</a>
+        <a href="#madrasah" class="nav-link">Madrasah</a>
+        <a href="#activities" class="nav-link">Activities</a>
+        <a href="#events" class="nav-link">Events</a>
+        <a href="#downloads" class="nav-link">Downloads</a>
+        <a href="#about-islam" class="nav-link">About Islam</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a href="#donate" class="hidden sm:inline-flex btn-gold text-sm py-2 px-4">Donate</a>
+        <button id="menu-btn" class="lg:hidden p-2 rounded hover:bg-masjid-600/10" aria-label="Open menu">
+          <svg class="w-6 h-6 text-masjid-700 dark:text-gold-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="lg:hidden border-t border-masjid-600/10 bg-white dark:bg-ink-900">
+      <div class="max-w-7xl mx-auto px-4 py-2 flex flex-col text-sm">
+        <a href="#home" class="py-2.5 border-b border-masjid-600/5">Home</a>
+        <a href="#about" class="py-2.5 border-b border-masjid-600/5">About</a>
+        <a href="#prayer-times" class="py-2.5 border-b border-masjid-600/5">Prayer Times</a>
+        <a href="#madrasah" class="py-2.5 border-b border-masjid-600/5">Madrasah</a>
+        <a href="#activities" class="py-2.5 border-b border-masjid-600/5">Activities</a>
+        <a href="#events" class="py-2.5 border-b border-masjid-600/5">Events</a>
+        <a href="#downloads" class="py-2.5 border-b border-masjid-600/5">Downloads</a>
+        <a href="#about-islam" class="py-2.5 border-b border-masjid-600/5">About Islam</a>
+        <a href="#contact" class="py-2.5 border-b border-masjid-600/5">Contact</a>
+        <a href="#donate" class="py-2.5 text-gold-600 font-semibold">Donate</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================ -->
+  <!-- HERO                                          -->
+  <!-- ============================================ -->
+  <section id="home" class="relative overflow-hidden">
+    <div class="absolute inset-0 arabesque opacity-100 pointer-events-none"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-masjid-50 via-transparent to-transparent dark:from-masjid-900/30 pointer-events-none"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 py-10 md:py-28 grid md:grid-cols-2 gap-6 md:gap-10 items-center">
+      <div class="reveal">
+        <p class="font-arabic text-xl md:text-2xl text-gold-600 dark:text-gold-400 mb-2 md:mb-3">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</p>
+        <h1 class="font-display text-3xl md:text-6xl font-semibold text-masjid-800 dark:text-white leading-tight">
+          A home for prayer,<br/>learning &amp; community.
+        </h1>
+        <p class="mt-3 md:mt-5 text-sm md:text-lg text-ink-700 dark:text-gray-300 max-w-xl">
+          Welcome to Shahporan Masjid &amp; Islamic Centre on Hackney Road, London.
+          Daily prayers, Jumu'ah, Madrasah, weekly circles, and a warm welcome to every visitor.
+        </p>
+        <div class="mt-5 md:mt-8 flex flex-wrap gap-2 md:gap-3">
+          <a href="#prayer-times" class="btn-primary text-sm md:text-base !py-2.5 md:!py-3">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 5h-2v6l5 3 1-1.5-4-2.5z"/></svg>
+            Prayer Times
+          </a>
+          <a href="#donate" class="btn-gold text-sm md:text-base !py-2.5 md:!py-3">Donate</a>
+          <a href="#about" class="btn-outline text-sm md:text-base !py-2 md:!py-2.5 hidden md:inline-flex">About Us</a>
+        </div>
+
+        <!-- Stats grid: desktop only -->
+        <div class="hidden md:grid mt-10 grid-cols-3 gap-4 max-w-md">
+          <div>
+            <div class="font-display text-3xl text-masjid-700 dark:text-gold-400 font-semibold">5</div>
+            <div class="text-xs uppercase tracking-wider text-ink-700 dark:text-gray-400">Daily prayers</div>
+          </div>
+          <div>
+            <div class="font-display text-3xl text-masjid-700 dark:text-gold-400 font-semibold">2</div>
+            <div class="text-xs uppercase tracking-wider text-ink-700 dark:text-gray-400">Jumu'ah khutbahs</div>
+          </div>
+          <div>
+            <div class="font-display text-3xl text-masjid-700 dark:text-gold-400 font-semibold">All</div>
+            <div class="text-xs uppercase tracking-wider text-ink-700 dark:text-gray-400">Welcome</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jumu'ah card -->
+      <div class="reveal">
+        <div class="card relative overflow-hidden !p-5 md:!p-6">
+          <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-gold-500/10"></div>
+          <div class="absolute -bottom-12 -left-12 w-44 h-44 rounded-full bg-masjid-600/10"></div>
+          <div class="relative">
+            <p class="eyebrow">This Friday</p>
+            <h3 class="section-title text-masjid-700 dark:text-gold-400 mt-1">Jumu'ah Prayer</h3>
+            <div class="gold-divider my-3 md:my-4"></div>
+
+            <div class="grid grid-cols-2 gap-3 md:gap-4">
+              <div>
+                <div class="text-[10px] md:text-xs uppercase tracking-wider text-ink-700 dark:text-gray-400">First Khutbah</div>
+                <div class="font-display text-2xl md:text-3xl text-masjid-800 dark:text-white">1:20 PM</div>
+              </div>
+              <div>
+                <div class="text-[10px] md:text-xs uppercase tracking-wider text-ink-700 dark:text-gray-400">Second Khutbah</div>
+                <div class="font-display text-2xl md:text-3xl text-masjid-800 dark:text-white">2:10 PM</div>
+              </div>
+            </div>
+
+            <p class="mt-3 md:mt-5 text-xs md:text-sm text-ink-700 dark:text-gray-300">
+              The Prophet ﷺ said: <em>"The most beloved deed to Allah is the most regular and constant
+              even if it were little."</em> <span class="opacity-70">— Bukhari</span>
+            </p>
+
+            <div class="mt-4 md:mt-6 flex flex-wrap gap-2 md:gap-3">
+              <a href="#prayer-times" class="btn-outline text-xs md:text-sm py-1.5 md:py-2 px-3 md:px-4">Full timetable</a>
+              <a href="https://www.youtube.com/@shahporanmasjid?sub_confirmation=1" target="_blank" rel="noopener" class="btn-outline text-xs md:text-sm py-1.5 md:py-2 px-3 md:px-4">YouTube</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- PRAYER TIMES                                  -->
+  <!-- ============================================ -->
+  <section id="prayer-times" class="py-20 geo-bg">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center reveal">
+        <p class="eyebrow">Daily Salah</p>
+        <h2 class="section-title text-masjid-800 dark:text-white mt-2">Prayer Times</h2>
+        <p class="mt-3 text-ink-700 dark:text-gray-300 max-w-2xl mx-auto">
+          Live timings — Begins (Adhan) and Jamā'ah times. Updated automatically through MasjidBox.
+        </p>
+        <div class="gold-divider mt-6 mx-auto max-w-xs"></div>
+      </div>
+
+      <!-- Cards: populated by JS (MasjidBox first, fallback to Aladhan API for London) -->
+      <div id="prayer-cards" class="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 reveal">
+        <!-- skeleton -->
+        <div class="card animate-pulse h-32"></div>
+        <div class="card animate-pulse h-32"></div>
+        <div class="card animate-pulse h-32"></div>
+        <div class="card animate-pulse h-32"></div>
+        <div class="card animate-pulse h-32"></div>
+        <div class="card animate-pulse h-32"></div>
+      </div>
+
+      <!-- MasjidBox embed (official widget) -->
+      <div id="masjidbox-embed" class="mt-12 reveal">
+        <div class="card">
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-4">
+            <div>
+              <h3 class="font-display text-2xl text-masjid-700 dark:text-gold-400">Monthly Timetable</h3>
+              <p class="text-sm text-ink-700 dark:text-gray-400">Powered by MasjidBox</p>
+            </div>
+            <a href="https://masjidbox.com/prayer-times/shahporan" target="_blank" rel="noopener"
+               class="btn-outline text-sm py-2 px-4">Open full view ↗</a>
+          </div>
+
+          <!-- ★ MASJIDBOX WIDGET PLACEHOLDER ★
+               Replace the iframe below with the official embed snippet from your
+               MasjidBox dashboard (Settings → Embed / Widget). Typical snippet looks like:
+
+                 <script src="https://masjidbox.com/widgets/loader.js" async></script>
+                 <masjidbox-widget data-mosque="shahporan"></masjidbox-widget>
+
+               Until you paste that snippet, the iframe below acts as a fallback view.
+          -->
+          <div class="relative w-full" style="padding-top: 75%;">
+            <iframe
+              id="masjidbox-iframe"
+              src="https://masjidbox.com/prayer-times/shahporan"
+              title="Shahporan Masjid prayer times — MasjidBox"
+              class="absolute inset-0 w-full h-full rounded-lg border border-masjid-600/10"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+          <p class="text-xs text-ink-700 dark:text-gray-400 mt-3">
+            If the embed above does not load, MasjidBox may block iframe embedding —
+            in that case, please use the “Open full view” link or paste the official
+            widget script in place of this block (see the HTML comment).
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- ABOUT                                         -->
+  <!-- ============================================ -->
+  <section id="about" class="py-20">
+    <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+      <div class="reveal">
+        <p class="eyebrow">About Us</p>
+        <h2 class="section-title text-masjid-800 dark:text-white mt-2">A community rooted in faith &amp; service.</h2>
+        <div class="gold-divider my-5 max-w-[120px]"></div>
+        <p class="text-ink-700 dark:text-gray-300 leading-relaxed">
+          Shahporan Masjid &amp; Islamic Centre has been serving Muslims in East London
+          for decades. Our doors are open for the five daily prayers, Jumu'ah, Tarawih
+          during Ramadan, and a wide range of educational and community activities for
+          all ages.
+        </p>
+        <p class="text-ink-700 dark:text-gray-300 leading-relaxed mt-3">
+          We are a registered charity (Reg. No. 1057627) operating as the
+          <strong>Shahporan Masjid Trust</strong>, sustained entirely by the generosity
+          of the community we serve.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="#madrasah" class="btn-outline text-sm">Our Madrasah</a>
+          <a href="#activities" class="btn-outline text-sm">Activities</a>
+          <a href="#contact" class="btn-outline text-sm">Visit us</a>
+        </div>
+      </div>
+
+      <div class="reveal grid grid-cols-2 gap-4">
+        <div class="card">
+          <div class="w-10 h-10 rounded-lg bg-masjid-50 dark:bg-masjid-700/30 flex items-center justify-center text-masjid-700 dark:text-gold-400 mb-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l4 8h-3v6h-2v-6H8zM4 22V12l8-4 8 4v10z"/></svg>
+          </div>
+          <h4 class="font-semibold text-masjid-800 dark:text-white">Five Daily Prayers</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-1">Held in congregation every day. All welcome.</p>
+        </div>
+        <div class="card">
+          <div class="w-10 h-10 rounded-lg bg-masjid-50 dark:bg-masjid-700/30 flex items-center justify-center text-masjid-700 dark:text-gold-400 mb-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2z"/><path d="M8 7h7M8 11h7M8 15h5"/></svg>
+          </div>
+          <h4 class="font-semibold text-masjid-800 dark:text-white">Islamic Education</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-1">Madrasah for children &amp; weekly study circles.</p>
+        </div>
+        <div class="card">
+          <div class="w-10 h-10 rounded-lg bg-masjid-50 dark:bg-masjid-700/30 flex items-center justify-center text-masjid-700 dark:text-gold-400 mb-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h4 class="font-semibold text-masjid-800 dark:text-white">Community Hub</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-1">Events, lectures and social support for all ages.</p>
+        </div>
+        <div class="card">
+          <div class="w-10 h-10 rounded-lg bg-masjid-50 dark:bg-masjid-700/30 flex items-center justify-center text-masjid-700 dark:text-gold-400 mb-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <h4 class="font-semibold text-masjid-800 dark:text-white">Charity Work</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-1">Reg. Charity 1057627 — every donation goes back to the community.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- WEEKLY CIRCLES                                -->
+  <!-- ============================================ -->
+  <section id="weekly-circles" class="py-20 bg-masjid-50/60 dark:bg-ink-800/40">
+    <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-10 items-center">
+      <div class="reveal order-2 md:order-1">
+        <div class="card relative">
+          <p class="font-arabic text-3xl text-gold-600 dark:text-gold-400 leading-snug">
+            وَذَكِّرْ فَإِنَّ ٱلذِّكْرَىٰ تَنفَعُ ٱلْمُؤْمِنِينَ
+          </p>
+          <p class="mt-3 text-sm italic text-ink-700 dark:text-gray-300">
+            "And remind, for indeed the reminder benefits the believers." — Qur'an 51:55
+          </p>
+        </div>
+      </div>
+      <div class="reveal order-1 md:order-2">
+        <p class="eyebrow">Knowledge</p>
+        <h2 class="section-title text-masjid-800 dark:text-white mt-2">Weekly Circles</h2>
+        <div class="gold-divider my-5 max-w-[120px]"></div>
+        <p class="text-ink-700 dark:text-gray-300 leading-relaxed">
+          Almost every evening in the main prayer hall there is an informal circle which can
+          be heard in both the male and female prayer areas. During British Summer Time, the
+          circle is typically held after 'Asr or Maghrib. For the rest of the year, it follows
+          the 'Isha prayer.
+        </p>
+        <p class="text-ink-700 dark:text-gray-300 leading-relaxed mt-3">
+          Topics include Qur'anic tafsir, prophetic biography, fiqh, and spiritual reminders.
+          Everyone is welcome — no registration needed.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- MADRASAH                                      -->
+  <!-- ============================================ -->
+  <section id="madrasah" class="py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center reveal">
+        <p class="eyebrow">For Our Children</p>
+        <h2 class="section-title text-masjid-800 dark:text-white mt-2">Madrasah</h2>
+        <p class="mt-3 text-ink-700 dark:text-gray-300 max-w-2xl mx-auto">
+          A nurturing environment where children learn the Qur'an, Islamic studies,
+          and the manners of our beloved Prophet ﷺ.
+        </p>
+        <div class="gold-divider mt-6 mx-auto max-w-xs"></div>
+      </div>
+
+      <div class="mt-10 grid md:grid-cols-3 gap-6 reveal">
+        <div class="card">
+          <div class="text-gold-500 font-display text-4xl">١</div>
+          <h4 class="font-semibold mt-2 text-masjid-800 dark:text-white">Qur'an Recitation</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Tajwīd, memorisation and beautiful recitation taught by qualified teachers.</p>
+        </div>
+        <div class="card">
+          <div class="text-gold-500 font-display text-4xl">٢</div>
+          <h4 class="font-semibold mt-2 text-masjid-800 dark:text-white">Islamic Studies</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Foundations of 'Aqīdah, Fiqh, Sīrah and Akhlāq taught age-appropriately.</p>
+        </div>
+        <div class="card">
+          <div class="text-gold-500 font-display text-4xl">٣</div>
+          <h4 class="font-semibold mt-2 text-masjid-800 dark:text-white">Character &amp; Manners</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Modelled on the prophetic Sunnah — respect, kindness and discipline.</p>
+        </div>
+      </div>
+
+      <div class="mt-8 text-center reveal">
+        <a href="#contact" class="btn-primary">Enquire about enrolment</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- ACTIVITIES                                    -->
+  <!-- ============================================ -->
+  <section id="activities" class="py-20 bg-masjid-50/60 dark:bg-ink-800/40">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center reveal">
+        <p class="eyebrow">What We Offer</p>
+        <h2 class="section-title text-masjid-800 dark:text-white mt-2">Activities</h2>
+        <div class="gold-divider mt-6 mx-auto max-w-xs"></div>
+      </div>
+
+      <div class="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-5 reveal">
+        <div class="card hover:-translate-y-1 transition">
+          <h4 class="font-semibold text-masjid-800 dark:text-white">Daily &amp; Jumu'ah Prayers</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Five daily Salah and two Friday khutbahs.</p>
+        </div>
+        <div class="card hover:-translate-y-1 transition">
+          <h4 class="font-semibold text-masjid-800 dark:text-white">Tarawih &amp; Ramadan</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Nightly Tarawih, Iftar gatherings, I'tikaf and Laylatul Qadr programmes.</p>
+        </div>
+        <div class="card hover:-translate-y-1 transition">
+          <h4 class="font-semibold text-masjid-800 dark:text-white">Eid Prayers</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Eid ul-Fitr and Eid ul-Adha congregational prayers, open to all.</p>
+        </div>
+        <div class="card hover:-translate-y-1 transition">
+          <h4 class="font-semibold text-masjid-800 dark:text-white">Janazah Services</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Funeral prayers and guidance for families during difficult times.</p>
+        </div>
+        <div class="card hover:-translate-y-1 transition">
+          <h4 class="font-semibold text-masjid-800 dark:text-white">Nikah &amp; Marriage</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Marriage ceremonies and counselling — contact the office to arrange.</p>
+        </div>
+        <div class="card hover:-translate-y-1 transition">
+          <h4 class="font-semibold text-masjid-800 dark:text-white">New Muslim Support</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Welcoming reverts with classes, mentorship and a Shahadah ceremony.</p>
+        </div>
+        <div class="card hover:-translate-y-1 transition">
+          <h4 class="font-semibold text-masjid-800 dark:text-white">Youth Programmes</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Halaqas, sports activities and mentoring for the next generation.</p>
+        </div>
+        <div class="card hover:-translate-y-1 transition">
+          <h4 class="font-semibold text-masjid-800 dark:text-white">Community Support</h4>
+          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Hardship assistance, fitrah and zakat collection &amp; distribution.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- EVENTS & ANNOUNCEMENTS                        -->
+  <!-- ============================================ -->
+  <section id="events" class="py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex items-end justify-between flex-wrap gap-4 reveal">
+        <div>
+          <p class="eyebrow">Upcoming</p>
+          <h2 class="section-title text-masjid-800 dark:text-white mt-2">Events &amp; Announcements</h2>
+        </div>
+        <a href="#contact" class="btn-outline text-sm">Notify me</a>
+      </div>
+      <div class="gold-divider mt-4 max-w-[120px] reveal"></div>
+
+      <!-- Events data lives in JS (window.MASJID_EVENTS). Edit there to update. -->
+      <div id="events-list" class="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-5 reveal">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- ABOUT ISLAM                                   -->
+  <!-- ============================================ -->
+  <section id="about-islam" class="py-20 bg-masjid-50/60 dark:bg-ink-800/40">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center reveal">
+        <p class="eyebrow">Discover</p>
+        <h2 class="section-title text-masjid-800 dark:text-white mt-2">About Islam</h2>
+        <p class="mt-3 text-ink-700 dark:text-gray-300 max-w-2xl mx-auto">
+          Islam is a way of life centred on the worship of One God (Allah) and following the
+          guidance of His final Messenger, the Prophet Muhammad ﷺ.
+        </p>
+        <div class="gold-divider mt-6 mx-auto max-w-xs"></div>
+      </div>
+
+      <div class="mt-10 grid md:grid-cols-2 gap-6 reveal">
+        <div class="card">
+          <h4 class="font-display text-2xl text-masjid-700 dark:text-gold-400">The Five Pillars</h4>
+          <ul class="mt-4 space-y-3 text-sm text-ink-700 dark:text-gray-300">
+            <li><strong class="text-masjid-700 dark:text-gold-400">Shahādah</strong> — Declaration of faith.</li>
+            <li><strong class="text-masjid-700 dark:text-gold-400">Salah</strong> — Five daily prayers.</li>
+            <li><strong class="text-masjid-700 dark:text-gold-400">Zakāh</strong> — Annual charity for the needy.</li>
+            <li><strong class="text-masjid-700 dark:text-gold-400">Sawm</strong> — Fasting in Ramadan.</li>
+            <li><strong class="text-masjid-700 dark:text-gold-400">Hajj</strong> — Pilgrimage to Makkah, once in a lifetime if able.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4 class="font-display text-2xl text-masjid-700 dark:text-gold-400">Articles of Faith</h4>
+          <ul class="mt-4 space-y-3 text-sm text-ink-700 dark:text-gray-300">
+            <li>Belief in Allah, the One God.</li>
+            <li>Belief in His angels.</li>
+            <li>Belief in His revealed books.</li>
+            <li>Belief in all the prophets and messengers.</li>
+            <li>Belief in the Day of Judgement.</li>
+            <li>Belief in divine decree (Qadar).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-8 text-center reveal">
+        <p class="text-sm text-ink-700 dark:text-gray-400">Interested to learn more or take your shahādah?</p>
+        <a href="#contact" class="btn-primary mt-3">Get in touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- DOWNLOADS                                     -->
+  <!-- ============================================ -->
+  <section id="downloads" class="py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center reveal">
+        <p class="eyebrow">Resources</p>
+        <h2 class="section-title text-masjid-800 dark:text-white mt-2">Downloads</h2>
+        <p class="mt-3 text-ink-700 dark:text-gray-300 max-w-2xl mx-auto">
+          Monthly prayer timetables, Ramadan calendars and other useful resources.
+        </p>
+        <div class="gold-divider mt-6 mx-auto max-w-xs"></div>
+      </div>
+
+      <!-- Edit window.MASJID_DOWNLOADS in script.js to manage these -->
+      <div id="downloads-list" class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5 reveal">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- DONATE                                        -->
+  <!-- ============================================ -->
+  <section id="donate" class="py-20 bg-masjid-700 dark:bg-masjid-900 text-white relative overflow-hidden">
+    <div class="absolute inset-0 arabesque opacity-30 pointer-events-none"></div>
+    <div class="relative max-w-5xl mx-auto px-4 text-center">
+      <p class="eyebrow text-gold-400">Sadaqah Jāriyah</p>
+      <h2 class="section-title mt-2">Support Your Masjid</h2>
+      <div class="gold-divider mt-6 mx-auto max-w-xs"></div>
+      <p class="mt-6 text-white/85 max-w-2xl mx-auto">
+        Your contributions keep the lights on, fund our Madrasah, and allow us to keep
+        serving the community. Every pound helps — and the most beloved deed to Allah is
+        what is done consistently, even if little.
+      </p>
+
+      <div class="mt-10 grid md:grid-cols-2 gap-6 text-left">
+        <div class="card !bg-white/10 !border-white/10 text-white backdrop-blur">
+          <h4 class="font-display text-2xl text-gold-400">Donate Online</h4>
+          <p class="text-sm mt-2 text-white/80">Quick &amp; secure via SumUp — debit/credit card &amp; Apple/Google Pay.</p>
+          <a href="https://pay.sumup.com/b2c/QDPWOVF7" target="_blank" rel="noopener" class="btn-gold mt-5">Donate Now</a>
+        </div>
+        <div class="card !bg-white/10 !border-white/10 text-white backdrop-blur">
+          <h4 class="font-display text-2xl text-gold-400">Bank Transfer</h4>
+          <p class="text-sm mt-2 text-white/80">Shahporan Masjid Trust</p>
+          <div class="mt-3 grid grid-cols-2 gap-3 text-sm">
+            <div><div class="text-white/60 text-xs uppercase tracking-wider">Sort Code</div><div class="font-mono text-lg">50-10-05</div></div>
+            <div><div class="text-white/60 text-xs uppercase tracking-wider">Account No.</div><div class="font-mono text-lg">83711937</div></div>
+          </div>
+          <p class="text-xs text-white/60 mt-4">Registered Charity No. 1057627</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- CONTACT                                       -->
+  <!-- ============================================ -->
+  <section id="contact" class="py-20">
+    <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-10">
+      <div class="reveal">
+        <p class="eyebrow">Get in Touch</p>
+        <h2 class="section-title text-masjid-800 dark:text-white mt-2">Contact Us</h2>
+        <div class="gold-divider my-5 max-w-[120px]"></div>
+
+        <ul class="space-y-4 text-ink-700 dark:text-gray-300">
+          <li class="flex gap-3">
+            <svg class="w-5 h-5 mt-0.5 text-gold-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <div>
+              <div class="font-semibold text-masjid-800 dark:text-white">Address</div>
+              <div class="text-sm">Shahporan Masjid<br/>444 Hackney Road<br/>London E2 6QL</div>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <svg class="w-5 h-5 mt-0.5 text-gold-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+            <div>
+              <div class="font-semibold text-masjid-800 dark:text-white">Phone</div>
+              <a href="tel:+447472785476" class="text-sm hover:text-gold-500">+44 7472 785476</a>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <svg class="w-5 h-5 mt-0.5 text-gold-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
+            <div>
+              <div class="font-semibold text-masjid-800 dark:text-white">Email</div>
+              <a href="mailto:shahporanmasjid24@gmail.com" class="text-sm hover:text-gold-500">shahporanmasjid24@gmail.com</a>
+            </div>
+          </li>
+          <li class="flex gap-3">
+            <svg class="w-5 h-5 mt-0.5 text-gold-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <div>
+              <div class="font-semibold text-masjid-800 dark:text-white">Office Hours</div>
+              <div class="text-sm">
+                Mon – Thu: 12pm – 8:30pm<br/>
+                Fri: After Jumu'ah – 8:30pm<br/>
+                Sat &amp; Sun: 12pm – 8:30pm
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <div class="mt-6 flex gap-3">
+          <a href="https://www.facebook.com/ShahporanMasjid" target="_blank" rel="noopener" aria-label="Facebook"
+             class="w-10 h-10 rounded-full bg-masjid-700 dark:bg-gold-500 text-white flex items-center justify-center hover:scale-110 transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.7-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>
+          </a>
+          <a href="https://www.youtube.com/channel/UC7yyTIVhT-pBBSycUiJOYjQ" target="_blank" rel="noopener" aria-label="YouTube"
+             class="w-10 h-10 rounded-full bg-masjid-700 dark:bg-gold-500 text-white flex items-center justify-center hover:scale-110 transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23 12s0-3.5-.4-5.2a3 3 0 0 0-2.1-2.1C18.8 4.3 12 4.3 12 4.3s-6.8 0-8.5.4A3 3 0 0 0 1.4 6.8C1 8.5 1 12 1 12s0 3.5.4 5.2a3 3 0 0 0 2.1 2.1c1.7.4 8.5.4 8.5.4s6.8 0 8.5-.4a3 3 0 0 0 2.1-2.1c.4-1.7.4-5.2.4-5.2zM10 15.5v-7l6 3.5-6 3.5z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Map + form -->
+      <div class="reveal space-y-6">
+        <div class="card !p-0 overflow-hidden">
+          <iframe
+            src="https://www.google.com/maps?q=444+Hackney+Road,+London+E2+6QL&output=embed"
+            class="w-full h-72 border-0"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Shahporan Masjid location">
+          </iframe>
+        </div>
+
+        <form id="contact-form" class="card space-y-4">
+          <h4 class="font-display text-xl text-masjid-700 dark:text-gold-400">Send us a message</h4>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <input required name="name" placeholder="Your name"
+              class="w-full px-4 py-2.5 rounded-lg border border-masjid-600/15 bg-white dark:bg-ink-800 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500"/>
+            <input required type="email" name="email" placeholder="Email address"
+              class="w-full px-4 py-2.5 rounded-lg border border-masjid-600/15 bg-white dark:bg-ink-800 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500"/>
+          </div>
+          <input name="subject" placeholder="Subject"
+            class="w-full px-4 py-2.5 rounded-lg border border-masjid-600/15 bg-white dark:bg-ink-800 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500"/>
+          <textarea required name="message" rows="4" placeholder="Your message"
+            class="w-full px-4 py-2.5 rounded-lg border border-masjid-600/15 bg-white dark:bg-ink-800 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500"></textarea>
+          <button type="submit" class="btn-primary w-full justify-center">Send Message</button>
+          <p class="text-xs text-ink-700 dark:text-gray-400">
+            This form opens your email client. For a hosted backend, connect Formspree, Web3Forms or Netlify Forms — see <code>script.js</code>.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- NEWSLETTER                                    -->
+  <!-- ============================================ -->
+  <section id="newsletter" class="py-16 bg-masjid-50 dark:bg-ink-800/60">
+    <div class="max-w-3xl mx-auto px-4 text-center">
+      <p class="eyebrow">Keep In Touch</p>
+      <h2 class="section-title text-masjid-800 dark:text-white mt-2">Get our updates</h2>
+      <p class="mt-3 text-ink-700 dark:text-gray-300">
+        News, activities and ways to support. We'll never sell or share your details — unsubscribe anytime.
+      </p>
+      <form id="newsletter-form" class="mt-6 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <input required type="email" name="email" placeholder="Your email"
+          class="flex-1 px-4 py-3 rounded-full border border-masjid-600/15 bg-white dark:bg-ink-800 text-sm focus:outline-none focus:ring-2 focus:ring-gold-500"/>
+        <button class="btn-primary justify-center">Subscribe</button>
+      </form>
+      <p id="newsletter-status" class="mt-3 text-sm text-masjid-700 dark:text-gold-400 hidden">Jazākum Allāh khayran — you're subscribed.</p>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- FOOTER                                        -->
+  <!-- ============================================ -->
+  <footer class="bg-ink-900 text-white pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-4 gap-8">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-gold-500 text-ink-900 flex items-center justify-center font-display font-bold text-xl">SM</div>
+          <div>
+            <div class="font-display text-xl text-gold-400">Shahporan Masjid</div>
+            <div class="text-xs uppercase tracking-widest text-white/60">&amp; Islamic Centre Trust</div>
+          </div>
+        </div>
+        <p class="text-sm text-white/70 mt-4 max-w-md">
+          444 Hackney Road, London E2 6QL. A community masjid serving East London — open
+          for prayer, learning, and the welfare of every visitor.
+        </p>
+        <p class="text-xs text-white/50 mt-4">Registered Charity No. 1057627 — Shahporan Masjid Trust</p>
+      </div>
+
+      <div>
+        <h5 class="font-semibold text-gold-400 mb-3 text-sm uppercase tracking-wider">Quick Links</h5>
+        <ul class="space-y-2 text-sm text-white/80">
+          <li><a href="#home" class="hover:text-gold-400">Home</a></li>
+          <li><a href="#about" class="hover:text-gold-400">About Us</a></li>
+          <li><a href="#prayer-times" class="hover:text-gold-400">Prayer Times</a></li>
+          <li><a href="#madrasah" class="hover:text-gold-400">Madrasah</a></li>
+          <li><a href="#activities" class="hover:text-gold-400">Activities</a></li>
+          <li><a href="#downloads" class="hover:text-gold-400">Downloads</a></li>
+          <li><a href="#about-islam" class="hover:text-gold-400">About Islam</a></li>
+          <li><a href="#contact" class="hover:text-gold-400">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 class="font-semibold text-gold-400 mb-3 text-sm uppercase tracking-wider">Donate</h5>
+        <p class="text-sm text-white/80">Bank Transfer<br/>
+          <span class="text-white">Sort Code:</span> 50-10-05<br/>
+          <span class="text-white">Account No:</span> 83711937
+        </p>
+        <a href="https://pay.sumup.com/b2c/QDPWOVF7" target="_blank" rel="noopener" class="btn-gold mt-4 text-sm py-2 px-4">Donate Now</a>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs text-white/50">
+      <div>© <span id="copyright-year">2026</span> Shahporan Masjid &amp; Islamic Centre Trust. All rights reserved.</div>
+      <div>Made with care for our community. <span class="font-arabic">جزاكم الله خيرا</span></div>
+    </div>
+  </footer>
+
+  <!-- ============================================ -->
+  <!-- SCRIPTS                                       -->
+  <!-- ============================================ -->
+  <script>
+  /* ============================================================
+     SHAHPORAN MASJID — script
+     - Theme toggle (dark mode)
+     - Mobile nav
+     - Gregorian + Hijri date
+     - Prayer times (MasjidBox-ready; uses Aladhan API for now)
+     - Next prayer countdown banner
+     - Events & Downloads (edit data below)
+     - Reveal-on-scroll animation
+     - Active section highlight in nav
+     - Contact + newsletter form handlers
+     ============================================================ */
+
+  /* ---------- THEME ---------- */
+  const root = document.documentElement;
+  const savedTheme = localStorage.getItem('spm-theme');
+  if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    root.classList.add('dark');
+  }
+  document.getElementById('theme-toggle').addEventListener('click', () => {
+    root.classList.toggle('dark');
+    localStorage.setItem('spm-theme', root.classList.contains('dark') ? 'dark' : 'light');
+    updateThemeIcon();
+  });
+  function updateThemeIcon(){
+    const dark = root.classList.contains('dark');
+    document.getElementById('icon-sun').classList.toggle('hidden', !dark);
+    document.getElementById('icon-moon').classList.toggle('hidden', dark);
+  }
+  updateThemeIcon();
+
+  /* ---------- MOBILE NAV ---------- */
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+  /* ---------- DATES (Gregorian + Hijri) ---------- */
+  function updateDates() {
+    const now = new Date();
+    document.getElementById('gregorian-date').textContent = now.toLocaleDateString('en-GB', {
+      weekday:'long', day:'numeric', month:'long', year:'numeric'
+    });
+
+    // Hijri date via Intl (modern browsers)
+    try {
+      const hijri = new Intl.DateTimeFormat('en-TN-u-ca-islamic-umalqura', {
+        day:'numeric', month:'long', year:'numeric'
+      }).format(now);
+      document.getElementById('hijri-date').textContent = hijri.replace('AH','AH');
+    } catch(e) {
+      // graceful fallback — leave blank
+    }
+
+    document.getElementById('copyright-year').textContent = now.getFullYear();
+  }
+  updateDates();
+  setInterval(updateDates, 60_000);
+
+  /* ============================================================
+     PRAYER TIMES
+     ------------------------------------------------------------
+     For the per-prayer cards & countdown banner we need numeric
+     times. MasjidBox does NOT expose a public JSON API, so we use
+     two strategies, in order of preference:
+
+       1) MANUAL OVERRIDE (most accurate — matches MasjidBox exactly)
+          Edit `window.MASJID_MANUAL_TIMES` below with the day's
+          published times from MasjidBox / the printed timetable.
+          (You can also generate a monthly object — see comment.)
+
+       2) FALLBACK API — Aladhan, with the correct UK + Hanafi config:
+            • Coordinates: 51.5292°N, -0.0686°E (Hackney)
+            • Method 3 (MWL — Muslim World League, standard for UK)
+            • School 1 (Hanafi — later Asr, used by Bangladeshi-
+              heritage masjids)
+          To try a different convention, change PRAYER_API.method
+          below. Common UK options:
+            3  = MWL (default — close to UK norm)
+            15 = Moonsighting Committee Worldwide
+            8  = Gulf Region
+            5  = Egyptian General Authority
+          (Asr school: 1 = Hanafi, 0 = Shafi'i / standard.)
+
+     The full official table is still embedded via MasjidBox iframe
+     below the cards — that always shows the masjid's exact times.
+     ============================================================ */
+
+  // —— 1) MANUAL OVERRIDE ——————————————————————————————————————
+  // Paste today's times here to display exactly what's on the
+  // masjid's monthly timetable. Leave as null to use the API.
+  //
+  // Example (delete the // to enable, then update values daily/monthly):
+  // window.MASJID_MANUAL_TIMES = {
+  //   Fajr:'04:23', Sunrise:'05:50', Dhuhr:'13:05', Asr:'17:45',
+  //   Maghrib:'20:15', Isha:'21:45',
+  //   jamaah: { Fajr:'05:00', Dhuhr:'13:30', Asr:'18:00', Maghrib:'20:20', Isha:'22:00' }
+  // };
+  //
+  // For a whole month, you can also set window.MASJID_MONTHLY_TIMES
+  // — see helper at the bottom of this script.
+  window.MASJID_MANUAL_TIMES = null;
+  window.MASJID_MONTHLY_TIMES = null; // { '2026-05-12': { Fajr:'04:23', ... } }
+
+  // —— 2) API FALLBACK CONFIG ————————————————————————————————
+  const PRAYER_API = {
+    lat: 51.5292,   // 444 Hackney Road, London E2 6QL
+    lng: -0.0686,
+    method: 3,      // 3 = MWL (Muslim World League) — closest to UK norm.
+    school: 1       // 1 = Hanafi (later Asr), 0 = Shafi'i.
+  };
+
+  const PRAYERS = [
+    { key:'Fajr',    label:'Fajr' },
+    { key:'Sunrise', label:'Sunrise' },
+    { key:'Dhuhr',   label:'Dhuhr' },
+    { key:'Asr',     label:'Asr' },
+    { key:'Maghrib', label:'Maghrib' },
+    { key:'Isha',    label:'Isha' }
+  ];
+
+  // Default Jamā'ah offsets (mins after begins). EDIT to match the masjid's actual jamaah times,
+  // or supply them per-day in MASJID_MANUAL_TIMES.jamaah / MASJID_MONTHLY_TIMES[date].jamaah.
+  const JAMAAH_OFFSETS = { Fajr:30, Dhuhr:10, Asr:10, Maghrib:5, Isha:15 };
+
+  function todayKey(){
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+
+  async function fetchPrayerTimes() {
+    // 1) Manual override
+    if (window.MASJID_MANUAL_TIMES) return window.MASJID_MANUAL_TIMES;
+    if (window.MASJID_MONTHLY_TIMES && window.MASJID_MONTHLY_TIMES[todayKey()]) {
+      return window.MASJID_MONTHLY_TIMES[todayKey()];
+    }
+    // 2) Aladhan API — UK / Hanafi config
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2,'0');
+    const mm = String(today.getMonth()+1).padStart(2,'0');
+    const yyyy = today.getFullYear();
+    const url = `https://api.aladhan.com/v1/timings/${dd}-${mm}-${yyyy}` +
+                `?latitude=${PRAYER_API.lat}&longitude=${PRAYER_API.lng}` +
+                `&method=${PRAYER_API.method}&school=${PRAYER_API.school}`;
+    const r = await fetch(url);
+    const j = await r.json();
+    const t = j.data.timings;
+    // Strip the timezone suffix Aladhan sometimes appends ("04:23 (BST)")
+    const clean = s => String(s).split(' ')[0];
+    return {
+      Fajr: clean(t.Fajr), Sunrise: clean(t.Sunrise), Dhuhr: clean(t.Dhuhr),
+      Asr: clean(t.Asr),   Maghrib: clean(t.Maghrib), Isha: clean(t.Isha)
+    };
+  }
+
+  function fmt(time24){
+    const [h,m] = time24.split(':').map(Number);
+    const period = h>=12 ? 'PM':'AM';
+    const h12 = ((h+11)%12)+1;
+    return `${h12}:${String(m).padStart(2,'0')} ${period}`;
+  }
+  function addMinutes(time24, mins){
+    const [h,m] = time24.split(':').map(Number);
+    const d = new Date(); d.setHours(h, m+mins, 0, 0);
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+
+  function renderPrayerCards(times){
+    const container = document.getElementById('prayer-cards');
+    container.innerHTML = '';
+    const next = nextPrayerInfo(times);
+
+    PRAYERS.forEach(p => {
+      const beginTime = times[p.key] ? times[p.key].slice(0,5) : null;
+      if (!beginTime) return;
+      const isNext = next && next.key === p.key;
+      const jamaahMins = JAMAAH_OFFSETS[p.key];
+      const jamaahTime = (jamaahMins && times.jamaah?.[p.key]) ? times.jamaah[p.key]
+                       : (jamaahMins ? addMinutes(beginTime, jamaahMins) : null);
+      const card = document.createElement('div');
+      card.className = 'card prayer-card ' + (isNext ? 'next':'');
+      card.innerHTML = `
+        <div class="label text-xs uppercase tracking-wider opacity-70">${p.label}</div>
+        <div class="time font-display text-2xl md:text-3xl mt-1 text-masjid-800 dark:text-white">${fmt(beginTime)}</div>
+        ${jamaahTime ? `<div class="jamaah text-xs mt-1 opacity-80">Jamā'ah <span class="gold-accent font-semibold text-gold-600 dark:text-gold-400">${fmt(jamaahTime)}</span></div>` : `<div class="text-xs mt-1 opacity-60">Begins</div>`}
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function nextPrayerInfo(times){
+    const now = new Date();
+    const list = ['Fajr','Dhuhr','Asr','Maghrib','Isha']; // skip sunrise for "next prayer" countdown
+    for (const k of list){
+      if (!times[k]) continue;
+      const [h,m] = times[k].slice(0,5).split(':').map(Number);
+      const d = new Date(now); d.setHours(h,m,0,0);
+      if (d > now) return { key:k, at:d };
+    }
+    // After Isha — next is tomorrow's Fajr
+    if (times.Fajr){
+      const [h,m] = times.Fajr.slice(0,5).split(':').map(Number);
+      const d = new Date(now); d.setDate(now.getDate()+1); d.setHours(h,m,0,0);
+      return { key:'Fajr', at:d };
+    }
+    return null;
+  }
+
+  function startCountdown(times){
+    function tick(){
+      const next = nextPrayerInfo(times);
+      if (!next) return;
+      const diff = next.at - new Date();
+      if (diff <= 0){
+        // refetch when a prayer passes (handles next-day rollover too)
+        loadPrayer();
+        return;
+      }
+      const h = Math.floor(diff/3_600_000);
+      const m = Math.floor((diff%3_600_000)/60_000);
+      const s = Math.floor((diff%60_000)/1000);
+      document.getElementById('next-prayer-name').textContent = next.key;
+      document.getElementById('next-prayer-countdown').textContent =
+        `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+    tick(); clearInterval(window._spmTimer); window._spmTimer = setInterval(tick, 1000);
+  }
+
+  async function loadPrayer(){
+    try {
+      const times = await fetchPrayerTimes();
+      renderPrayerCards(times);
+      startCountdown(times);
+    } catch (e) {
+      console.error('Prayer times failed to load', e);
+      document.getElementById('prayer-cards').innerHTML =
+        '<div class="card md:col-span-6 text-center text-sm text-ink-700 dark:text-gray-300">Prayer times are temporarily unavailable. Please use the MasjidBox view below.</div>';
+    }
+  }
+  loadPrayer();
+
+  /* ============================================================
+     EVENTS — edit this list to manage announcements.
+     Each event: title, date (ISO), time, description, type
+     ============================================================ */
+  window.MASJID_EVENTS = [
+    {
+      title: "Friday Khutbah",
+      date:  "Recurring",
+      time:  "1:20 PM &amp; 2:10 PM",
+      description: "Two khutbahs every Friday — first at 1:20pm, second at 2:10pm.",
+      type:  "Weekly"
+    },
+    {
+      title: "Tafsir Circle",
+      date:  "Every weekday",
+      time:  "After Isha",
+      description: "Informal evening circle in the main prayer hall — open to all.",
+      type:  "Weekly"
+    },
+    {
+      title: "Ramadan Programme",
+      date:  "Ramadan 1447 AH",
+      time:  "Daily",
+      description: "Nightly Tarawih, daily Iftar gatherings, last 10 nights I'tikaf.",
+      type:  "Annual"
+    },
+    {
+      title: "Eid Prayer",
+      date:  "Eid ul-Fitr / Eid ul-Adha",
+      time:  "Morning",
+      description: "Eid prayer details announced closer to the date — follow our YouTube & Facebook.",
+      type:  "Annual"
+    },
+    {
+      title: "Madrasah Term",
+      date:  "Mon – Thu",
+      time:  "After school",
+      description: "Children's Qur'an and Islamic studies classes. Contact the office for enrolment.",
+      type:  "Ongoing"
+    },
+    {
+      title: "Janazah Services",
+      date:  "On request",
+      time:  "—",
+      description: "Funeral prayers and bereavement support. Please contact the office.",
+      type:  "On request"
+    }
+  ];
+  function renderEvents(){
+    const list = document.getElementById('events-list');
+    list.innerHTML = window.MASJID_EVENTS.map(ev => `
+      <div class="card hover:-translate-y-1 transition">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400 font-semibold">${ev.type}</span>
+          <span class="text-xs text-ink-700 dark:text-gray-400">${ev.date}</span>
+        </div>
+        <h4 class="font-display text-xl text-masjid-800 dark:text-white mt-2">${ev.title}</h4>
+        <div class="text-xs text-ink-700 dark:text-gray-400 mt-1">${ev.time}</div>
+        <p class="text-sm text-ink-700 dark:text-gray-300 mt-3">${ev.description}</p>
+      </div>
+    `).join('');
+  }
+  renderEvents();
+
+  /* ============================================================
+     DOWNLOADS — edit this list to add new files.
+     ============================================================ */
+  window.MASJID_DOWNLOADS = [
+    { title:"Monthly Prayer Timetable", desc:"Current month's begins &amp; jamā'ah times.",         href:"https://shahporanmasjid.uk/prayer-time/",                          type:"PDF" },
+    { title:"Ramadan Timetable 2026",   desc:"Sehri &amp; Iftar timings + Tarawih schedule.",       href:"downloads/Shahporan-Majid-Islamic-Centre-Ramadan-2026.pdf",        type:"PDF" },
+    { title:"Hifz Admission Form",      desc:"Enrolment form for the Hifz programme.",              href:"downloads/ADMISION-FORM-for-Hifz-new311224.pdf",                   type:"PDF" },
+    { title:"Absence Request Form",     desc:"Notify the Madrasah of a student absence.",           href:"downloads/Absent-Request-form.pdf",                                type:"PDF" },
+    { title:"Monthly Report Form",      desc:"Madrasah monthly progress report form.",              href:"downloads/Monthly-Report-form.pdf",                                type:"PDF" },
+    { title:"Nikah / Marriage Booking", desc:"Book a Nikah ceremony at the masjid.",                href:"downloads/Nikah-Marriage-booking-Form.pdf",                        type:"PDF" },
+    { title:"Charity Collection Form",  desc:"Authorise volunteers to collect donations.",          href:"downloads/Charity-collection-form.pdf",                            type:"PDF" },
+    { title:"Donation QR Code",         desc:"Quick-scan QR for online donations.",                 href:"downloads/QR-Code.pdf",                                            type:"PDF" }
+  ];
+  function renderDownloads(){
+    const list = document.getElementById('downloads-list');
+    list.innerHTML = window.MASJID_DOWNLOADS.map(d => `
+      <a href="${d.href}" target="_blank" rel="noopener"
+         class="card hover:-translate-y-1 transition group">
+        <div class="flex items-start justify-between">
+          <div class="w-10 h-10 rounded-lg bg-masjid-50 dark:bg-masjid-700/30 flex items-center justify-center text-masjid-700 dark:text-gold-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          </div>
+          <span class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400 font-semibold">${d.type}</span>
+        </div>
+        <h4 class="font-semibold text-masjid-800 dark:text-white mt-3 group-hover:text-gold-600">${d.title}</h4>
+        <p class="text-sm text-ink-700 dark:text-gray-400 mt-1">${d.desc}</p>
+        <div class="mt-4 text-sm text-masjid-700 dark:text-gold-400 inline-flex items-center gap-1">
+          Download
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+      </a>
+    `).join('');
+  }
+  renderDownloads();
+
+  /* ============================================================
+     REVEAL-ON-SCROLL
+     ============================================================ */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ============================================================
+     ACTIVE NAV LINK on scroll
+     ============================================================ */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const navObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting){
+        navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#'+e.target.id));
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => navObs.observe(s));
+
+  /* ============================================================
+     CONTACT FORM (mailto fallback). Swap to Formspree, Web3Forms
+     or Netlify Forms by changing the form's action+method.
+     ============================================================ */
+  document.getElementById('contact-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const subj = encodeURIComponent(f.get('subject') || 'Website enquiry');
+    const body = encodeURIComponent(`From: ${f.get('name')} <${f.get('email')}>\n\n${f.get('message')}`);
+    window.location.href = `mailto:shahporanmasjid24@gmail.com?subject=${subj}&body=${body}`;
+  });
+
+  /* ============================================================
+     NEWSLETTER (client-side stub — connect to Mailchimp /
+     Buttondown / Brevo by replacing this handler.)
+     ============================================================ */
+  document.getElementById('newsletter-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    document.getElementById('newsletter-status').classList.remove('hidden');
+    e.target.reset();
+  });
+
+  /* ============================================================
+     MOBILE BOTTOM-NAV — active state on scroll
+     ============================================================ */
+  const bottomNavItems = document.querySelectorAll('.bottom-nav-item');
+  const bottomNavTargets = { 'home':'home', 'prayer-times':'prayer-times',
+                             'events':'events', 'donate':'donate', 'contact':'contact' };
+  const bottomNavObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && bottomNavTargets[e.target.id]) {
+        bottomNavItems.forEach(b => b.classList.toggle('active', b.dataset.target === e.target.id));
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  Object.keys(bottomNavTargets).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) bottomNavObs.observe(el);
+  });
+  </script>
+
+  <!-- ============================================ -->
+  <!-- MOBILE BOTTOM NAVIGATION (phones only)        -->
+  <!-- ============================================ -->
+  <nav id="bottom-nav" class="md:hidden" aria-label="Primary mobile navigation">
+    <div class="grid grid-cols-5">
+      <a href="#home" data-target="home" class="bottom-nav-item">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V21H3z"/><path d="M9 21V12h6v9"/></svg>
+        <span>Home</span>
+      </a>
+      <a href="#prayer-times" data-target="prayer-times" class="bottom-nav-item">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span>Prayer</span>
+      </a>
+      <a href="#events" data-target="events" class="bottom-nav-item">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 11h18"/></svg>
+        <span>Events</span>
+      </a>
+      <a href="#donate" data-target="donate" class="bottom-nav-item">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <span>Donate</span>
+      </a>
+      <a href="#contact" data-target="contact" class="bottom-nav-item">
+        <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <span>Visit</span>
+      </a>
+    </div>
+  </nav>
+</body>
+</html>

@@ -1,0 +1,826 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Masjid Site Code Companion — line-by-line walkthrough</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: { extend: {
+      colors: {
+        masjid: { 50:'#f1f7f3', 100:'#dcecde', 500:'#1a7a4f', 600:'#0e5c3b', 700:'#0a4a2f', 800:'#073522', 900:'#042217' },
+        gold:   { 400:'#d8b766', 500:'#c9a14a', 600:'#a98432' },
+        ink:    { 900:'#0c1a14', 800:'#1a2d24', 700:'#27403a' }
+      },
+      fontFamily: { display:['"Cormorant Garamond"','Georgia','serif'], sans:['Inter','sans-serif'], mono:['Menlo','Monaco','monospace'] }
+    } }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Inter',sans-serif; background:#fbfaf6; color:#0c1a14; }
+  .dark body, body.dark { background:#07140e; color:#e8eee9; }
+  h1,h2,h3 { font-family:'Cormorant Garamond', serif; }
+
+  .card { background:#fff; border:1px solid rgba(14,92,59,0.08); border-radius:1rem; padding:1.75rem; box-shadow:0 10px 30px -12px rgba(14,92,59,0.12); margin-bottom:1.75rem; }
+  .dark .card { background:#0e1f17; border-color:rgba(216,183,102,0.12); }
+
+  .pill { display:inline-block; font-size:.65rem; padding:.18rem .6rem; border-radius:9999px; background:#e7f0ea; color:#0a4a2f; font-weight:600; letter-spacing:.06em; text-transform:uppercase; margin-right:.35rem; margin-bottom:.35rem; }
+  .pill-blue { background:#dfeaf6; color:#1e3a6b; }
+  .pill-gold { background:#f5e9c8; color:#7a5f1a; }
+  .pill-rose { background:#f6e0e4; color:#7a1e2c; }
+  .pill-mint { background:#d8eee0; color:#0a4a2f; }
+  .dark .pill { background:#1a2d24; color:#d8b766; }
+  .dark .pill-blue, .dark .pill-gold, .dark .pill-rose, .dark .pill-mint { background:#1a2d24; color:#d8b766; }
+
+  pre.code { background:#073522; color:#e8eee9; border-radius:0.75rem; padding:1.1rem 1.3rem; overflow-x:auto; font-family:'Menlo','Monaco',monospace; font-size:.83rem; line-height:1.65; }
+  .dark pre.code { background:#031310; }
+  .kw { color:#d8b766; } /* keyword */
+  .st { color:#9eddb6; } /* string */
+  .cm { color:#7a9b8e; font-style:italic; } /* comment */
+  .nm { color:#f0d28a; } /* number */
+  .fn { color:#a8d4f5; } /* function name */
+  .pn { color:#e8eee9; } /* punctuation/plain */
+
+  .feature h2 { font-size:1.85rem; font-weight:600; color:#0a4a2f; margin-top:.25rem; }
+  .dark .feature h2 { color:#d8b766; }
+  .feature h3 { font-size:1.1rem; font-weight:600; color:#0a4a2f; margin-top:1.4rem; margin-bottom:.6rem; font-family:'Inter',sans-serif; }
+  .dark .feature h3 { color:#d8b766; }
+
+  .feature p, .feature li { font-size:.95rem; line-height:1.7; }
+  ol.steps { counter-reset:step; padding:0; list-style:none; }
+  ol.steps li { padding:.4rem 0 .4rem 2.2rem; position:relative; font-size:.92rem; }
+  ol.steps li::before { counter-increment:step; content:counter(step); position:absolute; left:0; top:.55rem; width:1.5rem; height:1.5rem; border-radius:9999px; background:#0e5c3b; color:#fff; font-size:.7rem; font-weight:700; display:flex; align-items:center; justify-content:center; font-family:'Inter',sans-serif; }
+  .dark ol.steps li::before { background:#c9a14a; color:#0c1a14; }
+
+  code { background:#e7f0ea; padding:.05rem .35rem; border-radius:.25rem; font-family:'Menlo',monospace; font-size:.85em; color:#0a4a2f; }
+  .dark code { background:#1a2d24; color:#d8b766; }
+  pre.code code { background:transparent; padding:0; color:inherit; }
+
+  .roadmap-link { display:inline-block; background:#fff; border:1px solid rgba(14,92,59,0.15); padding:.6rem 1rem; border-radius:.6rem; font-size:.85rem; }
+  .dark .roadmap-link { background:#0e1f17; border-color:rgba(216,183,102,0.2); }
+
+  .try-box { background:#f5e9c8; border-left:3px solid #c9a14a; padding:.85rem 1.1rem; border-radius:.5rem; font-size:.9rem; }
+  .dark .try-box { background:rgba(216,183,102,0.08); }
+
+  /* Sidebar */
+  @media (min-width: 1024px) {
+    .sidebar { position:sticky; top:5rem; max-height:calc(100vh - 6rem); overflow-y:auto; }
+  }
+  .nav-item.active { background:#e7f0ea; color:#0a4a2f; font-weight:600; }
+  .dark .nav-item.active { background:#1a2d24; color:#d8b766; }
+  ::-webkit-scrollbar { width:8px; height:8px; }
+  ::-webkit-scrollbar-thumb { background:#cdd9d2; border-radius:8px; }
+  .dark ::-webkit-scrollbar-thumb { background:#1a2d24; }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- TOP BAR -->
+<header class="sticky top-0 z-30 backdrop-blur bg-white/85 dark:bg-ink-900/85 border-b border-masjid-600/10">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="w-10 h-10 rounded-full bg-masjid-600 text-white flex items-center justify-center text-sm font-bold shrink-0">📖</div>
+      <div class="min-w-0">
+        <div class="text-sm font-semibold text-masjid-700 dark:text-gold-400 truncate">Code Companion</div>
+        <div class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400">Masjid Site Walkthrough</div>
+      </div>
+    </div>
+    <button id="theme-toggle" class="p-2 rounded hover:bg-masjid-600/10" title="Toggle dark mode">
+      <svg id="moon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      <svg id="sun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-[260px_1fr] gap-8">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar hidden lg:block">
+    <p class="text-xs uppercase tracking-widest text-gold-600 dark:text-gold-400 font-semibold px-3 mb-2">Features</p>
+    <nav class="space-y-0.5 text-sm">
+      <a href="#intro"        class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">How to read this</a>
+      <a href="#skeleton"     class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">1. The page skeleton</a>
+      <a href="#tailwind"     class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">2. Tailwind setup</a>
+      <a href="#darkmode"     class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">3. Dark mode toggle ⭐</a>
+      <a href="#mobile-menu"  class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">4. Mobile hamburger menu</a>
+      <a href="#bottom-nav"   class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">5. Mobile bottom nav</a>
+      <a href="#dates"        class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">6. Gregorian + Hijri date</a>
+      <a href="#fetch"        class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">7. Fetching prayer times ⭐</a>
+      <a href="#cards"        class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">8. Prayer cards rendering</a>
+      <a href="#countdown"    class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">9. Live countdown ⭐</a>
+      <a href="#reveal"       class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">10. Scroll-reveal animation</a>
+      <a href="#nav-active"   class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">11. Active nav highlight</a>
+      <a href="#templating"   class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">12. Events &amp; Downloads</a>
+      <a href="#contact-form" class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">13. Contact form (mailto)</a>
+      <a href="#newsletter"   class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">14. Newsletter form</a>
+      <a href="#css-vars"     class="nav-item block px-3 py-2 rounded-lg hover:bg-masjid-50 dark:hover:bg-ink-800">15. CSS variables &amp; themes</a>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- ===================== INTRO ===================== -->
+    <section id="intro" class="feature">
+      <h1 class="text-4xl md:text-5xl font-semibold text-masjid-800 dark:text-white">Code Companion</h1>
+      <p class="mt-3 text-lg text-ink-700 dark:text-gray-300">A line-by-line tour of every interactive feature in your masjid site. Use it as a reference — not something to read cover-to-cover. When you reach the relevant phase in the <a class="text-masjid-700 dark:text-gold-400 underline" href="learning-roadmap.html">learning roadmap</a>, come back here and read the matching section.</p>
+
+      <div class="card mt-6">
+        <h3 class="text-xl font-semibold text-masjid-700 dark:text-gold-400">How each section is structured</h3>
+        <ol class="steps mt-3">
+          <li><strong>What you see</strong> — the visible behaviour in plain English</li>
+          <li><strong>The code</strong> — the exact snippet from your <code>index.html</code></li>
+          <li><strong>What's happening</strong> — line-by-line plain-English breakdown</li>
+          <li><strong>Concepts at play</strong> — the language/browser features used</li>
+          <li><strong>Where in the roadmap</strong> — pointer to which phase teaches it</li>
+          <li><strong>Try this</strong> — a tiny experiment you can do once you've learned the concepts</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===================== 1. SKELETON ===================== -->
+    <section id="skeleton" class="feature">
+      <span class="pill">HTML</span><span class="pill pill-blue">Phase 1</span>
+      <h2>1. The page skeleton</h2>
+
+      <h3>What you see</h3>
+      <p>Every webpage starts with the same boilerplate. This is the "frame" of your site before any content goes in.</p>
+
+      <h3>The code</h3>
+<pre class="code"><span class="kw">&lt;!doctype html&gt;</span>
+<span class="kw">&lt;html</span> <span class="fn">lang</span>=<span class="st">"en"</span> <span class="fn">class</span>=<span class="st">"scroll-smooth"</span><span class="kw">&gt;</span>
+<span class="kw">&lt;head&gt;</span>
+  <span class="kw">&lt;meta</span> <span class="fn">charset</span>=<span class="st">"utf-8"</span><span class="kw">/&gt;</span>
+  <span class="kw">&lt;meta</span> <span class="fn">name</span>=<span class="st">"viewport"</span> <span class="fn">content</span>=<span class="st">"width=device-width, initial-scale=1"</span><span class="kw">/&gt;</span>
+  <span class="kw">&lt;meta</span> <span class="fn">name</span>=<span class="st">"description"</span> <span class="fn">content</span>=<span class="st">"Shahporan Masjid..."</span><span class="kw">/&gt;</span>
+  <span class="kw">&lt;meta</span> <span class="fn">name</span>=<span class="st">"theme-color"</span> <span class="fn">content</span>=<span class="st">"#0e5c3b"</span><span class="kw">/&gt;</span>
+  <span class="kw">&lt;title&gt;</span>Shahporan Masjid &amp; Islamic Centre — London<span class="kw">&lt;/title&gt;</span>
+<span class="kw">&lt;/head&gt;</span>
+<span class="kw">&lt;body&gt;</span>
+  <span class="cm">&lt;!-- everything visible goes here --&gt;</span>
+<span class="kw">&lt;/body&gt;</span>
+<span class="kw">&lt;/html&gt;</span></pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li><code>&lt;!doctype html&gt;</code> tells the browser "this is modern HTML, use proper rules". Without it, browsers fall back to weird legacy behaviour.</li>
+        <li><code>lang="en"</code> tells screen readers and search engines the page is in English.</li>
+        <li><code>class="scroll-smooth"</code> is a Tailwind utility — when you click an anchor link like <code>#prayer-times</code>, the page glides there instead of jumping.</li>
+        <li>The <code>charset</code> tag tells the browser how to interpret characters (so Arabic, accents, and emoji all render correctly).</li>
+        <li>The <code>viewport</code> tag is what makes the page work on phones at all. Without it, mobile browsers render at desktop width and zoom out — making everything tiny.</li>
+        <li><code>theme-color</code> sets the colour of the address bar on mobile browsers — your green masjid colour bleeds into the browser chrome on Android Chrome / iOS Safari.</li>
+        <li><code>&lt;title&gt;</code> is what appears in the browser tab and in Google search results.</li>
+      </ol>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-1">Phase 1 — HTML</a></p>
+    </section>
+
+    <!-- ===================== 2. TAILWIND ===================== -->
+    <section id="tailwind" class="feature">
+      <span class="pill pill-gold">CSS</span><span class="pill">Tailwind</span><span class="pill pill-blue">Phase 5</span>
+      <h2>2. Tailwind setup &amp; custom design tokens</h2>
+
+      <h3>What you see</h3>
+      <p>Every <code>class="..."</code> in the masjid site that looks cryptic — <code>bg-masjid-700</code>, <code>md:grid-cols-6</code>, <code>dark:text-gold-400</code> — comes from Tailwind. The setup at the top of the file defines a colour palette specific to this site.</p>
+
+      <h3>The code</h3>
+<pre class="code"><span class="kw">&lt;script</span> <span class="fn">src</span>=<span class="st">"https://cdn.tailwindcss.com"</span><span class="kw">&gt;&lt;/script&gt;</span>
+<span class="kw">&lt;script&gt;</span>
+  tailwind.<span class="fn">config</span> = {
+    darkMode: <span class="st">'class'</span>,
+    theme: { extend: {
+      colors: {
+        masjid: { <span class="nm">600</span>: <span class="st">'#0e5c3b'</span>, <span class="nm">700</span>: <span class="st">'#0a4a2f'</span>, ... },
+        gold:   { <span class="nm">500</span>: <span class="st">'#c9a14a'</span>, ... }
+      },
+      fontFamily: {
+        display: [<span class="st">'"Cormorant Garamond"'</span>, <span class="st">'serif'</span>],
+        arabic:  [<span class="st">'"Amiri"'</span>, <span class="st">'serif'</span>]
+      }
+    } }
+  }
+<span class="kw">&lt;/script&gt;</span></pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li>The first <code>&lt;script&gt;</code> loads Tailwind directly from a CDN. No build step needed — perfect for learning.</li>
+        <li><code>darkMode: 'class'</code> tells Tailwind: "switch to dark mode when the <code>&lt;html&gt;</code> tag has a <code>dark</code> class on it." (Other option is <code>'media'</code> which follows the OS — but then users can't override it.)</li>
+        <li><code>theme.extend.colors</code> registers custom colours so you can use <code>bg-masjid-600</code> in classes — without it, only Tailwind's defaults (blue, red, etc.) are available.</li>
+        <li><code>fontFamily</code> registers font names so <code>font-display</code> and <code>font-arabic</code> classes work.</li>
+      </ol>
+
+      <h3>Try this</h3>
+      <div class="try-box">Open <code>index.html</code>, change <code>'#0e5c3b'</code> (the masjid green) to <code>'#7c2d12'</code> (deep red), save, reload. The whole site shifts colour. You've just changed your design system in one place.</div>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-5">Phase 5 — Tailwind CSS</a></p>
+    </section>
+
+    <!-- ===================== 3. DARK MODE ===================== -->
+    <section id="darkmode" class="feature">
+      <span class="pill pill-rose">JavaScript</span><span class="pill">localStorage</span><span class="pill">DOM</span><span class="pill pill-blue">Phase 3</span>
+      <h2>3. Dark mode toggle ⭐</h2>
+
+      <h3>What you see</h3>
+      <p>Tap the moon icon in the top bar. The whole site flips to dark theme. Close your browser, come back tomorrow — it remembers your choice. New visitors get whatever their OS is set to.</p>
+
+      <h3>The code</h3>
+<pre class="code"><span class="kw">const</span> root = document.<span class="fn">documentElement</span>;
+<span class="kw">const</span> savedTheme = localStorage.<span class="fn">getItem</span>(<span class="st">'spm-theme'</span>);
+
+<span class="kw">if</span> (savedTheme === <span class="st">'dark'</span> ||
+   (!savedTheme &amp;&amp; window.<span class="fn">matchMedia</span>(<span class="st">'(prefers-color-scheme: dark)'</span>).matches)) {
+  root.classList.<span class="fn">add</span>(<span class="st">'dark'</span>);
+}
+
+document.<span class="fn">getElementById</span>(<span class="st">'theme-toggle'</span>).<span class="fn">addEventListener</span>(<span class="st">'click'</span>, () =&gt; {
+  root.classList.<span class="fn">toggle</span>(<span class="st">'dark'</span>);
+  localStorage.<span class="fn">setItem</span>(<span class="st">'spm-theme'</span>, root.classList.<span class="fn">contains</span>(<span class="st">'dark'</span>) ? <span class="st">'dark'</span> : <span class="st">'light'</span>);
+});</pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li><code>document.documentElement</code> is a fancy way of saying "the &lt;html&gt; tag". We grab a reference to it so we can add/remove classes on it.</li>
+        <li><code>localStorage.getItem('spm-theme')</code> reads a saved value from the browser's persistent storage. <code>localStorage</code> survives reloads, restarts, even system shutdowns — until the user clears their browser data.</li>
+        <li>The big <code>if</code>: "If they previously chose dark, OR if there's no saved choice AND their OS is currently in dark mode" — add the <code>dark</code> class. <code>window.matchMedia('(prefers-color-scheme: dark)')</code> reads the OS setting.</li>
+        <li><code>addEventListener('click', ...)</code> attaches a function that runs every time the button is clicked.</li>
+        <li>Inside the click handler: <code>classList.toggle('dark')</code> adds the class if missing, removes it if present.</li>
+        <li>Then we save the new state to <code>localStorage</code> so it persists. The <code>? :</code> bit is a ternary — "if X, return A, else B".</li>
+      </ol>
+
+      <h3>Concepts at play</h3>
+      <ul class="list-disc pl-6 text-sm space-y-1">
+        <li><code>document.getElementById</code> &amp; <code>document.documentElement</code> — finding elements</li>
+        <li><code>classList</code> — the modern way to add/remove/toggle classes</li>
+        <li><code>localStorage</code> — persistent in-browser key/value storage</li>
+        <li><code>addEventListener</code> — responding to user actions</li>
+        <li>Arrow functions <code>() =&gt; {}</code></li>
+        <li>The ternary operator <code>condition ? a : b</code></li>
+        <li><code>window.matchMedia</code> — querying CSS media queries from JS</li>
+      </ul>
+
+      <h3>Try this</h3>
+      <div class="try-box">In Chrome DevTools, go to Application → Local Storage → your site URL. You'll see <code>spm-theme</code> as a key. Edit it manually, reload the page, and watch the theme change. That's persistent storage in action.</div>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-3">Phase 3 — JavaScript (Modern browser APIs section)</a></p>
+    </section>
+
+    <!-- ===================== 4. MOBILE MENU ===================== -->
+    <section id="mobile-menu" class="feature">
+      <span class="pill pill-rose">JavaScript</span><span class="pill pill-gold">CSS</span><span class="pill pill-blue">Phase 3</span>
+      <h2>4. Mobile hamburger menu</h2>
+
+      <h3>What you see</h3>
+      <p>On narrow screens the desktop nav hides and a hamburger button (three lines) appears. Tap it and a menu slides down. Tap a link and it auto-closes.</p>
+
+      <h3>The code</h3>
+<pre class="code"><span class="kw">const</span> menuBtn = document.<span class="fn">getElementById</span>(<span class="st">'menu-btn'</span>);
+<span class="kw">const</span> mobileMenu = document.<span class="fn">getElementById</span>(<span class="st">'mobile-menu'</span>);
+
+menuBtn.<span class="fn">addEventListener</span>(<span class="st">'click'</span>, () =&gt; mobileMenu.classList.<span class="fn">toggle</span>(<span class="st">'open'</span>));
+
+mobileMenu.<span class="fn">querySelectorAll</span>(<span class="st">'a'</span>).<span class="fn">forEach</span>(a =&gt;
+  a.<span class="fn">addEventListener</span>(<span class="st">'click'</span>, () =&gt; mobileMenu.classList.<span class="fn">remove</span>(<span class="st">'open'</span>))
+);</pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li>Grab the hamburger button and the menu container.</li>
+        <li>When the button is clicked, toggle the <code>open</code> class on the menu.</li>
+        <li>The CSS handles the actual animation: <code>#mobile-menu</code> has <code>max-height: 0</code> by default, and <code>.open</code> raises it to 600px with a transition — smooth slide-down.</li>
+        <li><code>querySelectorAll('a').forEach(...)</code> grabs every link inside the menu and adds a click listener to each, so the menu auto-closes after navigation.</li>
+      </ol>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-3">Phase 3 — DOM manipulation</a></p>
+    </section>
+
+    <!-- ===================== 5. BOTTOM NAV ===================== -->
+    <section id="bottom-nav" class="feature">
+      <span class="pill pill-rose">JavaScript</span><span class="pill">IntersectionObserver</span><span class="pill pill-blue">Phase 3</span>
+      <h2>5. Mobile bottom navigation</h2>
+
+      <h3>What you see</h3>
+      <p>On phones, a bar pinned to the bottom of the screen with five icons. The active section glows gold and gets an indicator bar at the top of its tab as you scroll.</p>
+
+      <h3>The code</h3>
+<pre class="code"><span class="kw">const</span> bottomNavItems = document.<span class="fn">querySelectorAll</span>(<span class="st">'.bottom-nav-item'</span>);
+<span class="kw">const</span> bottomNavTargets = { <span class="st">'home'</span>:<span class="st">'home'</span>, <span class="st">'prayer-times'</span>:<span class="st">'prayer-times'</span>,
+                           <span class="st">'events'</span>:<span class="st">'events'</span>, <span class="st">'donate'</span>:<span class="st">'donate'</span>, <span class="st">'contact'</span>:<span class="st">'contact'</span> };
+
+<span class="kw">const</span> bottomNavObs = <span class="kw">new</span> <span class="fn">IntersectionObserver</span>(entries =&gt; {
+  entries.<span class="fn">forEach</span>(e =&gt; {
+    <span class="kw">if</span> (e.isIntersecting &amp;&amp; bottomNavTargets[e.target.id]) {
+      bottomNavItems.<span class="fn">forEach</span>(b =&gt;
+        b.classList.<span class="fn">toggle</span>(<span class="st">'active'</span>, b.dataset.target === e.target.id)
+      );
+    }
+  });
+}, { rootMargin: <span class="st">'-30% 0px -60% 0px'</span> });</pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li><code>IntersectionObserver</code> is a browser API that watches elements and tells you when they enter or leave the viewport. Much more efficient than listening to scroll events.</li>
+        <li><code>rootMargin: '-30% 0px -60% 0px'</code> shrinks the trigger zone so only the section currently in the middle-ish of the screen counts as "active".</li>
+        <li>When a tracked section becomes visible, we loop through every bottom-nav item and add the <code>active</code> class only to the one matching that section.</li>
+        <li><code>b.dataset.target</code> reads the <code>data-target</code> attribute from the HTML (a clean way to associate metadata with elements).</li>
+      </ol>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-3">Phase 3 — Modern browser APIs</a></p>
+    </section>
+
+    <!-- ===================== 6. DATES ===================== -->
+    <section id="dates" class="feature">
+      <span class="pill pill-rose">JavaScript</span><span class="pill">Intl.DateTimeFormat</span><span class="pill pill-blue">Phase 3</span>
+      <h2>6. Gregorian + Hijri date display</h2>
+
+      <h3>What you see</h3>
+      <p>In the top bar: "Tuesday, 13 May 2026" alongside the Hijri equivalent. Updates every minute.</p>
+
+      <h3>The code</h3>
+<pre class="code"><span class="kw">function</span> <span class="fn">updateDates</span>() {
+  <span class="kw">const</span> now = <span class="kw">new</span> <span class="fn">Date</span>();
+
+  document.<span class="fn">getElementById</span>(<span class="st">'gregorian-date'</span>).textContent =
+    now.<span class="fn">toLocaleDateString</span>(<span class="st">'en-GB'</span>, {
+      weekday:<span class="st">'long'</span>, day:<span class="st">'numeric'</span>, month:<span class="st">'long'</span>, year:<span class="st">'numeric'</span>
+    });
+
+  <span class="kw">try</span> {
+    <span class="kw">const</span> hijri = <span class="kw">new</span> Intl.<span class="fn">DateTimeFormat</span>(<span class="st">'en-TN-u-ca-islamic-umalqura'</span>, {
+      day:<span class="st">'numeric'</span>, month:<span class="st">'long'</span>, year:<span class="st">'numeric'</span>
+    }).<span class="fn">format</span>(now);
+    document.<span class="fn">getElementById</span>(<span class="st">'hijri-date'</span>).textContent = hijri;
+  } <span class="kw">catch</span>(e) { <span class="cm">/* old browsers — silently skip */</span> }
+}
+
+<span class="fn">updateDates</span>();
+<span class="fn">setInterval</span>(updateDates, <span class="nm">60_000</span>);</pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li><code>new Date()</code> creates a JS Date object representing right now.</li>
+        <li><code>toLocaleDateString('en-GB', {...})</code> formats it in British English with weekday name, day number, month name, year — "Tuesday, 13 May 2026".</li>
+        <li>The Hijri date uses <code>Intl.DateTimeFormat</code> with the locale string <code>'en-TN-u-ca-islamic-umalqura'</code> — which means "English text, Tunisia regional rules, using the Islamic Umm al-Qura calendar". Browser does the conversion.</li>
+        <li>The <code>try / catch</code> protects against very old browsers that don't support that calendar — they just skip silently.</li>
+        <li><code>setInterval(updateDates, 60_000)</code> runs the function every 60,000ms (1 minute), so the date rolls over at midnight without a reload.</li>
+      </ol>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-3">Phase 3 — <code>Intl.DateTimeFormat</code> + <code>setInterval</code></a></p>
+    </section>
+
+    <!-- ===================== 7. FETCH ===================== -->
+    <section id="fetch" class="feature">
+      <span class="pill pill-rose">JavaScript</span><span class="pill">async/await</span><span class="pill">Fetch API</span><span class="pill pill-blue">Phase 3 + 6</span>
+      <h2>7. Fetching prayer times ⭐</h2>
+
+      <h3>What you see</h3>
+      <p>On page load, six prayer-time cards populate with today's Fajr, Sunrise, Dhuhr, Asr, Maghrib and Isha. The data comes from a public API.</p>
+
+      <h3>The code</h3>
+<pre class="code"><span class="kw">async function</span> <span class="fn">fetchPrayerTimes</span>() {
+  <span class="cm">// 1. Manual override (most accurate)</span>
+  <span class="kw">if</span> (window.MASJID_MANUAL_TIMES) <span class="kw">return</span> window.MASJID_MANUAL_TIMES;
+
+  <span class="cm">// 2. Otherwise hit the Aladhan API</span>
+  <span class="kw">const</span> today = <span class="kw">new</span> <span class="fn">Date</span>();
+  <span class="kw">const</span> dd = <span class="fn">String</span>(today.<span class="fn">getDate</span>()).<span class="fn">padStart</span>(<span class="nm">2</span>, <span class="st">'0'</span>);
+  <span class="kw">const</span> mm = <span class="fn">String</span>(today.<span class="fn">getMonth</span>() + <span class="nm">1</span>).<span class="fn">padStart</span>(<span class="nm">2</span>, <span class="st">'0'</span>);
+  <span class="kw">const</span> yyyy = today.<span class="fn">getFullYear</span>();
+
+  <span class="kw">const</span> url = <span class="st">`https://api.aladhan.com/v1/timings/${dd}-${mm}-${yyyy}`</span> +
+              <span class="st">`?latitude=51.5292&amp;longitude=-0.0686`</span> +
+              <span class="st">`&amp;method=3&amp;school=1`</span>;
+
+  <span class="kw">const</span> r = <span class="kw">await</span> <span class="fn">fetch</span>(url);
+  <span class="kw">const</span> j = <span class="kw">await</span> r.<span class="fn">json</span>();
+  <span class="kw">return</span> j.data.timings;
+}</pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li><code>async</code> marks this function as one that does asynchronous work — it returns a Promise.</li>
+        <li>First we check: did the user paste in manual times? If so, use those — no network call needed.</li>
+        <li>Otherwise we build the URL. Today's date gets split into day/month/year. <code>padStart(2, '0')</code> turns <code>5</code> into <code>"05"</code> so the URL matches the API's format.</li>
+        <li>The URL also includes coordinates (Hackney), calculation method (3 = Muslim World League), and school (1 = Hanafi).</li>
+        <li><code>await fetch(url)</code> pauses execution until the server responds. <code>await</code> can only be used inside <code>async</code> functions.</li>
+        <li><code>await r.json()</code> parses the response body as JSON (converting the text into a JS object).</li>
+        <li>We return <code>j.data.timings</code> — the part of the response that contains the actual prayer times.</li>
+      </ol>
+
+      <h3>Concepts at play</h3>
+      <ul class="list-disc pl-6 text-sm space-y-1">
+        <li>Asynchronous JS — code that waits for slow things (network, files) without freezing the page</li>
+        <li>Promises and the modern <code>async / await</code> syntax</li>
+        <li>The Fetch API — the modern way to call URLs from JS</li>
+        <li>JSON — the universal data format used by virtually every web API</li>
+        <li>Template literals (the <code>`backticks`</code>) with <code>${interpolation}</code></li>
+        <li>String methods: <code>padStart</code>, <code>split</code></li>
+      </ul>
+
+      <h3>Try this</h3>
+      <div class="try-box">Paste this into your browser's address bar: <code>https://api.aladhan.com/v1/timings/13-05-2026?latitude=51.5292&amp;longitude=-0.0686&amp;method=3&amp;school=1</code> — you'll see the raw JSON the API returns. That's exactly what your JS receives.</div>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-3">Phase 3 — Async &amp; APIs section</a> and <a class="roadmap-link" href="learning-roadmap.html#phase-6">Phase 6 — APIs</a></p>
+    </section>
+
+    <!-- ===================== 8. RENDERING CARDS ===================== -->
+    <section id="cards" class="feature">
+      <span class="pill pill-rose">JavaScript</span><span class="pill">DOM</span><span class="pill">templating</span><span class="pill pill-blue">Phase 3</span>
+      <h2>8. Rendering prayer cards</h2>
+
+      <h3>What you see</h3>
+      <p>The six prayer cards in the grid. The "next" prayer card is highlighted in green with white text.</p>
+
+      <h3>The code</h3>
+<pre class="code"><span class="kw">function</span> <span class="fn">renderPrayerCards</span>(times) {
+  <span class="kw">const</span> container = document.<span class="fn">getElementById</span>(<span class="st">'prayer-cards'</span>);
+  container.innerHTML = <span class="st">''</span>;
+  <span class="kw">const</span> next = <span class="fn">nextPrayerInfo</span>(times);
+
+  PRAYERS.<span class="fn">forEach</span>(p =&gt; {
+    <span class="kw">const</span> isNext = next &amp;&amp; next.key === p.key;
+    <span class="kw">const</span> beginTime = times[p.key].<span class="fn">slice</span>(<span class="nm">0</span>, <span class="nm">5</span>);
+
+    <span class="kw">const</span> card = document.<span class="fn">createElement</span>(<span class="st">'div'</span>);
+    card.className = <span class="st">'card prayer-card '</span> + (isNext ? <span class="st">'next'</span> : <span class="st">''</span>);
+    card.innerHTML = <span class="st">`
+      &lt;div class="label"&gt;${p.label}&lt;/div&gt;
+      &lt;div class="time"&gt;${fmt(beginTime)}&lt;/div&gt;
+    `</span>;
+    container.<span class="fn">appendChild</span>(card);
+  });
+}</pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li>Get the container, then empty it (<code>innerHTML = ''</code>) — clears any existing skeleton cards.</li>
+        <li>Figure out which prayer is next so we can highlight it.</li>
+        <li>For each prayer (Fajr, Sunrise, Dhuhr, ...): <code>document.createElement</code> makes a new <code>&lt;div&gt;</code> in memory.</li>
+        <li>Set its class — including <code>next</code> if this is the next prayer (which makes it green via CSS).</li>
+        <li>Set its inner HTML using a template literal — values from <code>p</code> and <code>beginTime</code> get inserted via <code>${...}</code>.</li>
+        <li><code>appendChild</code> attaches the new card to the container, making it appear on the page.</li>
+      </ol>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-3">Phase 3 — DOM manipulation</a></p>
+    </section>
+
+    <!-- ===================== 9. COUNTDOWN ===================== -->
+    <section id="countdown" class="feature">
+      <span class="pill pill-rose">JavaScript</span><span class="pill">setInterval</span><span class="pill">Date math</span><span class="pill pill-blue">Phase 3</span>
+      <h2>9. Live next-prayer countdown ⭐</h2>
+
+      <h3>What you see</h3>
+      <p>The top bar shows "Next: Asr in 02:34:17" — the seconds tick down in real time. When a prayer time passes, it automatically rolls over to the next one.</p>
+
+      <h3>The code</h3>
+<pre class="code"><span class="kw">function</span> <span class="fn">nextPrayerInfo</span>(times) {
+  <span class="kw">const</span> now = <span class="kw">new</span> <span class="fn">Date</span>();
+  <span class="kw">const</span> list = [<span class="st">'Fajr'</span>, <span class="st">'Dhuhr'</span>, <span class="st">'Asr'</span>, <span class="st">'Maghrib'</span>, <span class="st">'Isha'</span>];
+
+  <span class="kw">for</span> (<span class="kw">const</span> k <span class="kw">of</span> list) {
+    <span class="kw">const</span> [h, m] = times[k].<span class="fn">slice</span>(<span class="nm">0</span>, <span class="nm">5</span>).<span class="fn">split</span>(<span class="st">':'</span>).<span class="fn">map</span>(Number);
+    <span class="kw">const</span> d = <span class="kw">new</span> <span class="fn">Date</span>(now);
+    d.<span class="fn">setHours</span>(h, m, <span class="nm">0</span>, <span class="nm">0</span>);
+    <span class="kw">if</span> (d &gt; now) <span class="kw">return</span> { key: k, at: d };
+  }
+  <span class="cm">// All today's prayers passed — next is tomorrow's Fajr</span>
+  <span class="kw">const</span> [h, m] = times.Fajr.<span class="fn">slice</span>(<span class="nm">0</span>, <span class="nm">5</span>).<span class="fn">split</span>(<span class="st">':'</span>).<span class="fn">map</span>(Number);
+  <span class="kw">const</span> d = <span class="kw">new</span> <span class="fn">Date</span>(now);
+  d.<span class="fn">setDate</span>(now.<span class="fn">getDate</span>() + <span class="nm">1</span>);
+  d.<span class="fn">setHours</span>(h, m, <span class="nm">0</span>, <span class="nm">0</span>);
+  <span class="kw">return</span> { key: <span class="st">'Fajr'</span>, at: d };
+}
+
+<span class="kw">function</span> <span class="fn">startCountdown</span>(times) {
+  <span class="kw">function</span> <span class="fn">tick</span>() {
+    <span class="kw">const</span> next = <span class="fn">nextPrayerInfo</span>(times);
+    <span class="kw">const</span> diff = next.at - <span class="kw">new</span> <span class="fn">Date</span>();
+    <span class="kw">if</span> (diff &lt;= <span class="nm">0</span>) { <span class="fn">loadPrayer</span>(); <span class="kw">return</span>; }
+
+    <span class="kw">const</span> h = Math.<span class="fn">floor</span>(diff / <span class="nm">3_600_000</span>);
+    <span class="kw">const</span> m = Math.<span class="fn">floor</span>((diff % <span class="nm">3_600_000</span>) / <span class="nm">60_000</span>);
+    <span class="kw">const</span> s = Math.<span class="fn">floor</span>((diff % <span class="nm">60_000</span>) / <span class="nm">1000</span>);
+
+    document.<span class="fn">getElementById</span>(<span class="st">'next-prayer-name'</span>).textContent = next.key;
+    document.<span class="fn">getElementById</span>(<span class="st">'next-prayer-countdown'</span>).textContent =
+      <span class="st">`${pad(h)}:${pad(m)}:${pad(s)}`</span>;
+  }
+  <span class="fn">tick</span>();
+  <span class="fn">setInterval</span>(tick, <span class="nm">1000</span>);
+}</pre>
+
+      <h3>What's happening — <code>nextPrayerInfo</code></h3>
+      <ol class="steps">
+        <li>Get the current time.</li>
+        <li>Loop through the five obligatory prayers (sunrise is skipped — it's a time but not a prayer to count down to).</li>
+        <li>For each, split the time string <code>"16:30"</code> into <code>[16, 30]</code> and turn those into numbers with <code>.map(Number)</code>.</li>
+        <li>Make a Date for today at that hour/minute.</li>
+        <li>If that Date is still in the future, return it — we've found the next prayer.</li>
+        <li>If we get past the loop, all today's prayers have passed. Build a Date for <em>tomorrow's</em> Fajr instead.</li>
+      </ol>
+
+      <h3>What's happening — <code>startCountdown</code></h3>
+      <ol class="steps">
+        <li><code>diff = next.at - new Date()</code> — subtracting two Dates gives you milliseconds between them.</li>
+        <li>If <code>diff &lt;= 0</code>, a prayer time just passed. Call <code>loadPrayer()</code> to refetch — handles day rollover and gets us a fresh "next prayer".</li>
+        <li>Convert milliseconds to hours / minutes / seconds with division and modulo:
+          <ul class="list-disc pl-6 mt-1">
+            <li>1 hour = 3,600,000 ms</li>
+            <li>1 minute = 60,000 ms</li>
+            <li>1 second = 1,000 ms</li>
+          </ul>
+        </li>
+        <li><code>Math.floor</code> rounds down.</li>
+        <li>Write the values into the page via <code>textContent</code>.</li>
+        <li><code>setInterval(tick, 1000)</code> calls <code>tick()</code> every second — that's what makes the seconds visibly count down.</li>
+      </ol>
+
+      <h3>Concepts at play</h3>
+      <ul class="list-disc pl-6 text-sm space-y-1">
+        <li>JS Date objects and arithmetic</li>
+        <li>Modulo (<code>%</code>) for breaking numbers into units</li>
+        <li><code>setInterval</code> for repeated execution</li>
+        <li>Destructuring (<code>const [h, m] = ...</code>)</li>
+        <li>Array methods: <code>split</code>, <code>map</code></li>
+        <li>Template literals</li>
+      </ul>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-3">Phase 3 — Project: Stopwatch/Countdown timer</a></p>
+    </section>
+
+    <!-- ===================== 10. REVEAL ===================== -->
+    <section id="reveal" class="feature">
+      <span class="pill pill-rose">JavaScript</span><span class="pill">IntersectionObserver</span><span class="pill pill-gold">CSS</span><span class="pill pill-blue">Phase 3</span>
+      <h2>10. Scroll-reveal animation</h2>
+
+      <h3>What you see</h3>
+      <p>As you scroll down, each section fades in and slides up slightly into place — rather than being blunt and just appearing.</p>
+
+      <h3>The code</h3>
+<pre class="code"><span class="cm">/* CSS */</span>
+.reveal { opacity: <span class="nm">0</span>; transform: <span class="fn">translateY</span>(<span class="nm">16px</span>); transition: opacity .7s, transform .7s; }
+.reveal.visible { opacity: <span class="nm">1</span>; transform: <span class="kw">none</span>; }
+
+<span class="cm">/* JS */</span>
+<span class="kw">const</span> observer = <span class="kw">new</span> <span class="fn">IntersectionObserver</span>(entries =&gt; {
+  entries.<span class="fn">forEach</span>(e =&gt; {
+    <span class="kw">if</span> (e.isIntersecting) {
+      e.target.classList.<span class="fn">add</span>(<span class="st">'visible'</span>);
+      observer.<span class="fn">unobserve</span>(e.target);
+    }
+  });
+}, { threshold: <span class="nm">0.1</span> });
+
+document.<span class="fn">querySelectorAll</span>(<span class="st">'.reveal'</span>).<span class="fn">forEach</span>(el =&gt; observer.<span class="fn">observe</span>(el));</pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li>CSS sets every <code>.reveal</code> element to <code>opacity: 0</code> and 16px below where it should be — invisible and slightly down.</li>
+        <li>Adding the class <code>.visible</code> brings them back to <code>opacity: 1</code> and <code>transform: none</code>. The <code>transition</code> animates the change smoothly over 0.7 seconds.</li>
+        <li><code>IntersectionObserver</code> watches elements and fires a callback when their visibility changes.</li>
+        <li>When an element scrolls into view (<code>e.isIntersecting</code> is true), we add the <code>visible</code> class — triggering the CSS animation.</li>
+        <li><code>observer.unobserve(e.target)</code> tells the browser "stop watching this one" — no point listening after it's already revealed.</li>
+        <li><code>threshold: 0.1</code> means "fire when 10% of the element is on screen".</li>
+      </ol>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-3">Phase 3 — <code>IntersectionObserver</code></a></p>
+    </section>
+
+    <!-- ===================== 11. ACTIVE NAV ===================== -->
+    <section id="nav-active" class="feature">
+      <span class="pill pill-rose">JavaScript</span><span class="pill">IntersectionObserver</span><span class="pill pill-blue">Phase 3</span>
+      <h2>11. Active nav link highlight on scroll</h2>
+
+      <h3>What you see</h3>
+      <p>The top nav link of the section you're currently scrolled to is underlined in gold. As you scroll, the highlight follows.</p>
+
+      <h3>The code</h3>
+<pre class="code"><span class="kw">const</span> navObs = <span class="kw">new</span> <span class="fn">IntersectionObserver</span>(entries =&gt; {
+  entries.<span class="fn">forEach</span>(e =&gt; {
+    <span class="kw">if</span> (e.isIntersecting) {
+      navLinks.<span class="fn">forEach</span>(l =&gt;
+        l.classList.<span class="fn">toggle</span>(<span class="st">'active'</span>, l.<span class="fn">getAttribute</span>(<span class="st">'href'</span>) === <span class="st">'#'</span> + e.target.id)
+      );
+    }
+  });
+}, { rootMargin: <span class="st">'-40% 0px -55% 0px'</span> });
+
+sections.<span class="fn">forEach</span>(s =&gt; navObs.<span class="fn">observe</span>(s));</pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li>Same IntersectionObserver pattern as scroll-reveal — different use.</li>
+        <li>The <code>rootMargin</code> trick: <code>-40% 0px -55% 0px</code> shrinks the trigger zone to just the middle ~5% of the viewport. Only the section sitting in that band counts as "active".</li>
+        <li>For each visible section, we toggle the <code>active</code> class on every nav link — true only if its <code>href</code> matches that section's id.</li>
+      </ol>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-3">Phase 3 — DOM + IntersectionObserver</a></p>
+    </section>
+
+    <!-- ===================== 12. TEMPLATING ===================== -->
+    <section id="templating" class="feature">
+      <span class="pill pill-rose">JavaScript</span><span class="pill">array.map</span><span class="pill">templating</span><span class="pill pill-blue">Phase 3</span>
+      <h2>12. Events &amp; Downloads rendering (JS templating)</h2>
+
+      <h3>What you see</h3>
+      <p>The Events and Downloads sections show cards generated from JS arrays. To add/change one, you edit the data — not the HTML.</p>
+
+      <h3>The code</h3>
+<pre class="code">window.MASJID_EVENTS = [
+  { title: <span class="st">"Friday Khutbah"</span>, date: <span class="st">"Recurring"</span>, time: <span class="st">"1:20 PM"</span>, description: <span class="st">"..."</span>, type: <span class="st">"Weekly"</span> },
+  { title: <span class="st">"Tafsir Circle"</span>, date: <span class="st">"Every weekday"</span>, ... },
+  ...
+];
+
+<span class="kw">function</span> <span class="fn">renderEvents</span>() {
+  <span class="kw">const</span> list = document.<span class="fn">getElementById</span>(<span class="st">'events-list'</span>);
+  list.innerHTML = window.MASJID_EVENTS.<span class="fn">map</span>(ev =&gt; <span class="st">`
+    &lt;div class="card"&gt;
+      &lt;span class="type"&gt;${ev.type}&lt;/span&gt;
+      &lt;span class="date"&gt;${ev.date}&lt;/span&gt;
+      &lt;h4&gt;${ev.title}&lt;/h4&gt;
+      &lt;p&gt;${ev.description}&lt;/p&gt;
+    &lt;/div&gt;
+  `</span>).<span class="fn">join</span>(<span class="st">''</span>);
+}</pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li>Define an array of objects — each object is one event.</li>
+        <li><code>.map(ev =&gt; \`...\`)</code> transforms each object into a string of HTML, with values injected via <code>${}</code>.</li>
+        <li><code>.join('')</code> glues all those strings together into one big string.</li>
+        <li>Setting <code>list.innerHTML = ...</code> replaces all the container's children with the new HTML.</li>
+        <li>To add an event: just push a new object into the array. The HTML doesn't change.</li>
+      </ol>
+
+      <h3>Concepts at play</h3>
+      <ul class="list-disc pl-6 text-sm space-y-1">
+        <li>Arrays of objects — fundamental JS data shape</li>
+        <li><code>.map()</code> — transform one array into another</li>
+        <li>Template literals with <code>${}</code> interpolation</li>
+        <li><code>.join('')</code> — array → string</li>
+        <li>The "data drives the view" mental model — a stepping stone to React</li>
+      </ul>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-3">Phase 3 — Array methods + DOM</a></p>
+    </section>
+
+    <!-- ===================== 13. CONTACT FORM ===================== -->
+    <section id="contact-form" class="feature">
+      <span class="pill pill-rose">JavaScript</span><span class="pill">FormData</span><span class="pill">preventDefault</span><span class="pill pill-blue">Phase 3</span>
+      <h2>13. Contact form (mailto)</h2>
+
+      <h3>What you see</h3>
+      <p>Fill in name, email, subject, message → hit Send. The user's email client opens with the message pre-filled, addressed to the masjid.</p>
+
+      <h3>The code</h3>
+<pre class="code">document.<span class="fn">getElementById</span>(<span class="st">'contact-form'</span>).<span class="fn">addEventListener</span>(<span class="st">'submit'</span>, (e) =&gt; {
+  e.<span class="fn">preventDefault</span>();
+  <span class="kw">const</span> f = <span class="kw">new</span> <span class="fn">FormData</span>(e.target);
+  <span class="kw">const</span> subj = <span class="fn">encodeURIComponent</span>(f.<span class="fn">get</span>(<span class="st">'subject'</span>) || <span class="st">'Website enquiry'</span>);
+  <span class="kw">const</span> body = <span class="fn">encodeURIComponent</span>(
+    <span class="st">`From: ${f.get('name')} &lt;${f.get('email')}&gt;\n\n${f.get('message')}`</span>
+  );
+  window.location.href = <span class="st">`mailto:shahporanmasjid24@gmail.com?subject=${subj}&amp;body=${body}`</span>;
+});</pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li>Listen for the form's <code>submit</code> event.</li>
+        <li><code>e.preventDefault()</code> stops the browser from doing its default (which would be: navigate to a server URL and try to send the form there). We're handling it ourselves.</li>
+        <li><code>new FormData(e.target)</code> reads every named field from the form into an object we can query.</li>
+        <li><code>encodeURIComponent</code> escapes any characters that would break a URL (spaces become <code>%20</code>, etc).</li>
+        <li>We build a <code>mailto:</code> link with the subject and body pre-filled.</li>
+        <li>Setting <code>window.location.href</code> to the mailto link tells the OS "open the default email app with this content".</li>
+      </ol>
+
+      <h3>Try this</h3>
+      <div class="try-box">Type <code>mailto:test@example.com?subject=Hello&amp;body=Test</code> into your browser's address bar — the same trick. The browser hands it off to whatever app you've set as your default email client.</div>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-3">Phase 3 — Forms (FormData, preventDefault)</a></p>
+    </section>
+
+    <!-- ===================== 14. NEWSLETTER ===================== -->
+    <section id="newsletter" class="feature">
+      <span class="pill pill-rose">JavaScript</span><span class="pill">DOM</span><span class="pill pill-blue">Phase 3</span>
+      <h2>14. Newsletter form</h2>
+
+      <h3>What you see</h3>
+      <p>Enter your email, hit Subscribe, get a confirmation message. (Currently a stub — nothing is actually saved yet. The README explains how to plug in Mailchimp / Buttondown / Brevo.)</p>
+
+      <h3>The code</h3>
+<pre class="code">document.<span class="fn">getElementById</span>(<span class="st">'newsletter-form'</span>).<span class="fn">addEventListener</span>(<span class="st">'submit'</span>, (e) =&gt; {
+  e.<span class="fn">preventDefault</span>();
+  document.<span class="fn">getElementById</span>(<span class="st">'newsletter-status'</span>).classList.<span class="fn">remove</span>(<span class="st">'hidden'</span>);
+  e.target.<span class="fn">reset</span>();
+});</pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li>Catch the submit event and prevent the browser's default behaviour.</li>
+        <li>Reveal the "Jazākum Allāh khayran" status message by removing its <code>hidden</code> class.</li>
+        <li><code>e.target.reset()</code> clears the form fields.</li>
+        <li>This is the placeholder where you'd add a real <code>fetch()</code> call to whatever newsletter service you connect.</li>
+      </ol>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-3">Phase 3 — Form handling</a></p>
+    </section>
+
+    <!-- ===================== 15. CSS VARS ===================== -->
+    <section id="css-vars" class="feature">
+      <span class="pill pill-gold">CSS</span><span class="pill">custom properties</span><span class="pill pill-blue">Phase 2</span>
+      <h2>15. CSS variables &amp; theming</h2>
+
+      <h3>What you see</h3>
+      <p>The decorative geometric background pattern is one colour in light mode and a different colour in dark mode. It changes without any JavaScript — pure CSS.</p>
+
+      <h3>The code</h3>
+<pre class="code">:root {
+  --pattern-color: <span class="fn">rgba</span>(<span class="nm">14</span>, <span class="nm">92</span>, <span class="nm">59</span>, <span class="nm">0.06</span>);
+}
+.dark {
+  --pattern-color: <span class="fn">rgba</span>(<span class="nm">216</span>, <span class="nm">183</span>, <span class="nm">102</span>, <span class="nm">0.08</span>);
+}
+
+.geo-bg {
+  background-image:
+    <span class="fn">radial-gradient</span>(circle at <span class="nm">20%</span> <span class="nm">10%</span>, <span class="kw">var</span>(--pattern-color) <span class="nm">0 1px</span>, transparent <span class="nm">1.5px</span>),
+    ...
+}</pre>
+
+      <h3>What's happening</h3>
+      <ol class="steps">
+        <li><code>:root</code> means "the &lt;html&gt; tag" — it's where we define global CSS variables.</li>
+        <li><code>--pattern-color</code> is a custom property (CSS variable). Any rule below can read it with <code>var(--pattern-color)</code>.</li>
+        <li>When the <code>dark</code> class is on <code>&lt;html&gt;</code>, the second rule overrides the value to gold instead of green.</li>
+        <li>Because <code>.geo-bg</code> uses <code>var(--pattern-color)</code>, it automatically picks up whichever value is currently active.</li>
+        <li>One variable, two themes, zero JS. This is how the JS dark-mode toggle ends up cascading visually through the whole page.</li>
+      </ol>
+
+      <h3>Where in the roadmap</h3>
+      <p><a class="roadmap-link" href="learning-roadmap.html#phase-2">Phase 2 — CSS custom properties</a></p>
+    </section>
+
+    <!-- ===================== CLOSING ===================== -->
+    <section class="feature">
+      <div class="card">
+        <h2 class="text-2xl">That's the whole site.</h2>
+        <p class="mt-2">Fifteen features, all of which fit inside one HTML file under 1,400 lines. Every concept here is in the roadmap — when you hit a piece you don't recognise, come back to this companion and read the matching section. By Phase 8 (the capstone), you'll be writing this code yourself.</p>
+        <p class="mt-3 font-display text-xl text-masjid-700 dark:text-gold-400">May Allah make the path easy. Bismillah.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // Theme toggle
+  const root = document.documentElement;
+  if (localStorage.getItem('spm-companion-theme') === 'dark' ||
+      (!localStorage.getItem('spm-companion-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    root.classList.add('dark');
+  }
+  function updateThemeIcons() {
+    const isDark = root.classList.contains('dark');
+    document.getElementById('moon').classList.toggle('hidden', isDark);
+    document.getElementById('sun').classList.toggle('hidden', !isDark);
+  }
+  updateThemeIcons();
+  document.getElementById('theme-toggle').addEventListener('click', () => {
+    root.classList.toggle('dark');
+    localStorage.setItem('spm-companion-theme', root.classList.contains('dark') ? 'dark' : 'light');
+    updateThemeIcons();
+  });
+
+  // Sidebar active link
+  const navItems = document.querySelectorAll('.nav-item');
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navItems.forEach(n => n.classList.toggle('active', n.getAttribute('href') === '#' + e.target.id));
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  document.querySelectorAll('section[id]').forEach(s => obs.observe(s));
+</script>
+
+</body>
+</html>

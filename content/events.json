@@ -1,0 +1,10 @@
+{
+  "items": [
+    { "title": "Friday Khutbah",       "date": "Recurring",         "time": "1:20 PM & 2:10 PM", "description": "Two khutbahs every Friday — first at 1:20pm, second at 2:10pm.", "type": "Weekly" },
+    { "title": "Tafsir Circle",        "date": "Every weekday",     "time": "After Isha",        "description": "Informal evening circle in the main prayer hall — open to all.", "type": "Weekly" },
+    { "title": "Ramadan Programme",    "date": "Ramadan 1447 AH",   "time": "Daily",             "description": "Nightly Tarawih, daily Iftar gatherings, last 10 nights I'tikaf.", "type": "Annual" },
+    { "title": "Eid Prayer",           "date": "Eid ul-Fitr / Eid ul-Adha", "time": "Morning",   "description": "Eid prayer details announced closer to the date — follow our YouTube & Facebook.", "type": "Annual" },
+    { "title": "Madrasah Term",        "date": "Mon – Thu",         "time": "After school",      "description": "Children's Qur'an and Islamic studies classes. Contact the office for enrolment.", "type": "Ongoing" },
+    { "title": "Janazah Services",     "date": "On request",        "time": "—",                 "description": "Funeral prayers and bereavement support. Please contact the office.", "type": "On request" }
+  ]
+}

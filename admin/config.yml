@@ -1,0 +1,61 @@
+# ============================================================
+# Decap CMS configuration for Shahporan Masjid
+# Docs: https://decapcms.org/docs/configuration-options/
+# ============================================================
+
+backend:
+  name: git-gateway
+  branch: main           # change to "master" if your default branch is named that
+
+# Where uploaded PDFs/images are stored (relative to the repo root)
+media_folder: "downloads"
+# How those files are referenced from the site
+public_folder: "/downloads"
+
+# Simple publish (no draft/review workflow — easier for non-technical users)
+publish_mode: simple
+
+# Custom logo / site title shown in the admin
+site_url: https://shahporanmasjid.netlify.app    # update once you know the URL
+display_url: https://shahporanmasjid.netlify.app  # same
+logo_url: /admin/logo.png                         # optional — add your logo here later
+
+# ============================================================
+# COLLECTIONS — what the masjid can edit
+# ============================================================
+collections:
+
+  # ---------- Downloads ----------
+  - name: "downloads"
+    label: "📄 Downloads"
+    file: "content/downloads.json"
+    format: "json"
+    description: "Add, edit or remove items in the Downloads section. Click 'Save' when done — the site updates automatically."
+    fields:
+      - label: "Download items"
+        name: "items"
+        widget: "list"
+        summary: "{{fields.title}}"
+        fields:
+          - { label: "Title", name: "title", widget: "string", hint: "e.g. Ramadan Timetable 2026" }
+          - { label: "Description", name: "desc", widget: "string", hint: "Short sentence shown under the title" }
+          - { label: "File (upload PDF)", name: "href", widget: "file", required: false, hint: "Upload the PDF, or paste an external URL below" }
+          - { label: "Type label", name: "type", widget: "select", options: ["PDF", "Image", "Link"], default: "PDF" }
+
+  # ---------- Events / Announcements ----------
+  - name: "events"
+    label: "📅 Events & Announcements"
+    file: "content/events.json"
+    format: "json"
+    description: "Manage the Events section. Use this for Ramadan timings, Eid prayer notices, guest speakers, etc."
+    fields:
+      - label: "Events"
+        name: "items"
+        widget: "list"
+        summary: "{{fields.title}} — {{fields.date}}"
+        fields:
+          - { label: "Title", name: "title", widget: "string", hint: "e.g. Ramadan Programme" }
+          - { label: "Date", name: "date", widget: "string", hint: "e.g. Recurring, Ramadan 1447 AH, Every weekday" }
+          - { label: "Time", name: "time", widget: "string", hint: "e.g. After Isha, 1:20 PM, Daily" }
+          - { label: "Description", name: "description", widget: "text", hint: "1–2 sentences" }
+          - { label: "Type label", name: "type", widget: "select", options: ["Weekly", "Annual", "Ongoing", "Special", "One-off", "On request"], default: "Special" }
