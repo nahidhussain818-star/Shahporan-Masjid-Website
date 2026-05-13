@@ -1,0 +1,21 @@
+# =====================================================
+# .gitignore for the Shahporan Masjid site
+# Files listed here are skipped by Git and never pushed
+# to the public repo / live website.
+# =====================================================
+
+# Internal documentation — kept private, shared via email only
+cms-user-guide.html
+admin-handbook.html
+
+# Draft files (snapshots of in-progress changes — useful locally, not for the live site)
+index-draft-*.html
+admin/config-draft-*.yml
+
+# macOS metadata files
+.DS_Store
+._.DS_Store
+
+# Editor settings
+.vscode/
+.idea/
