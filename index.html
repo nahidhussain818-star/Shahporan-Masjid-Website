@@ -247,6 +247,39 @@
       background: #c9a14a;
       border-radius: 0 0 4px 4px;
     }
+
+    /* ============================================
+       MASJID LOGO — uses an <img> tag with a CSS
+       filter chain that converts black pixels in the
+       PNG to masjid green. Works in every browser
+       including file:// (no mask quirks).
+       Change the filter to recolour.
+       ============================================ */
+    .spm-logo {
+      /* Black → masjid green #0a4a2f */
+      filter: brightness(0) saturate(100%)
+              invert(20%) sepia(57%) saturate(1543%)
+              hue-rotate(116deg) brightness(95%) contrast(106%);
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    .dark .spm-logo {
+      /* Black → gold in dark mode */
+      filter: brightness(0) saturate(100%)
+              invert(81%) sepia(38%) saturate(485%)
+              hue-rotate(2deg) brightness(89%) contrast(86%);
+    }
+    /* Gold variant for the footer (dark background) */
+    .spm-logo-gold {
+      filter: brightness(0) saturate(100%)
+              invert(76%) sepia(34%) saturate(553%)
+              hue-rotate(2deg) brightness(91%) contrast(84%) !important;
+    }
+    /* Plain white/cream variant if ever needed */
+    .spm-logo-light {
+      filter: brightness(0) invert(1) !important;
+    }
   </style>
 
   <!-- Netlify Identity widget — handles the login redirect from email confirmation links -->
@@ -284,12 +317,9 @@
   <!-- ============================================ -->
   <header class="sticky top-0 z-40 backdrop-blur bg-white/85 dark:bg-ink-900/85 border-b border-masjid-600/10">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <a href="#home" class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-full bg-masjid-600 flex items-center justify-center text-white shadow-soft">
-          <svg viewBox="0 0 24 24" class="w-6 h-6" fill="currentColor"><path d="M12 2l2 4h-1v3h2V7h2l-1-2 1-2h-3v2h-2zM4 22V11l8-5 8 5v11h-5v-6h-6v6H4z"/></svg>
-        </div>
-        <div class="leading-tight">
-          <div class="font-display text-lg font-semibold text-masjid-700 dark:text-gold-400">Shahporan Masjid</div>
+      <a href="#home" class="flex items-center gap-3" aria-label="Shahporan Masjid &amp; Islamic Centre — home">
+        <img src="logo.png" alt="Shahporan Masjid" class="spm-logo h-14 md:h-16 w-auto" />
+        <div class="leading-tight hidden sm:block">
           <div class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400">&amp; Islamic Centre</div>
         </div>
       </a>
@@ -892,10 +922,9 @@
   <footer class="bg-ink-900 text-white pt-16 pb-8">
     <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-4 gap-8">
       <div class="md:col-span-2">
-        <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-full bg-gold-500 text-ink-900 flex items-center justify-center font-display font-bold text-xl">SM</div>
+        <div class="flex items-center gap-4">
+          <img src="logo.png" alt="Shahporan Masjid" class="spm-logo spm-logo-gold h-20 w-auto shrink-0" />
           <div>
-            <div class="font-display text-xl text-gold-400">Shahporan Masjid</div>
             <div class="text-xs uppercase tracking-widest text-white/60">&amp; Islamic Centre Trust</div>
           </div>
         </div>
