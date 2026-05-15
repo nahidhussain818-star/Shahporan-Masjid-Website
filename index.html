@@ -1100,12 +1100,41 @@
   }
 
   async function fetchPrayerTimes() {
-    // 1) Manual override
+    // 1) CMS-managed prayer times — the masjid's own published timetable
+    //    (content/prayer-times.json, edited via /admin/). This is the source
+    //    of truth whenever today's date has an entry.
+    try {
+      const r = await fetch('content/prayer-times.json', { cache: 'no-store' });
+      if (r.ok) {
+        const data = await r.json();
+        const entry = (data.days || []).find(d => d.date === todayKey());
+        if (entry && entry.fajr) {
+          return {
+            Fajr:    entry.fajr,
+            Sunrise: entry.sunrise || '',
+            Dhuhr:   entry.dhuhr,
+            Asr:     entry.asr,
+            Maghrib: entry.maghrib,
+            Isha:    entry.isha,
+            jamaah: {
+              Fajr:    entry.jamaah_fajr    || '',
+              Dhuhr:   entry.jamaah_dhuhr   || '',
+              Asr:     entry.jamaah_asr     || '',
+              Maghrib: entry.jamaah_maghrib || '',
+              Isha:    entry.jamaah_isha    || ''
+            }
+          };
+        }
+      }
+    } catch (e) { /* fall through to next source */ }
+
+    // 2) Legacy inline override (kept for backwards compatibility)
     if (window.MASJID_MANUAL_TIMES) return window.MASJID_MANUAL_TIMES;
     if (window.MASJID_MONTHLY_TIMES && window.MASJID_MONTHLY_TIMES[todayKey()]) {
       return window.MASJID_MONTHLY_TIMES[todayKey()];
     }
-    // 2) Aladhan API — UK / Hanafi config
+
+    // 3) Aladhan API fallback — UK / Hanafi config (last resort)
     const today = new Date();
     const dd = String(today.getDate()).padStart(2,'0');
     const mm = String(today.getMonth()+1).padStart(2,'0');

@@ -60,3 +60,32 @@ collections:
               - { label: "Time", name: "time", widget: "string", hint: "e.g. After Isha, 1:20 PM, Daily" }
               - { label: "Description", name: "description", widget: "text", hint: "1–2 sentences" }
               - { label: "Type label", name: "type", widget: "select", options: ["Weekly", "Annual", "Ongoing", "Special", "One-off", "On request"], default: "Special" }
+
+  # ---------- Prayer Times ----------
+  - name: "prayer-times"
+    label: "🕌 Prayer Times"
+    description: "Update the daily prayer times for the current month. The cards on the homepage and the live countdown will use these times. If today isn't in the list, the site falls back to a generic UK calculation (which may be slightly off). Tip — copy each day's times directly from MasjidBox to keep them in sync."
+    files:
+      - name: "prayer-times-data"
+        label: "Prayer Times"
+        file: "content/prayer-times.json"
+        format: "json"
+        fields:
+          - { label: "Month label (e.g. May 2026)", name: "month_label", widget: "string", required: false, hint: "Just for your own reference — doesn't show on the site." }
+          - label: "Days"
+            name: "days"
+            widget: "list"
+            summary: "{{fields.date}} · Fajr {{fields.fajr}} · Maghrib {{fields.maghrib}}"
+            fields:
+              - { label: "Date (YYYY-MM-DD)", name: "date", widget: "string", hint: "Must be exactly this format, e.g. 2026-05-15" }
+              - { label: "Fajr (begins)", name: "fajr", widget: "string", hint: "24-hour HH:MM, e.g. 03:30" }
+              - { label: "Sunrise", name: "sunrise", widget: "string", required: false, hint: "Optional — shown in the cards if filled" }
+              - { label: "Dhuhr (begins)", name: "dhuhr", widget: "string" }
+              - { label: "Asr (begins)", name: "asr", widget: "string" }
+              - { label: "Maghrib (begins)", name: "maghrib", widget: "string" }
+              - { label: "Isha (begins)", name: "isha", widget: "string" }
+              - { label: "Fajr — Jamā'ah", name: "jamaah_fajr", widget: "string", required: false }
+              - { label: "Dhuhr — Jamā'ah", name: "jamaah_dhuhr", widget: "string", required: false }
+              - { label: "Asr — Jamā'ah", name: "jamaah_asr", widget: "string", required: false }
+              - { label: "Maghrib — Jamā'ah", name: "jamaah_maghrib", widget: "string", required: false }
+              - { label: "Isha — Jamā'ah", name: "jamaah_isha", widget: "string", required: false }
