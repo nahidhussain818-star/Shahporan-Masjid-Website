@@ -11,6 +11,7 @@ admin-handbook.html
 # Draft files (snapshots of in-progress changes — useful locally, not for the live site)
 index-draft-*.html
 admin/config-draft-*.yml
+content/*-draft-*.json
 
 # macOS metadata files
 .DS_Store

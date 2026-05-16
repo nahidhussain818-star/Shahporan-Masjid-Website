@@ -2,9 +2,9 @@
   "items": [
     {
       "title": "Monthly Prayer Timetable",
-      "desc": "Current month's Adhan & Jamā'ah times.",
-      "href": "https://shahporanmasjid.uk/prayer-time/",
-      "type": "PDF"
+      "desc": "Full year of Adhan & Jamā'ah times — viewable online.",
+      "href": "prayer-calendar.html",
+      "type": "Link"
     },
     {
       "title": "Ramadan Timetable 2026",
