@@ -324,9 +324,10 @@
         </div>
       </a>
 
-      <nav class="hidden lg:flex items-center gap-8 text-sm font-medium">
+      <nav class="hidden lg:flex items-center gap-6 text-sm font-medium">
         <a href="#home" class="nav-link">Home</a>
         <a href="#prayer-times" class="nav-link">Prayer Times</a>
+        <a href="#khutbah-live" class="nav-link">Khutbah Live</a>
         <a href="#about" class="nav-link">About</a>
         <a href="#madrasah" class="nav-link">Madrasah</a>
         <a href="#activities" class="nav-link">Activities</a>
@@ -348,6 +349,7 @@
       <div class="max-w-7xl mx-auto px-4 py-2 flex flex-col text-sm">
         <a href="#home" class="py-2.5 border-b border-masjid-600/5">Home</a>
         <a href="#prayer-times" class="py-2.5 border-b border-masjid-600/5">Prayer Times</a>
+        <a href="#khutbah-live" class="py-2.5 border-b border-masjid-600/5">Khutbah Live</a>
         <a href="#about" class="py-2.5 border-b border-masjid-600/5">About</a>
         <a href="#madrasah" class="py-2.5 border-b border-masjid-600/5">Madrasah</a>
         <a href="#activities" class="py-2.5 border-b border-masjid-600/5">Activities</a>
@@ -486,6 +488,42 @@
             widget script in place of this block (see the HTML comment).
           </p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- FRIDAY KHUTBAH — LIVE STREAM                  -->
+  <!-- ============================================ -->
+  <section id="khutbah-live" class="py-20 bg-masjid-50/60 dark:bg-ink-800/40">
+    <div class="max-w-5xl mx-auto px-4">
+      <div class="text-center reveal">
+        <p class="eyebrow">Watch &amp; Listen</p>
+        <h2 class="section-title text-masjid-800 dark:text-white mt-2">Friday Khutbah — Live</h2>
+        <p class="mt-3 text-ink-700 dark:text-gray-300 max-w-2xl mx-auto">
+          The Jumu'ah khutbah is streamed live on our YouTube channel every Friday.
+          Unable to join us in person? You are welcome to watch online, in shā’ Allāh.
+        </p>
+        <div class="gold-divider mt-6 mx-auto max-w-xs"></div>
+      </div>
+
+      <div class="mt-10 reveal">
+        <!-- Player: shows a poster until the visitor clicks play, then loads the live embed -->
+        <div id="khutbah-player" class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-ink-900">
+          <div id="khutbah-poster" class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 bg-gradient-to-br from-masjid-800 to-masjid-900">
+            <span class="flex items-center justify-center w-16 h-16 rounded-full bg-white/15 ring-1 ring-white/25">
+              <svg class="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+            <p class="text-white font-display text-xl md:text-2xl mt-5">Friday Khutbah Live Stream</p>
+            <p class="text-gray-300 text-sm mt-1">Streamed live every Friday, after the Dhuhr adhān</p>
+            <button id="khutbah-play" type="button" class="btn-gold mt-5">Watch the live stream</button>
+          </div>
+        </div>
+        <p class="text-center text-sm text-ink-700 dark:text-gray-400 mt-4">
+          Not live at the moment? Browse past khutbahs, tafsīr and recordings on our
+          <a href="https://www.youtube.com/@shahporanmasjid/streams" target="_blank" rel="noopener"
+             class="text-masjid-700 dark:text-gold-400 font-medium underline">YouTube channel</a>.
+        </p>
       </div>
     </div>
   </section>
@@ -1375,6 +1413,28 @@
     const el = document.getElementById(id);
     if (el) bottomNavObs.observe(el);
   });
+
+  /* ============================================================
+     FRIDAY KHUTBAH — load the YouTube live embed on click.
+     We don't auto-load YouTube (keeps the page fast & private).
+     The "live_stream?channel=" URL always shows whatever is
+     currently live on the channel — no link to update each week.
+     ============================================================ */
+  const khutbahPlay = document.getElementById('khutbah-play');
+  if (khutbahPlay) {
+    khutbahPlay.addEventListener('click', () => {
+      const player = document.getElementById('khutbah-player');
+      const iframe = document.createElement('iframe');
+      iframe.className = 'absolute inset-0 w-full h-full';
+      iframe.src = 'https://www.youtube.com/embed/live_stream?channel=UC7yyTIVhT-pBBSycUiJOYjQ&autoplay=1';
+      iframe.title = 'Shahporan Masjid — Friday Khutbah Live';
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture');
+      iframe.setAttribute('allowfullscreen', '');
+      player.innerHTML = '';
+      player.appendChild(iframe);
+    });
+  }
   </script>
 
   <!-- ============================================ -->
