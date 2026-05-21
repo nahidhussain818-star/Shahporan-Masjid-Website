@@ -510,14 +510,20 @@
       <div class="mt-10 reveal">
         <!-- Player: shows a poster until the visitor clicks play, then loads the live embed -->
         <div id="khutbah-player" class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-ink-900">
-          <div id="khutbah-poster" class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 bg-gradient-to-br from-masjid-800 to-masjid-900">
-            <span class="flex items-center justify-center w-16 h-16 rounded-full bg-white/15 ring-1 ring-white/25">
-              <svg class="w-7 h-7 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <!-- The whole poster is one button — clicking anywhere (the play circle included) loads the stream -->
+          <button id="khutbah-poster" type="button" aria-label="Watch the Friday khutbah live stream"
+                  class="group absolute inset-0 flex flex-col items-center justify-center text-center px-6 cursor-pointer
+                         bg-gradient-to-br from-masjid-800 to-masjid-900 transition-colors duration-300
+                         hover:from-masjid-700 hover:to-masjid-800
+                         focus:outline-none focus-visible:ring-4 focus-visible:ring-gold-400/60 focus-visible:ring-inset">
+            <span class="flex items-center justify-center w-16 h-16 rounded-full bg-white/15 ring-1 ring-white/25
+                         transition-transform duration-300 group-hover:scale-110">
+              <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M9.5 7v10l7.5-5z"/></svg>
             </span>
             <p class="text-white font-display text-xl md:text-2xl mt-5">Friday Khutbah Live Stream</p>
             <p class="text-gray-300 text-sm mt-1">Streamed live every Friday, after the Dhuhr adhān</p>
-            <button id="khutbah-play" type="button" class="btn-gold mt-5">Watch the live stream</button>
-          </div>
+            <span class="btn-gold mt-5">Watch the live stream</span>
+          </button>
         </div>
         <p class="text-center text-sm text-ink-700 dark:text-gray-400 mt-4">
           Not live at the moment? Browse past khutbahs, tafsīr and recordings on our
@@ -1420,7 +1426,7 @@
      The "live_stream?channel=" URL always shows whatever is
      currently live on the channel — no link to update each week.
      ============================================================ */
-  const khutbahPlay = document.getElementById('khutbah-play');
+  const khutbahPlay = document.getElementById('khutbah-poster');
   if (khutbahPlay) {
     khutbahPlay.addEventListener('click', () => {
       const player = document.getElementById('khutbah-player');
