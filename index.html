@@ -360,6 +360,12 @@
     .spm-pinned-tag{display:inline-flex;align-items:center;gap:.3rem;font-size:.66rem;font-weight:700;
       text-transform:uppercase;letter-spacing:.08em;color:#a98432}
 
+    /* admin: submission review cards */
+    .spm-sub{border:1px solid #cdd8d2;border-radius:.8rem;padding:.85rem .9rem;margin-bottom:.8rem}
+    .dark .spm-sub{border-color:#3a514a}
+    .spm-sub:last-child{margin-bottom:0}
+    .spm-sub-summary ul{margin:0}
+
     /* text-formatting tools (bold / gold) inside the edit panel */
     .spm-fmt{display:flex;gap:.4rem;margin-bottom:.45rem}
     .spm-fmt-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.32rem .62rem;border-radius:.45rem;
@@ -1834,6 +1840,11 @@
         E.user=user;
         const nm=(user&&user.user_metadata&&user.user_metadata.full_name)||(user&&user.email)||'staff';
         const us=$('spm-user'); if(us) us.textContent=nm;
+        E.isAdmin = (user&&user.email==='Preview') ||
+          !!(user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf('admin')>-1);
+        const rv=$('spm-review');
+        if(rv) rv.style.display = E.isAdmin ? 'inline-flex' : 'none';
+        if(E.isAdmin) E.loadReviewCount();
         try{
           const raw=sessionStorage.getItem('spm_pending');
           if(raw){ const p=JSON.parse(raw);
@@ -1945,6 +1956,131 @@
       });
     }
 
+    /* ============================================================
+       ADMIN — review & approve submissions, right on the site.
+       Admins (Netlify Identity users with the "admin" role) can
+       approve or reject staff submissions without ever touching
+       GitHub. Approving merges the change; the site rebuilds.
+       ============================================================ */
+    function reviewHeaders(token){ return { Authorization:'Bearer '+token, 'Content-Type':'application/json' }; }
+    function spmDecodeB64(s){
+      try{ return decodeURIComponent(escape(atob((s||'').replace(/\s/g,'')))); }catch(e){ return ''; }
+    }
+    async function ghJson(path,ref,H){
+      try{
+        const r=await fetch('/.netlify/git/github/contents/'+path+'?ref='+encodeURIComponent(ref),{headers:H});
+        if(!r.ok) return null;
+        return JSON.parse(spmDecodeB64((await r.json()).content));
+      }catch(e){ return null; }
+    }
+    async function summariseBranch(branch,H){
+      const out=[];
+      const files=[['content/announcements.json','announcement'],['content/events.json','event'],['content/posters.json','poster']];
+      for(let i=0;i<files.length;i++){
+        const newD=await ghJson(files[i][0],branch,H);
+        if(!newD) continue;
+        const oldD=await ghJson(files[i][0],'main',H);
+        const label=files[i][1];
+        const oldI=(oldD&&oldD.items)||[], newI=newD.items||[];
+        const om={}, nm={};
+        oldI.forEach(function(x){ om[x.id]=JSON.stringify(x); });
+        newI.forEach(function(x){ nm[x.id]=JSON.stringify(x); });
+        newI.forEach(function(x){
+          if(om[x.id]===undefined) out.push('Added '+label+': “'+(x.title||'untitled')+'”');
+          else if(om[x.id]!==nm[x.id]) out.push('Edited '+label+': “'+(x.title||'untitled')+'”');
+        });
+        oldI.forEach(function(x){ if(nm[x.id]===undefined) out.push('Removed '+label+': “'+(x.title||'untitled')+'”'); });
+      }
+      return out;
+    }
+    async function listSubmissions(H){
+      const r=await fetch('/.netlify/git/github/pulls?state=open&per_page=50',{headers:H});
+      if(!r.ok) throw new Error('list '+r.status);
+      return (await r.json()).filter(function(p){ return p.head && /staff-edits-/.test(p.head.ref||''); });
+    }
+    function reviewOffline(){
+      return '<p class="text-sm text-ink-700 dark:text-gray-300">Submissions can only be reviewed on the '+
+        'live website. This looks like an offline preview, so there is nothing to load here.</p>';
+    }
+    function afterReview(){
+      const left=document.querySelectorAll('#spm-panel-body .spm-sub').length;
+      const c=$('spm-review-count'); if(c){ c.textContent=left; c.hidden=(left===0); }
+      if(!left) $('spm-panel-body').innerHTML='<p class="text-sm text-ink-700 dark:text-gray-400">All done — there are no submissions left to review.</p>';
+    }
+    E.loadReviewCount=async function(){
+      try{
+        const ni=window.netlifyIdentity, u=ni&&ni.currentUser&&ni.currentUser();
+        if(!u) return;
+        const prs=await listSubmissions(reviewHeaders(await u.jwt()));
+        const c=$('spm-review-count'); if(c){ c.textContent=prs.length; c.hidden=(prs.length===0); }
+      }catch(e){}
+    };
+    E.openReview=async function(){
+      $('spm-panel-title').textContent='Submissions to review';
+      $('spm-panel-foot').style.display='none';
+      $('spm-panel-body').innerHTML='<p class="text-sm text-ink-700 dark:text-gray-300">Loading…</p>';
+      openOverlay();
+      const ni=window.netlifyIdentity, u=ni&&ni.currentUser&&ni.currentUser();
+      if(!u){ $('spm-panel-body').innerHTML=reviewOffline(); return; }
+      let H;
+      try{ H=reviewHeaders(await u.jwt()); }
+      catch(e){ $('spm-panel-body').innerHTML=reviewOffline(); return; }
+      let prs;
+      try{ prs=await listSubmissions(H); }
+      catch(e){ $('spm-panel-body').innerHTML=reviewOffline(); return; }
+      const c=$('spm-review-count'); if(c){ c.textContent=prs.length; c.hidden=(prs.length===0); }
+      if(!prs.length){
+        $('spm-panel-body').innerHTML='<p class="text-sm text-ink-700 dark:text-gray-400">No submissions are waiting for review.</p>';
+        return;
+      }
+      $('spm-panel-body').innerHTML=prs.map(function(pr){
+        const who=((pr.body||'').split(' by ')[1]||'').split('.')[0]||'a staff member';
+        const when=new Date(pr.created_at).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+        return '<div class="spm-sub" data-pr="'+pr.number+'" data-branch="'+esc(pr.head.ref)+'">'+
+          '<div class="text-xs text-ink-700 dark:text-gray-400">'+esc(when)+' · by '+esc(who)+'</div>'+
+          '<div class="font-display text-lg text-masjid-800 dark:text-white mt-0.5">'+esc(pr.title)+'</div>'+
+          '<div class="spm-sub-summary text-sm mt-2 text-ink-700 dark:text-gray-300">Loading changes…</div>'+
+          '<div class="flex gap-2 mt-3">'+
+            '<button type="button" class="btn-primary text-sm grow justify-center spm-approve">Approve &amp; publish</button>'+
+            '<button type="button" class="btn-outline text-sm spm-reject">Reject</button>'+
+          '</div>'+
+        '</div>';
+      }).join('');
+      prs.forEach(function(pr){
+        summariseBranch(pr.head.ref,H).then(function(lines){
+          const el=document.querySelector('.spm-sub[data-pr="'+pr.number+'"] .spm-sub-summary');
+          if(!el) return;
+          el.innerHTML = lines.length
+            ? '<ul class="list-disc pl-5 space-y-1">'+lines.map(function(l){ return '<li>'+esc(l)+'</li>'; }).join('')+'</ul>'
+            : 'Content was updated.';
+        });
+      });
+      document.querySelectorAll('#spm-panel-body .spm-sub').forEach(function(card){
+        const pr=card.dataset.pr, branch=card.dataset.branch;
+        function busy(on){ card.querySelectorAll('button').forEach(function(b){ b.disabled=on; }); }
+        card.querySelector('.spm-approve').addEventListener('click',async function(){
+          if(!confirm('Approve and publish this submission?\n\nIt will appear on the website within about a minute.')) return;
+          busy(true);
+          try{
+            const r=await fetch('/.netlify/git/github/pulls/'+pr+'/merge',{method:'PUT',headers:H,body:JSON.stringify({})});
+            if(!r.ok) throw new Error('merge '+r.status);
+            try{ await fetch('/.netlify/git/github/git/refs/heads/'+branch,{method:'DELETE',headers:H}); }catch(e){}
+            card.remove(); toast('Approved and published ✓'); afterReview();
+          }catch(e){ console.error(e); busy(false); toast('Sorry — that could not be published. Please try again.',true); }
+        });
+        card.querySelector('.spm-reject').addEventListener('click',async function(){
+          if(!confirm('Reject this submission? The proposed changes will be discarded.')) return;
+          busy(true);
+          try{
+            const r=await fetch('/.netlify/git/github/pulls/'+pr,{method:'PATCH',headers:H,body:JSON.stringify({state:'closed'})});
+            if(!r.ok) throw new Error('close '+r.status);
+            try{ await fetch('/.netlify/git/github/git/refs/heads/'+branch,{method:'DELETE',headers:H}); }catch(e){}
+            card.remove(); toast('Submission rejected.'); afterReview();
+          }catch(e){ console.error(e); busy(false); toast('Sorry — that could not be done. Please try again.',true); }
+        });
+      });
+    };
+
     function init(){
       document.addEventListener('click',function(e){
         const add=e.target.closest('.spm-add');
@@ -1974,6 +2110,8 @@
       $('spm-exit').addEventListener('click',E.exit);
       $('spm-discard').addEventListener('click',E.discard);
       $('spm-submit').addEventListener('click',E.submit);
+      const reviewBtn=$('spm-review');
+      if(reviewBtn) reviewBtn.addEventListener('click',E.openReview);
       const bell=$('notice-bell');
       if(bell) bell.addEventListener('click',function(){
         const ev=document.getElementById('events');
@@ -2091,6 +2229,9 @@
       <span class="spm-tb-dot"></span>
       <span>Editing as <strong id="spm-user">staff</strong></span>
     </span>
+    <button class="spm-tb-btn" id="spm-review" type="button" style="display:none">
+      Review<span class="spm-count" id="spm-review-count" hidden>0</span>
+    </button>
     <button class="spm-tb-btn" id="spm-discard" type="button">Discard changes</button>
     <button class="spm-tb-btn spm-tb-primary" id="spm-submit" type="button" disabled>
       <span id="spm-submit-label">Submit for review</span><span class="spm-count" id="spm-count" hidden>0</span>
