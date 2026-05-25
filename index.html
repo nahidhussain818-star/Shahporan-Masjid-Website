@@ -1572,10 +1572,15 @@
       .then(function(d){ window.SPM[key]=ensureIds(JSON.parse(JSON.stringify(d.items||fallback)),prefix); })
       .catch(function(){ window.SPM[key]=ensureIds(JSON.parse(JSON.stringify(fallback)),prefix); });
   }
+  window.SPM_ADMINS = [];
   window.SPM_READY = Promise.all([
     spmLoad('content/announcements.json',ANNOUNCEMENTS_FALLBACK,'announcements','a'),
     spmLoad('content/events.json',EVENTS_FALLBACK,'events','e'),
-    spmLoad('content/posters.json',POSTERS_FALLBACK,'posters','p')
+    spmLoad('content/posters.json',POSTERS_FALLBACK,'posters','p'),
+    fetch('content/admins.json',{cache:'no-store'})
+      .then(function(r){ return r.ok?r.json():null; })
+      .then(function(d){ if(d&&Array.isArray(d.admins)) window.SPM_ADMINS=d.admins; })
+      .catch(function(){})
   ]).then(function(){
     window.SPM_ORIGINAL = JSON.stringify(spmSnapshot());
     spmRenderAll();
@@ -2100,23 +2105,34 @@
       const rv=$('spm-review');
       if(rv) rv.style.display = on ? 'inline-flex' : 'none';
     }
+    /* hash an email so admin addresses are never stored in plain text */
+    async function spmSha256(str){
+      const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+      return Array.prototype.map.call(new Uint8Array(buf),function(b){ return ('0'+b.toString(16)).slice(-2); }).join('');
+    }
+    async function spmEmailIsAdmin(email){
+      try{
+        if(!email || !window.crypto || !crypto.subtle) return false;
+        const h=await spmSha256(String(email).trim().toLowerCase());
+        return (window.SPM_ADMINS||[]).indexOf(h)>-1;
+      }catch(e){ return false; }
+    }
     E.applyAdmin=function(user){
       if(!user){ E.isAdmin=false; spmShowReview(false); return; }
+      function grant(){ if(!E.isAdmin){ E.isAdmin=true; spmShowReview(true); E.loadReviewCount(); } }
       if(user.email==='Preview'){ E.isAdmin=true; spmShowReview(true); return; }
-      /* quick check from the cached account + its stored token */
+      E.isAdmin=false; spmShowReview(false);
+      /* (a) email allowlist — the reliable check */
+      spmEmailIsAdmin(user.email).then(function(ok){ if(ok) grant(); });
+      /* (b) Netlify role — kept as a bonus path if it ever populates */
       let roles=spmRolesFrom(user);
       if(user.token && user.token.access_token){
         roles=roles.concat(spmRolesFrom(spmDecodeJWT(user.token.access_token)));
       }
-      E.isAdmin=spmHasAdmin(roles);
-      spmShowReview(E.isAdmin);
-      if(E.isAdmin) E.loadReviewCount();
-      /* authoritative re-check using a freshly refreshed token */
+      if(spmHasAdmin(roles)) grant();
       if(user.jwt){
         user.jwt().then(function(fresh){
-          if(spmHasAdmin(spmRolesFrom(spmDecodeJWT(fresh))) && !E.isAdmin){
-            E.isAdmin=true; spmShowReview(true); E.loadReviewCount();
-          }
+          if(spmHasAdmin(spmRolesFrom(spmDecodeJWT(fresh)))) grant();
         }).catch(function(){});
       }
     };
@@ -2125,17 +2141,21 @@
       const ni=window.netlifyIdentity;
       const u=ni&&ni.currentUser&&ni.currentUser();
       if(!u){ alert('Account check\n\nYou are not signed in.\n\nSign in first (Staff login in the footer), then reload the page with #whoami still on the end of the address.'); return; }
-      function report(roles,src){
-        alert('Account check\n\nSigned in as:  '+(u.email||'(unknown)')+
-          '\nRoles the site can see:  '+(roles.length?roles.join(', '):'(none found)')+
-          '\nReview / approve access:  '+(spmHasAdmin(roles)?'YES':'NO')+
-          '\n\nIf this says NO, the role on your Netlify account is not exactly "admin". '+
-          'Send this message to whoever set it up.\n(checked via '+src+')');
-      }
-      if(u.jwt){
-        u.jwt().then(function(fresh){ report(spmRolesFrom(spmDecodeJWT(fresh)),'live token'); })
-               .catch(function(){ report(spmRolesFrom(u),'saved account'); });
-      } else report(spmRolesFrom(u),'saved account');
+      const rolesP = u.jwt
+        ? u.jwt().then(function(t){ return spmRolesFrom(spmDecodeJWT(t)); }).catch(function(){ return spmRolesFrom(u); })
+        : Promise.resolve(spmRolesFrom(u));
+      Promise.all([rolesP, spmEmailIsAdmin(u.email)]).then(function(res){
+        const roles=res[0], emailOk=res[1];
+        const admin = emailOk || spmHasAdmin(roles) || u.email==='Preview';
+        alert('Account check\n\n'+
+          'Signed in as:  '+(u.email||'(unknown)')+'\n'+
+          'Recognised as an approved admin:  '+(emailOk?'YES':'NO')+'\n'+
+          'Netlify role found:  '+(roles.length?roles.join(', '):'(none)')+'\n'+
+          'Review / approve access:  '+(admin?'YES':'NO')+'\n\n'+
+          (admin
+            ? 'All good — sign in and the Review button will be in the editing toolbar.'
+            : 'Your email is not on the approved admin list yet. Send this message to whoever set up the site so they can add it.'));
+      });
     }
 
     function init(){

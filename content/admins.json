@@ -1,0 +1,6 @@
+{
+  "_comment": "SHA-256 hashes of the email addresses allowed to review & approve submissions. Emails are hashed so they are not exposed in the public site. To add an admin, add the SHA-256 hash of their lowercased email address.",
+  "admins": [
+    "57387da96f5a0554e964e35a6b943a2a477ed474f0e07256cc46474008dcada1"
+  ]
+}
