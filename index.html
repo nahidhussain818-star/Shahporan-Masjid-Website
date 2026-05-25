@@ -280,6 +280,129 @@
     .spm-logo-light {
       filter: brightness(0) invert(1) !important;
     }
+
+    /* ============================================================
+       IN-PAGE EDITOR — staff editing toolbar, handles & panel
+       ============================================================ */
+    #spm-toolbar{
+      position:fixed;bottom:1rem;left:50%;z-index:120;
+      transform:translateX(-50%) translateY(180%);
+      display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;justify-content:center;
+      padding:.5rem .65rem;border-radius:1.4rem;max-width:94vw;
+      background:linear-gradient(90deg,#073522,#0a4a2f);color:#fff;
+      box-shadow:0 14px 38px -10px rgba(0,0,0,.6);
+      font-size:.86rem;opacity:0;visibility:hidden;pointer-events:none;
+      transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .35s,visibility .35s;
+    }
+    body.spm-editing #spm-toolbar{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible;pointer-events:auto}
+    body.spm-editing #bottom-nav{display:none}
+    .spm-tb-label{display:flex;align-items:center;gap:.45rem;padding:0 .55rem;white-space:nowrap}
+    .spm-tb-dot{width:8px;height:8px;border-radius:9999px;background:#d8b766;box-shadow:0 0 0 4px rgba(216,183,102,.25)}
+    .spm-tb-btn{
+      padding:.42rem .85rem;border-radius:9999px;font-weight:600;font-size:.8rem;cursor:pointer;
+      border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:#fff;transition:.15s;white-space:nowrap;
+    }
+    .spm-tb-btn:hover{background:rgba(255,255,255,.2)}
+    .spm-tb-primary{background:#d8b766;color:#073522;border-color:#d8b766}
+    .spm-tb-primary:hover:not(:disabled){background:#e7cd8a}
+    .spm-tb-primary:disabled{opacity:.4;cursor:not-allowed}
+    .spm-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;
+      padding:0 5px;margin-left:.35rem;border-radius:9999px;background:#073522;color:#d8b766;font-size:.7rem;font-weight:700}
+
+    /* card edit handles */
+    .spm-editable{position:relative}
+    body.spm-editing .spm-editable{outline:1.5px dashed rgba(168,132,50,.55);outline-offset:4px;border-radius:1rem}
+    .spm-handle{display:none;position:absolute;top:.55rem;right:.55rem;gap:.3rem;z-index:9}
+    body.spm-editing .spm-handle{display:flex}
+    .spm-hbtn{width:33px;height:33px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+      background:#073522;color:#fff;border:1px solid rgba(255,255,255,.22);cursor:pointer;
+      box-shadow:0 3px 10px rgba(0,0,0,.3);transition:.15s}
+    .spm-hbtn:hover{background:#0a4a2f;transform:translateY(-1px)}
+    .spm-hbtn.del:hover{background:#b3261e}
+    .spm-hbtn svg{width:16px;height:16px}
+    .spm-addtile{display:none}
+    body.spm-editing .spm-addtile{display:flex}
+
+    /* slide-over panel */
+    #spm-scrim{position:fixed;inset:0;background:rgba(7,30,20,.55);z-index:130;opacity:0;
+      pointer-events:none;transition:opacity .25s}
+    #spm-scrim.open{opacity:1;pointer-events:auto}
+    #spm-panel{position:fixed;top:0;right:0;height:100%;width:min(430px,93vw);z-index:140;
+      background:#fff;color:#0c1a14;transform:translateX(106%);transition:transform .32s cubic-bezier(.2,.8,.2,1);
+      display:flex;flex-direction:column;box-shadow:-14px 0 46px -14px rgba(0,0,0,.45)}
+    #spm-panel.open{transform:translateX(0)}
+    .dark #spm-panel{background:#1a2d24;color:#fff}
+    .spm-field{margin-bottom:1rem}
+    .spm-field label{display:block;font-size:.76rem;font-weight:700;letter-spacing:.02em;
+      text-transform:uppercase;margin-bottom:.35rem;color:#27403a}
+    .dark .spm-field label{color:#d8b766}
+    .spm-field .hint{font-size:.74rem;font-weight:400;text-transform:none;letter-spacing:0;color:#6b7d76;margin-top:.3rem}
+    .spm-input{width:100%;padding:.62rem .72rem;border:1px solid #cdd8d2;border-radius:.6rem;
+      font-size:.92rem;background:#fff;color:#0c1a14;font-family:inherit}
+    textarea.spm-input{min-height:90px;resize:vertical}
+    .dark .spm-input{background:#0c1a14;color:#fff;border-color:#3a514a}
+    .spm-input:focus{outline:2px solid #d8b766;border-color:#d8b766}
+    .spm-field label.spm-check{display:flex;align-items:center;gap:.7rem;cursor:pointer}
+    .spm-check input{width:19px;height:19px;flex:none;accent-color:#0e5c3b;margin:0}
+    .spm-check span{display:block}
+    .spm-drop{border:2px dashed #cdd8d2;border-radius:.7rem;padding:1.1rem;text-align:center;
+      cursor:pointer;font-size:.84rem;color:#27403a;transition:.15s}
+    .dark .spm-drop{border-color:#3a514a;color:#cfd9d4}
+    .spm-drop.drag{border-color:#d8b766;background:rgba(216,183,102,.1)}
+    .spm-drop img{max-height:170px;margin:0 auto .5rem;border-radius:.5rem}
+    #spm-toast{position:fixed;bottom:5.2rem;left:50%;transform:translateX(-50%) translateY(12px);
+      z-index:150;background:#073522;color:#fff;padding:.7rem 1.15rem;border-radius:9999px;
+      font-size:.85rem;box-shadow:0 10px 28px rgba(0,0,0,.35);max-width:90vw;text-align:center;
+      opacity:0;visibility:hidden;pointer-events:none;
+      transition:transform .3s,opacity .3s,visibility .3s}
+    #spm-toast.show{transform:translateX(-50%) translateY(0);opacity:1;visibility:visible}
+    #spm-toast.err{background:#8a1f17}
+    .spm-pinned-tag{display:inline-flex;align-items:center;gap:.3rem;font-size:.66rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:.08em;color:#a98432}
+
+    /* text-formatting tools (bold / gold) inside the edit panel */
+    .spm-fmt{display:flex;gap:.4rem;margin-bottom:.45rem}
+    .spm-fmt-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.32rem .62rem;border-radius:.45rem;
+      border:1px solid #cdd8d2;background:#f1f7f3;color:#27403a;font-size:.76rem;font-weight:600;
+      cursor:pointer;text-transform:none;letter-spacing:0}
+    .spm-fmt-btn:hover{border-color:#d8b766;background:#fff}
+    .dark .spm-fmt-btn{background:#0c1a14;color:#fff;border-color:#3a514a}
+    .dark .spm-fmt-btn:hover{background:#13241c}
+    .spm-fmt-gold{color:#a98432;font-weight:800}
+    .spm-prev-label{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+      color:#6b7d76;margin:.55rem 0 .22rem}
+    .spm-preview{border:1px dashed #cdd8d2;border-radius:.5rem;padding:.55rem .7rem;font-size:.9rem;
+      line-height:1.45;color:#27403a;min-height:2.2rem;background:#fafcfb;white-space:pre-wrap}
+    .dark .spm-preview{background:#0c1a14;color:#e8efeb;border-color:#3a514a}
+
+    /* brief highlight when jumping to the announcements from the notice bell */
+    @keyframes spmFlash{0%,100%{box-shadow:0 0 0 0 rgba(216,183,102,0)}
+      28%,58%{box-shadow:0 0 0 7px rgba(216,183,102,.4)}}
+    .spm-flash{animation:spmFlash 1.6s ease;border-radius:1rem}
+
+    /* floating notice indicator (replaces the old header bell) */
+    #notice-bell{
+      position:fixed;right:1.25rem;bottom:5.5rem;z-index:90;
+      align-items:center;gap:.5rem;font-family:inherit;
+      padding:.58rem .85rem .58rem .72rem;border-radius:9999px;
+      background:#fff;color:#0a4a2f;border:1px solid rgba(14,92,59,.14);
+      box-shadow:0 12px 30px -8px rgba(7,30,20,.4);
+      font-size:.84rem;font-weight:600;cursor:pointer;
+      transition:transform .18s ease,box-shadow .18s ease;
+      animation:spmNoticeIn .4s ease both;
+    }
+    #notice-bell:hover{transform:translateY(-2px);box-shadow:0 16px 36px -8px rgba(7,30,20,.5)}
+    .dark #notice-bell{background:#1a2d24;color:#fff;border-color:rgba(255,255,255,.14)}
+    #notice-bell svg{width:18px;height:18px;color:#0e5c3b;flex:none}
+    .dark #notice-bell svg{color:#d8b766}
+    #notice-count{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-width:20px;height:20px;padding:0 6px;border-radius:9999px;
+      background:#c9a14a;color:#fff;font-size:.72rem;font-weight:800;line-height:1;flex:none;
+    }
+    body.spm-editing #notice-bell{display:none !important}
+    @keyframes spmNoticeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    @media (min-width:768px){ #notice-bell{bottom:1.5rem} }
   </style>
 
   <!-- Netlify Identity widget — handles the login redirect from email confirmation links -->
@@ -728,8 +851,34 @@
       </div>
       <div class="gold-divider mt-4 max-w-[120px] reveal"></div>
 
-      <!-- Events data lives in JS (window.MASJID_EVENTS). Edit there to update. -->
-      <div id="events-list" class="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-5 reveal">
+      <!-- Announcements — rendered from content/announcements.json -->
+      <div id="announcements-list" class="mt-8 grid sm:grid-cols-2 gap-4 reveal">
+        <!-- populated by JS -->
+      </div>
+
+      <!-- Events — rendered from content/events.json -->
+      <div id="events-list" class="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-5 reveal">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ -->
+  <!-- POSTERS & FLYERS                              -->
+  <!-- ============================================ -->
+  <section id="posters" class="py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="text-center reveal">
+        <p class="eyebrow">Noticeboard</p>
+        <h2 class="section-title text-masjid-800 dark:text-white mt-2">Posters &amp; Flyers</h2>
+        <p class="mt-3 text-ink-700 dark:text-gray-300 max-w-2xl mx-auto">
+          Event posters and notices from around the masjid. Tap any poster to view it full size.
+        </p>
+        <div class="gold-divider mt-6 mx-auto max-w-xs"></div>
+      </div>
+
+      <!-- Posters — rendered from content/posters.json -->
+      <div id="posters-list" class="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 reveal">
         <!-- populated by JS -->
       </div>
     </div>
@@ -972,6 +1121,7 @@
           <li><a href="#prayer-times" class="hover:text-gold-400">Prayer Times</a></li>
           <li><a href="#madrasah" class="hover:text-gold-400">Madrasah</a></li>
           <li><a href="#activities" class="hover:text-gold-400">Activities</a></li>
+          <li><a href="#posters" class="hover:text-gold-400">Posters &amp; Flyers</a></li>
           <li><a href="#downloads" class="hover:text-gold-400">Downloads</a></li>
           <li><a href="#about-islam" class="hover:text-gold-400">About Islam</a></li>
           <li><a href="#contact" class="hover:text-gold-400">Contact</a></li>
@@ -990,7 +1140,10 @@
 
     <div class="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs text-white/50">
       <div>© <span id="copyright-year">2026</span> Shahporan Masjid &amp; Islamic Centre Trust. All rights reserved.</div>
-      <div>Made with care for our community. <span class="font-arabic">جزاكم الله خيرا</span></div>
+      <div class="flex items-center gap-4">
+        <button id="spm-staff-login" type="button" class="hover:text-gold-400 underline-offset-2 hover:underline">Staff login</button>
+        <span>Made with care for our community. <span class="font-arabic">جزاكم الله خيرا</span></span>
+      </div>
     </div>
   </footer>
 
@@ -1269,39 +1422,158 @@
   loadPrayer();
 
   /* ============================================================
-     EVENTS — content now lives in content/events.json
-     The masjid edits that file through the /admin/ panel.
-     The array below is only a fallback used if the JSON fails to load
-     (e.g. opening the file locally via file://).
+     COMMUNITY CONTENT — Announcements, Events & Posters
+     ------------------------------------------------------------
+     Each type lives in its own file under /content/ and is edited
+     by the masjid through the in-page editor (see the EDITOR
+     module further down). The *_FALLBACK arrays are only used if a
+     JSON file fails to load (e.g. opening the page from disk).
      ============================================================ */
-  const EVENTS_FALLBACK = [
-    { title: "Friday Khutbah",       date: "Recurring",         time: "1:20 PM &amp; 2:10 PM", description: "Two khutbahs every Friday — first at 1:20pm, second at 2:10pm.", type: "Weekly" },
-    { title: "Tafsir Circle",        date: "Every weekday",     time: "After Isha",            description: "Informal evening circle in the main prayer hall — open to all.", type: "Weekly" },
-    { title: "Ramadan Programme",    date: "Ramadan 1447 AH",   time: "Daily",                 description: "Nightly Tarawih, daily Iftar gatherings, last 10 nights I'tikaf.", type: "Annual" },
-    { title: "Eid Prayer",           date: "Eid ul-Fitr / Eid ul-Adha", time: "Morning",       description: "Eid prayer details announced closer to the date — follow our YouTube & Facebook.", type: "Annual" },
-    { title: "Madrasah Term",        date: "Mon – Thu",         time: "After school",          description: "Children's Qur'an and Islamic studies classes. Contact the office for enrolment.", type: "Ongoing" },
-    { title: "Janazah Services",     date: "On request",        time: "—",                     description: "Funeral prayers and bereavement support. Please contact the office.", type: "On request" }
+  window.SPM = window.SPM || { announcements: [], events: [], posters: [] };
+
+  const ANNOUNCEMENTS_FALLBACK = [
+    { id:"a-0", title:"Eid ul-Adha prayer arrangements", body:"Eid ul-Adha prayer times will be announced here, and on our YouTube and Facebook pages, closer to the date.", date:"2026-05-20", pinned:true }
   ];
-  function renderEvents(){
-    const list = document.getElementById('events-list');
-    list.innerHTML = (window.MASJID_EVENTS || []).map(ev => `
-      <div class="card hover:-translate-y-1 transition">
-        <div class="flex items-center justify-between">
-          <span class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400 font-semibold">${ev.type}</span>
-          <span class="text-xs text-ink-700 dark:text-gray-400">${ev.date}</span>
-        </div>
-        <h4 class="font-display text-xl text-masjid-800 dark:text-white mt-2">${ev.title}</h4>
-        <div class="text-xs text-ink-700 dark:text-gray-400 mt-1">${ev.time}</div>
-        <p class="text-sm text-ink-700 dark:text-gray-300 mt-3">${ev.description}</p>
-      </div>
-    `).join('');
+  const EVENTS_FALLBACK = [
+    { title:"Friday Khutbah",    date:"Recurring",                  time:"1:20 PM & 2:10 PM", description:"Two khutbahs every Friday — first at 1:20pm, second at 2:10pm.", type:"Weekly" },
+    { title:"Tafsir Circle",     date:"Every weekday",              time:"After Isha",        description:"Informal evening circle in the main prayer hall — open to all.", type:"Weekly" },
+    { title:"Ramadan Programme", date:"Ramadan 1447 AH",            time:"Daily",             description:"Nightly Tarawih, daily Iftar gatherings, last 10 nights I'tikaf.", type:"Annual" },
+    { title:"Eid Prayer",        date:"Eid ul-Fitr / Eid ul-Adha",  time:"Morning",           description:"Eid prayer details announced closer to the date — follow our YouTube & Facebook.", type:"Annual" },
+    { title:"Madrasah Term",     date:"Mon – Thu",                  time:"After school",      description:"Children's Qur'an and Islamic studies classes. Contact the office for enrolment.", type:"Ongoing" },
+    { title:"Janazah Services",  date:"On request",                 time:"—",                 description:"Funeral prayers and bereavement support. Please contact the office.", type:"On request" }
+  ];
+  const POSTERS_FALLBACK = [];
+
+  let _spmSeq = 0;
+  function spmId(prefix){ return prefix + '-n-' + Date.now() + '-' + (++_spmSeq); }
+  function ensureIds(arr, prefix){ (arr||[]).forEach((it,i)=>{ if(!it.id) it.id = prefix+'-'+i; }); return arr||[]; }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  /* esc() runs first (so any real < > & the user typed are made safe),
+     then only our own [[b]] / [[g]] markers become bold / gold tags. */
+  function spmFmt(s){
+    return esc(s)
+      .replace(/\[\[b\]\]/g,'<strong>').replace(/\[\[\/b\]\]/g,'</strong>')
+      .replace(/\[\[g\]\]/g,'<span class="text-gold-600 dark:text-gold-400 font-semibold">').replace(/\[\[\/g\]\]/g,'</span>');
   }
-  // Try to load CMS-managed events, fall back to inline data
-  fetch('content/events.json')
-    .then(r => r.ok ? r.json() : Promise.reject())
-    .then(data => { window.MASJID_EVENTS = data.items || EVENTS_FALLBACK; })
-    .catch(() => { window.MASJID_EVENTS = EVENTS_FALLBACK; })
-    .finally(renderEvents);
+  function b64(str){ return btoa(unescape(encodeURIComponent(str))); }
+  function cleanArr(arr){ return (arr||[]).map(function(it){ const o={}; Object.keys(it).forEach(function(k){ if(k.charAt(0)!=='_') o[k]=it[k]; }); return o; }); }
+  function spmSnapshot(){ return { announcements:cleanArr(window.SPM.announcements), events:cleanArr(window.SPM.events), posters:cleanArr(window.SPM.posters) }; }
+  function spmNiceDate(d){
+    const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d||''); if(!m) return d||'';
+    const M=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    return parseInt(m[3],10)+' '+M[parseInt(m[2],10)-1]+' '+m[1];
+  }
+  function countChanges(){
+    let orig={}; try{ orig=JSON.parse(window.SPM_ORIGINAL||'{}'); }catch(e){}
+    let n=0;
+    ['announcements','events','posters'].forEach(function(k){
+      const o=orig[k]||[], c=cleanArr(window.SPM[k]||[]);
+      const om={}, cm={};
+      o.forEach(function(x){ om[x.id]=JSON.stringify(x); });
+      c.forEach(function(x){ cm[x.id]=JSON.stringify(x); });
+      Object.keys(cm).forEach(function(id){ if(om[id]===undefined||om[id]!==cm[id]) n++; });
+      Object.keys(om).forEach(function(id){ if(cm[id]===undefined) n++; });
+    });
+    return n;
+  }
+  function spmEditing(){ return document.body.classList.contains('spm-editing'); }
+
+  function spmHandle(){
+    return '<div class="spm-handle">'+
+      '<button class="spm-hbtn" data-act="edit" type="button" aria-label="Edit"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>'+
+      '<button class="spm-hbtn del" data-act="del" type="button" aria-label="Delete"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></button>'+
+    '</div>';
+  }
+  function spmAddTile(type,label){
+    return '<button type="button" class="spm-addtile spm-add items-center justify-center gap-2 rounded-2xl '+
+      'border-2 border-dashed border-masjid-600/30 dark:border-gold-400/30 text-masjid-700 dark:text-gold-400 '+
+      'font-semibold text-sm py-8 px-4 w-full h-full min-h-[120px] hover:border-gold-400 hover:bg-gold-400/5 transition" '+
+      'data-type="'+type+'"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>'+esc(label)+'</button>';
+  }
+
+  function renderAnnouncements(){
+    const list=document.getElementById('announcements-list'); if(!list) return;
+    const items=(window.SPM.announcements||[]).slice().sort(function(a,b){ return (b.pinned?1:0)-(a.pinned?1:0); });
+    const editing=spmEditing();
+    if(!items.length && !editing){ list.innerHTML=''; list.classList.add('hidden'); return; }
+    list.classList.remove('hidden');
+    list.innerHTML = items.map(function(a){ return ''+
+      '<div class="card spm-editable '+(a.pinned?'ring-1 ring-gold-400/60':'')+'" data-type="announcement" data-id="'+esc(a.id)+'">'+
+        (editing?spmHandle():'')+
+        '<div class="flex items-center gap-2 flex-wrap">'+
+          '<span class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400 font-semibold">Announcement</span>'+
+          (a.pinned?'<span class="spm-pinned-tag">★ Pinned</span>':'')+
+          (a.date?'<span class="text-xs text-ink-700 dark:text-gray-400 ml-auto">'+esc(spmNiceDate(a.date))+'</span>':'')+
+        '</div>'+
+        '<h4 class="font-display text-xl text-masjid-800 dark:text-white mt-2">'+esc(a.title)+'</h4>'+
+        '<p class="text-sm text-ink-700 dark:text-gray-300 mt-2 whitespace-pre-line">'+spmFmt(a.body)+'</p>'+
+      '</div>'; }).join('') + (editing?spmAddTile('announcement','Add announcement'):'');
+  }
+
+  function renderEvents(){
+    const list=document.getElementById('events-list'); if(!list) return;
+    const editing=spmEditing();
+    list.innerHTML=(window.SPM.events||[]).map(function(ev){ return ''+
+      '<div class="card spm-editable hover:-translate-y-1 transition" data-type="event" data-id="'+esc(ev.id)+'">'+
+        (editing?spmHandle():'')+
+        '<div class="flex items-center justify-between gap-2">'+
+          '<span class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400 font-semibold">'+esc(ev.type)+'</span>'+
+          '<span class="text-xs text-ink-700 dark:text-gray-400">'+esc(ev.date)+'</span>'+
+        '</div>'+
+        '<h4 class="font-display text-xl text-masjid-800 dark:text-white mt-2">'+esc(ev.title)+'</h4>'+
+        '<div class="text-xs text-ink-700 dark:text-gray-400 mt-1">'+esc(ev.time)+'</div>'+
+        '<p class="text-sm text-ink-700 dark:text-gray-300 mt-3 whitespace-pre-line">'+spmFmt(ev.description)+'</p>'+
+      '</div>'; }).join('') + (editing?spmAddTile('event','Add event'):'');
+  }
+
+  function renderPosters(){
+    const list=document.getElementById('posters-list'); if(!list) return;
+    const editing=spmEditing();
+    const items=window.SPM.posters||[];
+    if(!items.length && !editing){
+      list.innerHTML='<p class="col-span-full text-center text-sm text-ink-700 dark:text-gray-400 py-6">No posters at the moment — please check back soon.</p>';
+      return;
+    }
+    list.innerHTML=items.map(function(p){
+      const src=p._preview||p.image||'';
+      return '<figure class="spm-editable spm-poster group relative rounded-2xl overflow-hidden shadow-soft bg-white dark:bg-ink-800 cursor-pointer" '+
+        'data-type="poster" data-id="'+esc(p.id)+'" data-img="'+esc(src)+'" data-title="'+esc(p.title)+'">'+
+        (editing?spmHandle():'')+
+        '<div class="aspect-[3/4] overflow-hidden bg-masjid-50 dark:bg-ink-900">'+
+          '<img src="'+esc(src)+'" alt="'+esc(p.title)+'" loading="lazy" class="w-full h-full object-cover group-hover:scale-[1.04] transition duration-300" />'+
+        '</div>'+
+        '<figcaption class="p-3">'+
+          '<div class="font-display text-base leading-tight text-masjid-800 dark:text-white">'+esc(p.title)+'</div>'+
+          (p.caption?'<div class="text-xs text-ink-700 dark:text-gray-400 mt-1">'+esc(p.caption)+'</div>':'')+
+        '</figcaption>'+
+      '</figure>';
+    }).join('') + (editing?spmAddTile('poster','Add poster'):'');
+  }
+
+  function updateNotices(){
+    const b=document.getElementById('notice-bell'), c=document.getElementById('notice-count');
+    if(!b) return;
+    const n=(window.SPM.announcements||[]).length;
+    b.style.display = n>0 ? 'inline-flex' : 'none';
+    if(c) c.textContent=n;
+  }
+
+  function spmRenderAll(){ renderAnnouncements(); renderEvents(); renderPosters(); updateNotices(); }
+
+  function spmLoad(file,fallback,key,prefix){
+    return fetch(file,{cache:'no-store'})
+      .then(function(r){ return r.ok?r.json():Promise.reject(); })
+      .then(function(d){ window.SPM[key]=ensureIds(JSON.parse(JSON.stringify(d.items||fallback)),prefix); })
+      .catch(function(){ window.SPM[key]=ensureIds(JSON.parse(JSON.stringify(fallback)),prefix); });
+  }
+  window.SPM_READY = Promise.all([
+    spmLoad('content/announcements.json',ANNOUNCEMENTS_FALLBACK,'announcements','a'),
+    spmLoad('content/events.json',EVENTS_FALLBACK,'events','e'),
+    spmLoad('content/posters.json',POSTERS_FALLBACK,'posters','p')
+  ]).then(function(){
+    window.SPM_ORIGINAL = JSON.stringify(spmSnapshot());
+    spmRenderAll();
+  });
 
   /* ============================================================
      DOWNLOADS — content now lives in content/downloads.json
@@ -1390,17 +1662,345 @@
   });
 
   /* ============================================================
-     NETLIFY IDENTITY — redirect to /admin/ after email confirmation
+     IN-PAGE EDITOR — staff sign in to edit Announcements, Events
+     and Posters directly on the page, then submit for review.
+     Nothing goes live until an administrator approves it.
      ============================================================ */
-  if (window.netlifyIdentity) {
-    window.netlifyIdentity.on("init", user => {
-      if (!user) {
-        window.netlifyIdentity.on("login", () => {
-          document.location.href = "/admin/";
-        });
+  (function(){
+    const E = window.SPM_EDIT = {};
+    let dirty = false, toastTimer = null;
+
+    const SCHEMA = {
+      announcement: { label:'Announcement', store:'announcements', prefix:'a', fields:[
+        {name:'title',  label:'Title',          type:'text',     hint:'Keep it short, e.g. "Eid prayer arrangements".'},
+        {name:'body',   label:'Message',        type:'textarea', format:true, hint:'Select text and use Bold or Gold to emphasise it.'},
+        {name:'date',   label:'Date',           type:'date',     hint:'Shown on the announcement.'},
+        {name:'pinned', label:'Pin to the top', type:'checkbox', hint:'Pinned announcements always appear first.'}
+      ]},
+      event: { label:'Event', store:'events', prefix:'e', fields:[
+        {name:'title',       label:'Title',       type:'text',     hint:'e.g. "Ramadan Programme".'},
+        {name:'date',        label:'When',        type:'text',     hint:'e.g. "Every Friday", "Ramadan 1447 AH".'},
+        {name:'time',        label:'Time',        type:'text',     hint:'e.g. "After Isha", "1:20 PM".'},
+        {name:'description', label:'Description', type:'textarea', format:true, hint:'Select text and use Bold or Gold to emphasise it.'},
+        {name:'type',        label:'Label',       type:'select',   options:['Weekly','Annual','Ongoing','Special','One-off','On request']}
+      ]},
+      poster: { label:'Poster', store:'posters', prefix:'p', fields:[
+        {name:'title',   label:'Title',   type:'text',  hint:'Shown beneath the poster.'},
+        {name:'caption', label:'Caption', type:'text',  hint:'Optional — one short line.'},
+        {name:'image',   label:'Image',   type:'image'}
+      ]}
+    };
+
+    function $(id){ return document.getElementById(id); }
+    function toast(msg,isErr){
+      const t=$('spm-toast'); if(!t) return;
+      t.textContent=msg; t.classList.toggle('err',!!isErr); t.classList.add('show');
+      clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); },4400);
+    }
+    function openOverlay(){ $('spm-scrim').classList.add('open'); $('spm-panel').classList.add('open'); }
+    function closeOverlay(){ $('spm-scrim').classList.remove('open'); $('spm-panel').classList.remove('open'); $('spm-panel-foot').style.display=''; }
+    function openLightbox(src,title){ const lb=$('spm-lightbox'); $('spm-lightbox-img').src=src; $('spm-lightbox-img').alt=title||''; lb.classList.remove('hidden'); lb.classList.add('flex'); }
+    function closeLightbox(){ const lb=$('spm-lightbox'); lb.classList.add('hidden'); lb.classList.remove('flex'); }
+
+    /* ---- the slide-over edit form ---- */
+    function fieldHtml(f,val){
+      const v=val==null?'':val;
+      if(f.type==='checkbox')
+        return '<div class="spm-field"><label class="spm-check"><input type="checkbox" data-f="'+f.name+'" '+(val?'checked':'')+'/><span>'+esc(f.label)+'</span></label>'+(f.hint?'<div class="hint">'+esc(f.hint)+'</div>':'')+'</div>';
+      if(f.type==='image') return imageFieldHtml();
+      if(f.type==='textarea' && f.format){
+        return '<div class="spm-field"><label>'+esc(f.label)+'</label>'+
+          '<div class="spm-fmt">'+
+            '<button type="button" class="spm-fmt-btn" data-wrap="b"><b>B</b> Bold</button>'+
+            '<button type="button" class="spm-fmt-btn" data-wrap="g"><span class="spm-fmt-gold">A</span> Gold</button>'+
+          '</div>'+
+          '<textarea class="spm-input spm-rich" data-f="'+f.name+'" rows="3">'+esc(v)+'</textarea>'+
+          '<div class="spm-prev-label">Preview</div>'+
+          '<div class="spm-preview">'+spmFmt(v)+'</div>'+
+          (f.hint?'<div class="hint">'+esc(f.hint)+'</div>':'')+
+        '</div>';
       }
-    });
-  }
+      let inner;
+      if(f.type==='textarea') inner='<textarea class="spm-input" data-f="'+f.name+'" rows="3">'+esc(v)+'</textarea>';
+      else if(f.type==='select') inner='<select class="spm-input" data-f="'+f.name+'">'+f.options.map(function(o){ return '<option '+(o===v?'selected':'')+'>'+esc(o)+'</option>'; }).join('')+'</select>';
+      else inner='<input class="spm-input" type="'+(f.type==='date'?'date':'text')+'" data-f="'+f.name+'" value="'+esc(v)+'"/>';
+      return '<div class="spm-field"><label>'+esc(f.label)+'</label>'+inner+(f.hint?'<div class="hint">'+esc(f.hint)+'</div>':'')+'</div>';
+    }
+    function imageFieldHtml(){
+      const d=E._ctx.draft, src=d._preview||d.image||'';
+      return '<div class="spm-field"><label>Poster image</label>'+
+        '<div class="spm-drop" id="spm-dz">'+
+          (src?'<img src="'+esc(src)+'" alt=""/><div>Click or drop to choose a different image</div>'
+              :'<svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg><div>Click, or drop an image here</div>')+
+        '</div>'+
+        '<input type="file" id="spm-file" accept="image/*" style="display:none"/>'+
+        '<div class="hint">JPG or PNG, up to 4 MB. Portrait posters look best.</div></div>';
+    }
+    function spmWrap(ta,tag){
+      const s=ta.selectionStart, e=ta.selectionEnd;
+      if(s==null || s===e){ toast('Select the text you want to format first.',true); return; }
+      const o='[['+tag+']]', c='[[/'+tag+']]';
+      ta.value = ta.value.slice(0,s) + o + ta.value.slice(s,e) + c + ta.value.slice(e);
+      const field=ta.closest('.spm-field'), prev=field&&field.querySelector('.spm-preview');
+      if(prev) prev.innerHTML=spmFmt(ta.value);
+      ta.focus(); ta.setSelectionRange(s, e+o.length+c.length);
+    }
+    function wireRich(){
+      $('spm-panel-body').querySelectorAll('.spm-rich').forEach(function(ta){
+        const field=ta.closest('.spm-field');
+        const prev=field.querySelector('.spm-preview');
+        ta.addEventListener('input',function(){ prev.innerHTML=spmFmt(ta.value); });
+        field.querySelectorAll('.spm-fmt-btn').forEach(function(btn){
+          btn.addEventListener('mousedown',function(e){ e.preventDefault(); }); /* keep the textarea selection */
+          btn.addEventListener('click',function(){ spmWrap(ta,btn.dataset.wrap); });
+        });
+      });
+    }
+    function wireDrop(){
+      const dz=$('spm-dz'), fi=$('spm-file'); if(!dz||!fi) return;
+      dz.addEventListener('click',function(){ fi.click(); });
+      dz.addEventListener('dragover',function(e){ e.preventDefault(); dz.classList.add('drag'); });
+      dz.addEventListener('dragleave',function(){ dz.classList.remove('drag'); });
+      dz.addEventListener('drop',function(e){ e.preventDefault(); dz.classList.remove('drag'); if(e.dataTransfer.files[0]) readImg(e.dataTransfer.files[0]); });
+      fi.addEventListener('change',function(){ if(fi.files[0]) readImg(fi.files[0]); });
+    }
+    function readImg(file){
+      if(!/^image\//.test(file.type)){ toast('Please choose an image file.',true); return; }
+      if(file.size>4*1024*1024){ toast('That image is too large (the limit is 4 MB).',true); return; }
+      const fr=new FileReader();
+      fr.onload=function(){
+        const url=fr.result;
+        const ext=(file.name.split('.').pop()||'png').toLowerCase().replace(/[^a-z0-9]/g,'')||'png';
+        const path='content/posters/p-'+Date.now()+'.'+ext;
+        E._ctx.draft._preview=url; E._ctx.draft.image=path;
+        E._ctx.draft._upload={ path:path, base64:url.split(',')[1] };
+        const dz=$('spm-dz'); if(dz) dz.innerHTML='<img src="'+url+'" alt=""/><div>Click or drop to choose a different image</div>';
+      };
+      fr.readAsDataURL(file);
+    }
+
+    E.openPanel=function(type,id){
+      const sc=SCHEMA[type]; if(!sc) return;
+      const item=id?(window.SPM[sc.store]||[]).find(function(x){ return x.id===id; }):null;
+      E._ctx={ type:type, id:id, isNew:!item, draft:item?JSON.parse(JSON.stringify(item)):{} };
+      $('spm-panel-title').textContent=(item?'Edit ':'Add ')+sc.label.toLowerCase();
+      $('spm-panel-body').innerHTML=sc.fields.map(function(f){ return fieldHtml(f,E._ctx.draft[f.name]); }).join('');
+      $('spm-panel-foot').style.display='';
+      $('spm-panel-save').textContent=item?'Save changes':'Add '+sc.label.toLowerCase();
+      if(type==='poster') wireDrop();
+      wireRich();
+      openOverlay();
+      const first=$('spm-panel-body').querySelector('input,textarea,select');
+      if(first) setTimeout(function(){ first.focus(); },340);
+    };
+
+    E.save=function(){
+      const ctx=E._ctx; if(!ctx) return;
+      const sc=SCHEMA[ctx.type], d=ctx.draft;
+      $('spm-panel-body').querySelectorAll('[data-f]').forEach(function(el){
+        d[el.dataset.f] = el.type==='checkbox' ? el.checked : el.value.trim();
+      });
+      if(!String(d.title||'').trim()){ toast('Please give it a title first.',true); return; }
+      if(ctx.type==='poster' && !d.image){ toast('Please add a poster image first.',true); return; }
+      const arr=window.SPM[sc.store];
+      if(ctx.isNew){ d.id=spmId(sc.prefix); arr.push(d); }
+      else { const i=arr.findIndex(function(x){ return x.id===ctx.id; }); if(i>-1) arr[i]=d; }
+      closeOverlay(); spmRenderAll(); E.refresh();
+      toast(ctx.isNew?'Added — remember to submit for review.':'Saved — remember to submit for review.');
+    };
+
+    E.deleteItem=function(type,id){
+      const sc=SCHEMA[type]; if(!sc) return;
+      const arr=window.SPM[sc.store];
+      const item=arr.find(function(x){ return x.id===id; });
+      if(!confirm('Remove this '+sc.label.toLowerCase()+(item&&item.title?' ("'+item.title+'")':'')+'?')) return;
+      window.SPM[sc.store]=arr.filter(function(x){ return x.id!==id; });
+      spmRenderAll(); E.refresh(); toast(sc.label+' removed — remember to submit for review.');
+    };
+
+    E.refresh=function(){
+      const n=countChanges(); dirty=n>0;
+      const c=$('spm-count'), s=$('spm-submit');
+      if(c){ c.textContent=n; c.hidden=(n===0); }
+      if(s) s.disabled=(n===0);
+      try{
+        if(n>0) sessionStorage.setItem('spm_pending',JSON.stringify({ announcements:window.SPM.announcements, events:window.SPM.events, posters:window.SPM.posters }));
+        else sessionStorage.removeItem('spm_pending');
+      }catch(e){}
+    };
+
+    E.enter=function(user){
+      window.SPM_READY.then(function(){
+        E.user=user;
+        const nm=(user&&user.user_metadata&&user.user_metadata.full_name)||(user&&user.email)||'staff';
+        const us=$('spm-user'); if(us) us.textContent=nm;
+        try{
+          const raw=sessionStorage.getItem('spm_pending');
+          if(raw){ const p=JSON.parse(raw);
+            if(p.announcements) window.SPM.announcements=p.announcements;
+            if(p.events) window.SPM.events=p.events;
+            if(p.posters) window.SPM.posters=p.posters;
+          }
+        }catch(e){}
+        document.body.classList.add('spm-editing');
+        ['announcements-list','events-list','posters-list'].forEach(function(id){
+          const el=document.getElementById(id); if(el) el.classList.add('visible');
+        });
+        spmRenderAll(); E.refresh();
+        toast('Editing is on — click any card to change it, or use a "+" tile to add something new.');
+        if(/\bedit\b/i.test(location.hash)) history.replaceState(null,'',location.pathname+location.search);
+      });
+    };
+
+    E.exit=function(){
+      if(dirty && !confirm('You have changes that haven’t been submitted yet.\n\nLeave editing mode? Your changes are saved and will still be here when you return.')) return;
+      document.body.classList.remove('spm-editing');
+      spmRenderAll();
+    };
+
+    E.discard=function(){
+      if(!dirty){ toast('There are no changes to discard.'); return; }
+      if(!confirm('Discard all of your changes and go back to what is currently published?')) return;
+      try{ const o=JSON.parse(window.SPM_ORIGINAL);
+        window.SPM.announcements=o.announcements; window.SPM.events=o.events; window.SPM.posters=o.posters;
+      }catch(e){}
+      try{ sessionStorage.removeItem('spm_pending'); }catch(e){}
+      spmRenderAll(); E.refresh(); toast('Your changes have been discarded.');
+    };
+
+    function setSubmit(txt){ const l=$('spm-submit-label'); if(l) l.textContent=txt; }
+
+    E.submit=async function(){
+      if(!dirty) return;
+      const ni=window.netlifyIdentity;
+      const user=ni&&ni.currentUser&&ni.currentUser();
+      if(!user){ toast('Please sign in with your staff account first.',true); if(ni&&ni.open) ni.open(); return; }
+      if(!confirm('Send these changes for review?\n\nThey will appear on the website once an administrator has approved them.')) return;
+      const s=$('spm-submit'); s.disabled=true; setSubmit('Sending…');
+      try{
+        const token=await user.jwt();
+        await pushChanges(token,user);
+        setSubmit('Submit for review');
+        window.SPM_ORIGINAL=JSON.stringify(spmSnapshot());
+        (window.SPM.posters||[]).forEach(function(p){ delete p._upload; });
+        try{ sessionStorage.removeItem('spm_pending'); }catch(e){}
+        E.refresh();
+        toast('Sent for review ✓  An administrator will approve it shortly.');
+      }catch(err){
+        console.error('Submit failed:',err);
+        setSubmit('Submit for review'); s.disabled=false;
+        showFallback(err);
+      }
+    };
+
+    async function pushChanges(token,user){
+      const api='/.netlify/git/github';
+      const H={ Authorization:'Bearer '+token, 'Content-Type':'application/json' };
+      async function gj(res){ if(!res.ok) throw new Error('the server returned '+res.status); return res.json(); }
+      const ref=await gj(await fetch(api+'/git/refs/heads/main',{headers:H}));
+      const baseSha=(ref&&ref.object)?ref.object.sha:((Array.isArray(ref)&&ref[0])?ref[0].object.sha:null);
+      if(!baseSha) throw new Error('the website’s main branch could not be read');
+      const branch='staff-edits-'+Date.now();
+      await gj(await fetch(api+'/git/refs',{method:'POST',headers:H,body:JSON.stringify({ ref:'refs/heads/'+branch, sha:baseSha })}));
+      const who=(user.user_metadata&&user.user_metadata.full_name)||user.email||'staff';
+      async function put(path,contentB64,msg){
+        let sha=null;
+        try{ const c=await fetch(api+'/contents/'+encodeURI(path)+'?ref=main',{headers:H}); if(c.ok) sha=(await c.json()).sha; }catch(e){}
+        const body={ message:msg, content:contentB64, branch:branch };
+        if(sha) body.sha=sha;
+        const r=await fetch(api+'/contents/'+encodeURI(path),{method:'PUT',headers:H,body:JSON.stringify(body)});
+        if(!r.ok) throw new Error('could not save '+path+' ('+r.status+')');
+      }
+      const posters=window.SPM.posters||[];
+      for(let i=0;i<posters.length;i++){
+        const p=posters[i];
+        if(p._upload&&p._upload.base64) await put(p._upload.path,p._upload.base64,'Add poster image — '+who);
+      }
+      await put('content/announcements.json',b64(JSON.stringify({items:cleanArr(window.SPM.announcements)},null,2)+'\n'),'Update announcements — '+who);
+      await put('content/events.json',b64(JSON.stringify({items:cleanArr(window.SPM.events)},null,2)+'\n'),'Update events — '+who);
+      await put('content/posters.json',b64(JSON.stringify({items:cleanArr(window.SPM.posters)},null,2)+'\n'),'Update posters — '+who);
+      return gj(await fetch(api+'/pulls',{method:'POST',headers:H,body:JSON.stringify({
+        title:'Website update — '+new Date().toLocaleDateString('en-GB'),
+        head:branch, base:'main',
+        body:'Submitted from the in-page editor by '+who+'. Review the changes and merge to publish.'
+      })}));
+    }
+
+    function showFallback(err){
+      $('spm-panel-title').textContent='Send changes manually';
+      const bundle=JSON.stringify(spmSnapshot(),null,2);
+      $('spm-panel-body').innerHTML=
+        '<p class="text-sm mb-3">The changes couldn’t be submitted automatically'+
+        (err&&err.message?' ('+esc(err.message)+')':'')+
+        '. Your work is safe. Copy the text below and send it to your website administrator so they can publish it for you.</p>'+
+        '<textarea class="spm-input" id="spm-fallback" rows="11" readonly>'+esc(bundle)+'</textarea>'+
+        '<button type="button" id="spm-copy" class="btn-outline w-full justify-center mt-3">Copy this text</button>'+
+        '<div class="hint mt-2">Newly uploaded poster images aren’t included in this text — please send those image files to the administrator separately.</div>';
+      $('spm-panel-foot').style.display='none';
+      openOverlay();
+      $('spm-copy').addEventListener('click',function(){
+        const ta=$('spm-fallback'); ta.select(); ta.setSelectionRange(0,99999);
+        try{ document.execCommand('copy'); toast('Copied to clipboard.'); }
+        catch(e){ toast('Press Ctrl/Cmd + C to copy.',true); }
+      });
+    }
+
+    function init(){
+      document.addEventListener('click',function(e){
+        const add=e.target.closest('.spm-add');
+        if(add){ E.openPanel(add.dataset.type,null); return; }
+        const hb=e.target.closest('.spm-hbtn');
+        if(hb){
+          const card=hb.closest('.spm-editable'); if(!card) return;
+          if(hb.dataset.act==='del') E.deleteItem(card.dataset.type,card.dataset.id);
+          else E.openPanel(card.dataset.type,card.dataset.id);
+          return;
+        }
+        if(document.body.classList.contains('spm-editing')){
+          const card=e.target.closest('.spm-editable');
+          if(card){ E.openPanel(card.dataset.type,card.dataset.id); return; }
+        } else {
+          const fig=e.target.closest('.spm-poster');
+          if(fig) openLightbox(fig.dataset.img,fig.dataset.title);
+        }
+      });
+      const login=$('spm-staff-login');
+      if(login) login.addEventListener('click',function(){
+        const ni=window.netlifyIdentity;
+        if(!ni){ toast('The sign-in service is still loading — please try again in a moment.',true); return; }
+        const u=ni.currentUser&&ni.currentUser();
+        if(u) E.enter(u); else ni.open();
+      });
+      $('spm-exit').addEventListener('click',E.exit);
+      $('spm-discard').addEventListener('click',E.discard);
+      $('spm-submit').addEventListener('click',E.submit);
+      const bell=$('notice-bell');
+      if(bell) bell.addEventListener('click',function(){
+        const ev=document.getElementById('events');
+        if(ev) ev.scrollIntoView({ behavior:'smooth', block:'start' });
+        const al=document.getElementById('announcements-list');
+        if(al){ al.classList.remove('spm-flash'); void al.offsetWidth;
+          al.classList.add('spm-flash');
+          setTimeout(function(){ al.classList.remove('spm-flash'); },1700); }
+      });
+      $('spm-panel-close').addEventListener('click',closeOverlay);
+      $('spm-scrim').addEventListener('click',closeOverlay);
+      $('spm-panel-save').addEventListener('click',E.save);
+      $('spm-lightbox-close').addEventListener('click',closeLightbox);
+      $('spm-lightbox').addEventListener('click',function(e){ if(e.target.id==='spm-lightbox') closeLightbox(); });
+      document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ closeOverlay(); closeLightbox(); } });
+
+      const ni=window.netlifyIdentity;
+      if(ni){
+        ni.on('login',function(user){ if(ni.close) ni.close(); E.enter(user); });
+        ni.on('logout',function(){ document.body.classList.remove('spm-editing'); spmRenderAll(); });
+      }
+      /* Offline preview: open the file with #edit in the address bar */
+      if(/\bedit\b/i.test(location.hash)) E.enter({ email:'Preview' });
+    }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+    else init();
+  })();
 
   /* ============================================================
      MOBILE BOTTOM-NAV — active state on scroll
@@ -1470,5 +2070,55 @@
       </a>
     </div>
   </nav>
+
+  <!-- ============================================ -->
+  <!-- IN-PAGE EDITOR — toolbar, panel, lightbox     -->
+  <!-- ============================================ -->
+  <div id="spm-toast" role="status" aria-live="polite"></div>
+
+  <!-- Floating notice indicator — appears when there are announcements -->
+  <button id="notice-bell" type="button" aria-label="See the latest notices" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+      <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/>
+      <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+    </svg>
+    <span class="spm-notice-text">Latest notices</span>
+    <span id="notice-count">0</span>
+  </button>
+
+  <div id="spm-toolbar" role="region" aria-label="Editing toolbar">
+    <span class="spm-tb-label">
+      <span class="spm-tb-dot"></span>
+      <span>Editing as <strong id="spm-user">staff</strong></span>
+    </span>
+    <button class="spm-tb-btn" id="spm-discard" type="button">Discard changes</button>
+    <button class="spm-tb-btn spm-tb-primary" id="spm-submit" type="button" disabled>
+      <span id="spm-submit-label">Submit for review</span><span class="spm-count" id="spm-count" hidden>0</span>
+    </button>
+    <button class="spm-tb-btn" id="spm-exit" type="button">Exit</button>
+  </div>
+
+  <div id="spm-scrim"></div>
+  <aside id="spm-panel" role="dialog" aria-modal="true" aria-label="Edit content">
+    <div class="px-5 pt-5 pb-3 flex items-center justify-between border-b border-black/10 dark:border-white/10">
+      <h3 id="spm-panel-title" class="font-display text-2xl text-masjid-800 dark:text-white">Edit</h3>
+      <button id="spm-panel-close" type="button" aria-label="Close"
+              class="w-9 h-9 rounded-lg flex items-center justify-center text-ink-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/10">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div id="spm-panel-body" class="px-5 py-4 overflow-y-auto grow"></div>
+    <div id="spm-panel-foot" class="px-5 py-4 border-t border-black/10 dark:border-white/10">
+      <button id="spm-panel-save" type="button" class="btn-primary w-full justify-center">Save</button>
+    </div>
+  </aside>
+
+  <div id="spm-lightbox" class="fixed inset-0 z-[110] hidden items-center justify-center bg-black/90 p-4">
+    <button id="spm-lightbox-close" type="button" aria-label="Close"
+            class="absolute top-4 right-4 w-11 h-11 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <img id="spm-lightbox-img" alt="" class="max-h-[90vh] max-w-full rounded-lg shadow-2xl" />
+  </div>
 </body>
 </html>

@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "id": "p-1747000000000",
+      "title": "Friday Jumu'ah Reminder",
+      "image": "content/posters/sample-jumuah.png",
+      "caption": "Two khutbahs every Friday — first at 1:20pm, second at 2:10pm."
+    },
+    {
+      "id": "p-1746500000000",
+      "title": "Weekly Qur'an Circle",
+      "image": "content/posters/sample-circle.png",
+      "caption": "Tafsir circle every weekday after Isha, open to all."
+    }
+  ]
+}
