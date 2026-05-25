@@ -1840,11 +1840,7 @@
         E.user=user;
         const nm=(user&&user.user_metadata&&user.user_metadata.full_name)||(user&&user.email)||'staff';
         const us=$('spm-user'); if(us) us.textContent=nm;
-        E.isAdmin = (user&&user.email==='Preview') ||
-          !!(user&&user.app_metadata&&user.app_metadata.roles&&user.app_metadata.roles.indexOf('admin')>-1);
-        const rv=$('spm-review');
-        if(rv) rv.style.display = E.isAdmin ? 'inline-flex' : 'none';
-        if(E.isAdmin) E.loadReviewCount();
+        E.applyAdmin(user);
         try{
           const raw=sessionStorage.getItem('spm_pending');
           if(raw){ const p=JSON.parse(raw);
@@ -2081,7 +2077,69 @@
       });
     };
 
+    /* ---- admin detection (robust: reads the role from several places) ---- */
+    function spmDecodeJWT(tok){
+      try{
+        const part=String(tok).split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+        return JSON.parse(decodeURIComponent(escape(atob(part))));
+      }catch(e){ return null; }
+    }
+    function spmRolesFrom(obj){
+      if(!obj) return [];
+      const a=obj.app_metadata, m=obj.user_metadata;
+      let r=[];
+      if(a){ if(Array.isArray(a.roles)) r=r.concat(a.roles); if(typeof a.role==='string') r.push(a.role); }
+      if(m && Array.isArray(m.roles)) r=r.concat(m.roles);
+      if(typeof obj.role==='string') r.push(obj.role);
+      return r;
+    }
+    function spmHasAdmin(roles){
+      return (roles||[]).some(function(r){ return String(r).trim().toLowerCase()==='admin'; });
+    }
+    function spmShowReview(on){
+      const rv=$('spm-review');
+      if(rv) rv.style.display = on ? 'inline-flex' : 'none';
+    }
+    E.applyAdmin=function(user){
+      if(!user){ E.isAdmin=false; spmShowReview(false); return; }
+      if(user.email==='Preview'){ E.isAdmin=true; spmShowReview(true); return; }
+      /* quick check from the cached account + its stored token */
+      let roles=spmRolesFrom(user);
+      if(user.token && user.token.access_token){
+        roles=roles.concat(spmRolesFrom(spmDecodeJWT(user.token.access_token)));
+      }
+      E.isAdmin=spmHasAdmin(roles);
+      spmShowReview(E.isAdmin);
+      if(E.isAdmin) E.loadReviewCount();
+      /* authoritative re-check using a freshly refreshed token */
+      if(user.jwt){
+        user.jwt().then(function(fresh){
+          if(spmHasAdmin(spmRolesFrom(spmDecodeJWT(fresh))) && !E.isAdmin){
+            E.isAdmin=true; spmShowReview(true); E.loadReviewCount();
+          }
+        }).catch(function(){});
+      }
+    };
+    /* built-in account self-check — open the site with #whoami in the address */
+    function spmWhoami(){
+      const ni=window.netlifyIdentity;
+      const u=ni&&ni.currentUser&&ni.currentUser();
+      if(!u){ alert('Account check\n\nYou are not signed in.\n\nSign in first (Staff login in the footer), then reload the page with #whoami still on the end of the address.'); return; }
+      function report(roles,src){
+        alert('Account check\n\nSigned in as:  '+(u.email||'(unknown)')+
+          '\nRoles the site can see:  '+(roles.length?roles.join(', '):'(none found)')+
+          '\nReview / approve access:  '+(spmHasAdmin(roles)?'YES':'NO')+
+          '\n\nIf this says NO, the role on your Netlify account is not exactly "admin". '+
+          'Send this message to whoever set it up.\n(checked via '+src+')');
+      }
+      if(u.jwt){
+        u.jwt().then(function(fresh){ report(spmRolesFrom(spmDecodeJWT(fresh)),'live token'); })
+               .catch(function(){ report(spmRolesFrom(u),'saved account'); });
+      } else report(spmRolesFrom(u),'saved account');
+    }
+
     function init(){
+      if(/\bwhoami\b/i.test(location.hash)) setTimeout(spmWhoami,900);
       document.addEventListener('click',function(e){
         const add=e.target.closest('.spm-add');
         if(add){ E.openPanel(add.dataset.type,null); return; }
