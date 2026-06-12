@@ -6,6 +6,13 @@
       "body": "",
       "date": "2026-05-20",
       "pinned": true
+    },
+    {
+      "title": "Test announcement",
+      "body": "[[g]]Hello world[[/g]]\n[[b]]Bold text[[/b]]\nNormal text",
+      "date": "2026-06-12",
+      "pinned": true,
+      "id": "a-n-1781302024635-1"
     }
   ]
 }
