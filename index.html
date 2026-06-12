@@ -1282,6 +1282,11 @@
   // or supply them per-day in MASJID_MANUAL_TIMES.jamaah / MASJID_MONTHLY_TIMES[date].jamaah.
   const JAMAAH_OFFSETS = { Fajr:30, Dhuhr:10, Asr:10, Maghrib:5, Isha:15 };
 
+  // On Fridays, the Dhuhr prayer is replaced by Jumu'ah. Two khutbahs.
+  const JUMUAH_FIRST  = '13:20';   // 1:20 PM
+  const JUMUAH_SECOND = '14:10';   // 2:10 PM
+  function isFriday(){ return new Date().getDay() === 5; }
+
   function todayKey(){
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
@@ -1358,7 +1363,21 @@
     container.innerHTML = '';
     const next = nextPrayerInfo(times);
 
+    const friday = isFriday();
     PRAYERS.forEach(p => {
+      // On Fridays, render the Dhuhr slot as Jumu'ah (1st & 2nd khutbah)
+      if (p.key === 'Dhuhr' && friday){
+        const isNext = next && next.key === "Jumu'ah";
+        const card = document.createElement('div');
+        card.className = 'card prayer-card ' + (isNext ? 'next':'');
+        card.innerHTML = `
+          <div class="label text-xs uppercase tracking-wider opacity-70">Jumu'ah</div>
+          <div class="time font-display text-2xl md:text-3xl mt-1 text-masjid-800 dark:text-white">${fmt(JUMUAH_FIRST)}</div>
+          <div class="jamaah text-xs mt-1 opacity-80">Second khutbah <span class="gold-accent font-semibold text-gold-600 dark:text-gold-400">${fmt(JUMUAH_SECOND)}</span></div>
+        `;
+        container.appendChild(card);
+        return;
+      }
       const beginTime = times[p.key] ? times[p.key].slice(0,5) : null;
       if (!beginTime) return;
       const isNext = next && next.key === p.key;
@@ -1378,8 +1397,16 @@
 
   function nextPrayerInfo(times){
     const now = new Date();
+    const friday = isFriday();
     const list = ['Fajr','Dhuhr','Asr','Maghrib','Isha']; // skip sunrise for "next prayer" countdown
     for (const k of list){
+      // On Fridays, the Dhuhr slot becomes Jumu'ah at the first khutbah
+      if (k === 'Dhuhr' && friday){
+        const [h,m] = JUMUAH_FIRST.split(':').map(Number);
+        const d = new Date(now); d.setHours(h,m,0,0);
+        if (d > now) return { key:"Jumu'ah", at:d };
+        continue;
+      }
       if (!times[k]) continue;
       const [h,m] = times[k].slice(0,5).split(':').map(Number);
       const d = new Date(now); d.setHours(h,m,0,0);
