@@ -1,3 +1,16 @@
 {
-  "items": []
+  "items": [
+    {
+      "image": "content/posters/p-1781302092162.png",
+      "title": "Jumu'ah Times",
+      "caption": "Times indicate when the khutbah begins",
+      "id": "p-n-1781302093883-2"
+    },
+    {
+      "image": "content/posters/p-1781302154860.png",
+      "title": "Eid Al-Adha Salah",
+      "caption": "The Jama'ah times for Eid Al-Adha 2026/1447",
+      "id": "p-n-1781302156166-3"
+    }
+  ]
 }
