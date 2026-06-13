@@ -360,6 +360,12 @@
     .spm-pinned-tag{display:inline-flex;align-items:center;gap:.3rem;font-size:.66rem;font-weight:700;
       text-transform:uppercase;letter-spacing:.08em;color:#a98432}
 
+    /* admin: settings panel section headings */
+    .spm-section-title{font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+      color:#0a4a2f;margin:1rem 0 .55rem;padding-bottom:.35rem;border-bottom:1px solid #d8b76633}
+    .spm-section-title:first-child{margin-top:0}
+    .dark .spm-section-title{color:#d8b766;border-bottom-color:#3a514a}
+
     /* admin: submission review cards */
     .spm-sub{border:1px solid #cdd8d2;border-radius:.8rem;padding:.85rem .9rem;margin-bottom:.8rem}
     .dark .spm-sub{border-color:#3a514a}
@@ -532,11 +538,11 @@
             <div class="grid grid-cols-2 gap-3 md:gap-4">
               <div>
                 <div class="text-[10px] md:text-xs uppercase tracking-wider text-ink-700 dark:text-gray-400">First Khutbah</div>
-                <div class="font-display text-2xl md:text-3xl text-masjid-800 dark:text-white">1:20 PM</div>
+                <div class="font-display text-2xl md:text-3xl text-masjid-800 dark:text-white" data-spm-time="jumuah.first">1:20 PM</div>
               </div>
               <div>
                 <div class="text-[10px] md:text-xs uppercase tracking-wider text-ink-700 dark:text-gray-400">Second Khutbah</div>
-                <div class="font-display text-2xl md:text-3xl text-masjid-800 dark:text-white">2:10 PM</div>
+                <div class="font-display text-2xl md:text-3xl text-masjid-800 dark:text-white" data-spm-time="jumuah.second">2:10 PM</div>
               </div>
             </div>
 
@@ -946,16 +952,16 @@
         <div class="card !bg-white/10 !border-white/10 text-white backdrop-blur">
           <h4 class="font-display text-2xl text-gold-400">Donate Online</h4>
           <p class="text-sm mt-2 text-white/80">Quick &amp; secure via SumUp — debit/credit card &amp; Apple/Google Pay.</p>
-          <a href="https://pay.sumup.com/b2c/QDPWOVF7" target="_blank" rel="noopener" class="btn-gold mt-5">Donate Now</a>
+          <a href="https://pay.sumup.com/b2c/QDPWOVF7" data-spm-href="donationUrl" target="_blank" rel="noopener" class="btn-gold mt-5">Donate Now</a>
         </div>
         <div class="card !bg-white/10 !border-white/10 text-white backdrop-blur">
           <h4 class="font-display text-2xl text-gold-400">Bank Transfer</h4>
-          <p class="text-sm mt-2 text-white/80">Shahporan Masjid Trust</p>
+          <p class="text-sm mt-2 text-white/80" data-spm-text="bank.name">Shahporan Masjid Trust</p>
           <div class="mt-3 grid grid-cols-2 gap-3 text-sm">
-            <div><div class="text-white/60 text-xs uppercase tracking-wider">Sort Code</div><div class="font-mono text-lg">50-10-05</div></div>
-            <div><div class="text-white/60 text-xs uppercase tracking-wider">Account No.</div><div class="font-mono text-lg">83711937</div></div>
+            <div><div class="text-white/60 text-xs uppercase tracking-wider">Sort Code</div><div class="font-mono text-lg" data-spm-text="bank.sortCode">50-10-05</div></div>
+            <div><div class="text-white/60 text-xs uppercase tracking-wider">Account No.</div><div class="font-mono text-lg" data-spm-text="bank.accountNo">83711937</div></div>
           </div>
-          <p class="text-xs text-white/60 mt-4">Registered Charity No. 1057627</p>
+          <p class="text-xs text-white/60 mt-4">Registered Charity No. <span data-spm-text="charityNumber">1057627</span></p>
         </div>
       </div>
     </div>
@@ -976,21 +982,25 @@
             <svg class="w-5 h-5 mt-0.5 text-gold-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             <div>
               <div class="font-semibold text-masjid-800 dark:text-white">Address</div>
-              <div class="text-sm">Shahporan Masjid<br/>444 Hackney Road<br/>London E2 6QL</div>
+              <div class="text-sm">
+                <span data-spm-text="contact.addressLine1">Shahporan Masjid</span><br/>
+                <span data-spm-text="contact.addressLine2">444 Hackney Road</span><br/>
+                <span data-spm-text="contact.addressLine3">London E2 6QL</span>
+              </div>
             </div>
           </li>
           <li class="flex gap-3">
             <svg class="w-5 h-5 mt-0.5 text-gold-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
             <div>
               <div class="font-semibold text-masjid-800 dark:text-white">Phone</div>
-              <a href="tel:+447472785476" class="text-sm hover:text-gold-500">+44 7472 785476</a>
+              <a href="tel:+447472785476" data-spm-tel="contact.phone" data-spm-text="contact.phone" class="text-sm hover:text-gold-500">+44 7472 785476</a>
             </div>
           </li>
           <li class="flex gap-3">
             <svg class="w-5 h-5 mt-0.5 text-gold-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
             <div>
               <div class="font-semibold text-masjid-800 dark:text-white">Email</div>
-              <a href="mailto:shahporanmasjid24@gmail.com" class="text-sm hover:text-gold-500">shahporanmasjid24@gmail.com</a>
+              <a href="mailto:shahporanmasjid24@gmail.com" data-spm-mailto="contact.email" data-spm-text="contact.email" class="text-sm hover:text-gold-500">shahporanmasjid24@gmail.com</a>
             </div>
           </li>
           <li class="flex gap-3">
@@ -1007,11 +1017,11 @@
         </ul>
 
         <div class="mt-6 flex gap-3">
-          <a href="https://www.facebook.com/ShahporanMasjid" target="_blank" rel="noopener" aria-label="Facebook"
+          <a href="https://www.facebook.com/ShahporanMasjid" data-spm-href="facebookUrl" target="_blank" rel="noopener" aria-label="Facebook"
              class="w-10 h-10 rounded-full bg-masjid-700 dark:bg-gold-500 text-white flex items-center justify-center hover:scale-110 transition">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.7-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.6V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>
           </a>
-          <a href="https://www.youtube.com/channel/UC7yyTIVhT-pBBSycUiJOYjQ" target="_blank" rel="noopener" aria-label="YouTube"
+          <a href="https://www.youtube.com/channel/UC7yyTIVhT-pBBSycUiJOYjQ" data-spm-ytch="youtubeChannelId" target="_blank" rel="noopener" aria-label="YouTube"
              class="w-10 h-10 rounded-full bg-masjid-700 dark:bg-gold-500 text-white flex items-center justify-center hover:scale-110 transition">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23 12s0-3.5-.4-5.2a3 3 0 0 0-2.1-2.1C18.8 4.3 12 4.3 12 4.3s-6.8 0-8.5.4A3 3 0 0 0 1.4 6.8C1 8.5 1 12 1 12s0 3.5.4 5.2a3 3 0 0 0 2.1 2.1c1.7.4 8.5.4 8.5.4s6.8 0 8.5-.4a3 3 0 0 0 2.1-2.1c.4-1.7.4-5.2.4-5.2zM10 15.5v-7l6 3.5-6 3.5z"/></svg>
           </a>
@@ -1086,7 +1096,7 @@
           444 Hackney Road, London E2 6QL. A community masjid serving East London — open
           for prayer, learning, and the welfare of every visitor.
         </p>
-        <p class="text-xs text-white/50 mt-4">Registered Charity No. 1057627 — Shahporan Masjid Trust</p>
+        <p class="text-xs text-white/50 mt-4">Registered Charity No. <span data-spm-text="charityNumber">1057627</span> — <span data-spm-text="bank.name">Shahporan Masjid Trust</span></p>
       </div>
 
       <div>
@@ -1107,10 +1117,10 @@
       <div>
         <h5 class="font-semibold text-gold-400 mb-3 text-sm uppercase tracking-wider">Donate</h5>
         <p class="text-sm text-white/80">Bank Transfer<br/>
-          <span class="text-white">Sort Code:</span> 50-10-05<br/>
-          <span class="text-white">Account No:</span> 83711937
+          <span class="text-white">Sort Code:</span> <span data-spm-text="bank.sortCode">50-10-05</span><br/>
+          <span class="text-white">Account No:</span> <span data-spm-text="bank.accountNo">83711937</span>
         </p>
-        <a href="https://pay.sumup.com/b2c/QDPWOVF7" target="_blank" rel="noopener" class="btn-gold mt-4 text-sm py-2 px-4">Donate Now</a>
+        <a href="https://pay.sumup.com/b2c/QDPWOVF7" data-spm-href="donationUrl" target="_blank" rel="noopener" class="btn-gold mt-4 text-sm py-2 px-4">Donate Now</a>
       </div>
     </div>
 
@@ -1253,8 +1263,8 @@
   const JAMAAH_OFFSETS = { Fajr:30, Dhuhr:10, Asr:10, Maghrib:5, Isha:15 };
 
   // On Fridays, the Dhuhr prayer is replaced by Jumu'ah. Two khutbahs.
-  const JUMUAH_FIRST  = '13:20';   // 1:20 PM
-  const JUMUAH_SECOND = '14:10';   // 2:10 PM
+  let JUMUAH_FIRST  = '13:20';   // 1:20 PM (overridden by settings.jumuah.first)
+  let JUMUAH_SECOND = '14:10';   // 2:10 PM (overridden by settings.jumuah.second)
   function isFriday(){ return new Date().getDay() === 5; }
 
   function todayKey(){
@@ -1414,6 +1424,7 @@
   async function loadPrayer(){
     try {
       const times = await fetchPrayerTimes();
+      _spmLastTimes = times;
       renderPrayerCards(times);
       startCountdown(times);
     } catch (e) {
@@ -1432,7 +1443,7 @@
      module further down). The *_FALLBACK arrays are only used if a
      JSON file fails to load (e.g. opening the page from disk).
      ============================================================ */
-  window.SPM = window.SPM || { announcements: [], events: [], posters: [], activities: [], downloads: [] };
+  window.SPM = window.SPM || { announcements: [], events: [], posters: [], activities: [], downloads: [], settings: {} };
 
   const ANNOUNCEMENTS_FALLBACK = [
     { id:"a-0", title:"Eid ul-Adha prayer arrangements", body:"Eid ul-Adha prayer times will be announced here, and on our YouTube and Facebook pages, closer to the date.", date:"2026-05-20", pinned:true }
@@ -1485,8 +1496,21 @@
     events:cleanArr(window.SPM.events),
     posters:cleanArr(window.SPM.posters),
     activities:cleanArr(window.SPM.activities),
-    downloads:cleanArr(window.SPM.downloads)
+    downloads:cleanArr(window.SPM.downloads),
+    settings: window.SPM.settings || {}
   }; }
+  function spmGetPath(obj,path){
+    return path.split('.').reduce(function(o,k){ return o && typeof o==='object' ? o[k] : undefined; }, obj);
+  }
+  function spmSetPath(obj,path,value){
+    const parts=path.split('.');
+    let o=obj;
+    for(let i=0;i<parts.length-1;i++){
+      if(!o[parts[i]] || typeof o[parts[i]] !== 'object') o[parts[i]]={};
+      o=o[parts[i]];
+    }
+    o[parts[parts.length-1]]=value;
+  }
   function spmNiceDate(d){
     const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d||''); if(!m) return d||'';
     const M=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -1503,6 +1527,8 @@
       Object.keys(cm).forEach(function(id){ if(om[id]===undefined||om[id]!==cm[id]) n++; });
       Object.keys(om).forEach(function(id){ if(cm[id]===undefined) n++; });
     });
+    /* Settings is a record (single object); count the whole thing as 1 change if it differs */
+    if(JSON.stringify(orig.settings||{}) !== JSON.stringify(window.SPM.settings||{})) n++;
     return n;
   }
   function spmEditing(){ return document.body.classList.contains('spm-editing'); }
@@ -1614,6 +1640,46 @@
     }).join('') + (editing?spmAddTile('download','Add download'):'');
   }
 
+  let _spmLastTimes = null;
+
+  function applySettings(){
+    const s = window.SPM.settings || {};
+    /* fill text content (data-spm-text) */
+    document.querySelectorAll('[data-spm-text]').forEach(function(el){
+      const v = spmGetPath(s, el.getAttribute('data-spm-text'));
+      if (v != null && v !== '') el.textContent = v;
+    });
+    /* set href verbatim (data-spm-href) */
+    document.querySelectorAll('[data-spm-href]').forEach(function(el){
+      const v = spmGetPath(s, el.getAttribute('data-spm-href'));
+      if (v) el.setAttribute('href', v);
+    });
+    /* tel: links (data-spm-tel) */
+    document.querySelectorAll('[data-spm-tel]').forEach(function(el){
+      const v = spmGetPath(s, el.getAttribute('data-spm-tel'));
+      if (v) el.setAttribute('href', 'tel:' + String(v).replace(/\s+/g,''));
+    });
+    /* mailto: links (data-spm-mailto) */
+    document.querySelectorAll('[data-spm-mailto]').forEach(function(el){
+      const v = spmGetPath(s, el.getAttribute('data-spm-mailto'));
+      if (v) el.setAttribute('href', 'mailto:' + v);
+    });
+    /* YouTube channel social link (data-spm-ytch) */
+    document.querySelectorAll('[data-spm-ytch]').forEach(function(el){
+      const v = spmGetPath(s, el.getAttribute('data-spm-ytch'));
+      if (v) el.setAttribute('href', 'https://www.youtube.com/channel/' + v);
+    });
+    /* formatted times — 24h "13:20" -> "1:20 PM" via fmt() (data-spm-time) */
+    document.querySelectorAll('[data-spm-time]').forEach(function(el){
+      const v = spmGetPath(s, el.getAttribute('data-spm-time'));
+      if (v) el.textContent = (typeof fmt === 'function') ? fmt(v) : v;
+    });
+    /* keep the Jumu'ah constants and prayer cards in sync */
+    if (s.jumuah && s.jumuah.first)  JUMUAH_FIRST  = s.jumuah.first;
+    if (s.jumuah && s.jumuah.second) JUMUAH_SECOND = s.jumuah.second;
+    if (_spmLastTimes && typeof renderPrayerCards === 'function') renderPrayerCards(_spmLastTimes);
+  }
+
   function updateNotices(){
     const b=document.getElementById('notice-bell'), c=document.getElementById('notice-count');
     if(!b) return;
@@ -1622,7 +1688,7 @@
     if(c) c.textContent=n;
   }
 
-  function spmRenderAll(){ renderAnnouncements(); renderEvents(); renderPosters(); renderActivities(); renderDownloads(); updateNotices(); }
+  function spmRenderAll(){ renderAnnouncements(); renderEvents(); renderPosters(); renderActivities(); renderDownloads(); updateNotices(); applySettings(); }
 
   function spmLoad(file,fallback,key,prefix){
     return fetch(file,{cache:'no-store'})
@@ -1637,6 +1703,10 @@
     spmLoad('content/posters.json',POSTERS_FALLBACK,'posters','p'),
     spmLoad('content/activities.json',ACTIVITIES_FALLBACK,'activities','act'),
     spmLoad('content/downloads.json',DOWNLOADS_FALLBACK,'downloads','dl'),
+    fetch('content/settings.json',{cache:'no-store'})
+      .then(function(r){ return r.ok?r.json():null; })
+      .then(function(d){ if(d) window.SPM.settings = d; })
+      .catch(function(){}),
     fetch('content/admins.json',{cache:'no-store'})
       .then(function(r){ return r.ok?r.json():null; })
       .then(function(d){ if(d&&Array.isArray(d.admins)) window.SPM_ADMINS=d.admins; })
@@ -1727,6 +1797,32 @@
         {name:'desc',  label:'Description', type:'text',   hint:'Short sentence shown under the title.'},
         {name:'href',  label:'File or link', type:'fileOrLink', hint:'Upload a PDF or image (up to 8 MB), or paste an external URL below.'},
         {name:'type',  label:'Type label',  type:'select', options:['PDF','Image','Link']}
+      ]},
+      settings: { label:'Site settings', store:'settings', isRecord:true, sections:[
+        { heading:'Bank details', fields:[
+          {name:'bank.name',      label:'Account name',   type:'text'},
+          {name:'bank.sortCode',  label:'Sort code',      type:'text', hint:'e.g. 50-10-05'},
+          {name:'bank.accountNo', label:'Account number', type:'text'}
+        ]},
+        { heading:'Contact', fields:[
+          {name:'contact.phone',        label:'Phone',          type:'text', hint:'Include country code, e.g. +44 7472 785476'},
+          {name:'contact.email',        label:'Email',          type:'text'},
+          {name:'contact.addressLine1', label:'Address line 1', type:'text'},
+          {name:'contact.addressLine2', label:'Address line 2', type:'text'},
+          {name:'contact.addressLine3', label:'Address line 3', type:'text'}
+        ]},
+        { heading:"Friday Jumu'ah", fields:[
+          {name:'jumuah.first',  label:'First khutbah',  type:'text', hint:'24-hour time, e.g. 13:20 for 1:20 PM'},
+          {name:'jumuah.second', label:'Second khutbah', type:'text', hint:'24-hour time, e.g. 14:10 for 2:10 PM'}
+        ]},
+        { heading:'Donation', fields:[
+          {name:'donationUrl', label:'Online donation link', type:'text', hint:'Full URL, e.g. https://pay.sumup.com/...'}
+        ]},
+        { heading:'Charity & social', fields:[
+          {name:'charityNumber',    label:'Registered charity number', type:'text'},
+          {name:'youtubeChannelId', label:'YouTube channel ID',        type:'text', hint:'For the live khutbah embed and YouTube link, e.g. UC7yyTIVhT-pBBSycUiJOYjQ'},
+          {name:'facebookUrl',      label:'Facebook page URL',         type:'text'}
+        ]}
       ]}
     };
 
@@ -1861,6 +1957,20 @@
 
     E.openPanel=function(type,id){
       const sc=SCHEMA[type]; if(!sc) return;
+      if(sc.isRecord){
+        E._ctx={ type:type, isRecord:true, draft: JSON.parse(JSON.stringify(window.SPM[sc.store] || {})) };
+        $('spm-panel-title').textContent = sc.label;
+        $('spm-panel-body').innerHTML = sc.sections.map(function(sec){
+          return '<div class="spm-section-title">'+esc(sec.heading)+'</div>'+
+            sec.fields.map(function(f){ return fieldHtml(f, spmGetPath(E._ctx.draft, f.name)); }).join('');
+        }).join('');
+        $('spm-panel-foot').style.display='';
+        $('spm-panel-save').textContent='Save '+sc.label.toLowerCase();
+        openOverlay();
+        const first=$('spm-panel-body').querySelector('input,textarea,select');
+        if(first) setTimeout(function(){ first.focus(); },340);
+        return;
+      }
       const item=id?(window.SPM[sc.store]||[]).find(function(x){ return x.id===id; }):null;
       E._ctx={ type:type, id:id, isNew:!item, draft:item?JSON.parse(JSON.stringify(item)):{} };
       $('spm-panel-title').textContent=(item?'Edit ':'Add ')+sc.label.toLowerCase();
@@ -1878,6 +1988,19 @@
     E.save=function(){
       const ctx=E._ctx; if(!ctx) return;
       const sc=SCHEMA[ctx.type], d=ctx.draft;
+      if(ctx.isRecord){
+        $('spm-panel-body').querySelectorAll('[data-f]').forEach(function(el){
+          const path = el.dataset.f;
+          const val = el.type==='checkbox' ? el.checked : el.value.trim();
+          spmSetPath(d, path, val);
+        });
+        window.SPM[sc.store] = d;
+        closeOverlay();
+        spmRenderAll();
+        E.refresh();
+        toast('Settings saved — remember to submit for review.');
+        return;
+      }
       $('spm-panel-body').querySelectorAll('[data-f]').forEach(function(el){
         d[el.dataset.f] = el.type==='checkbox' ? el.checked : el.value.trim();
       });
@@ -2010,6 +2133,7 @@
       await put('content/posters.json',b64(JSON.stringify({items:cleanArr(window.SPM.posters)},null,2)+'\n'),'Update posters — '+who);
       await put('content/activities.json',b64(JSON.stringify({items:cleanArr(window.SPM.activities)},null,2)+'\n'),'Update activities — '+who);
       await put('content/downloads.json',b64(JSON.stringify({items:cleanArr(window.SPM.downloads)},null,2)+'\n'),'Update downloads — '+who);
+      await put('content/settings.json',b64(JSON.stringify(window.SPM.settings||{},null,2)+'\n'),'Update site settings — '+who);
       return gj(await fetch(api+'/pulls',{method:'POST',headers:H,body:JSON.stringify({
         title:'Website update — '+new Date().toLocaleDateString('en-GB'),
         head:branch, base:'main',
@@ -2071,6 +2195,14 @@
         });
         oldI.forEach(function(x){ if(nm[x.id]===undefined) out.push('Removed '+label+': “'+(x.title||'untitled')+'”'); });
       }
+      /* Settings is a record (not a list) — flag it as changed if it differs */
+      try{
+        const oldS = await ghJson('content/settings.json','main',H);
+        const newS = await ghJson('content/settings.json',branch,H);
+        if (newS && JSON.stringify(oldS||{}) !== JSON.stringify(newS)) {
+          out.push('Updated site settings (bank, contact, donation, etc.)');
+        }
+      }catch(e){}
       return out;
     }
     async function listSubmissions(H){
@@ -2183,6 +2315,8 @@
     function spmShowReview(on){
       const rv=$('spm-review');
       if(rv) rv.style.display = on ? 'inline-flex' : 'none';
+      const st=$('spm-settings');
+      if(st) st.style.display = on ? 'inline-flex' : 'none';
     }
     /* hash an email so admin addresses are never stored in plain text */
     async function spmSha256(str){
@@ -2269,6 +2403,8 @@
       $('spm-submit').addEventListener('click',E.submit);
       const reviewBtn=$('spm-review');
       if(reviewBtn) reviewBtn.addEventListener('click',E.openReview);
+      const settingsBtn=$('spm-settings');
+      if(settingsBtn) settingsBtn.addEventListener('click',function(){ E.openPanel('settings'); });
       const bell=$('notice-bell');
       if(bell) bell.addEventListener('click',function(){
         const ev=document.getElementById('events');
@@ -2327,7 +2463,8 @@
       const player = document.getElementById('khutbah-player');
       const iframe = document.createElement('iframe');
       iframe.className = 'absolute inset-0 w-full h-full';
-      iframe.src = 'https://www.youtube.com/embed/live_stream?channel=UC7yyTIVhT-pBBSycUiJOYjQ&autoplay=1';
+      const ch = (window.SPM && window.SPM.settings && window.SPM.settings.youtubeChannelId) || 'UC7yyTIVhT-pBBSycUiJOYjQ';
+      iframe.src = 'https://www.youtube.com/embed/live_stream?channel=' + ch + '&autoplay=1';
       iframe.title = 'Shahporan Masjid — Friday Khutbah Live';
       iframe.setAttribute('frameborder', '0');
       iframe.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture');
@@ -2389,6 +2526,7 @@
     <button class="spm-tb-btn" id="spm-review" type="button" style="display:none">
       Review<span class="spm-count" id="spm-review-count" hidden>0</span>
     </button>
+    <button class="spm-tb-btn" id="spm-settings" type="button" style="display:none">Settings</button>
     <button class="spm-tb-btn" id="spm-discard" type="button">Discard changes</button>
     <button class="spm-tb-btn spm-tb-primary" id="spm-submit" type="button" disabled>
       <span id="spm-submit-label">Submit for review</span><span class="spm-count" id="spm-count" hidden>0</span>

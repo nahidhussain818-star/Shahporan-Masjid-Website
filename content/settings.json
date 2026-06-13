@@ -1,0 +1,22 @@
+{
+  "bank": {
+    "name": "Shahporan Masjid Trust",
+    "sortCode": "50-10-05",
+    "accountNo": "83711937"
+  },
+  "contact": {
+    "phone": "+44 7472 785476",
+    "email": "shahporanmasjid24@gmail.com",
+    "addressLine1": "Shahporan Masjid",
+    "addressLine2": "444 Hackney Road",
+    "addressLine3": "London E2 6QL"
+  },
+  "charityNumber": "1057627",
+  "donationUrl": "https://pay.sumup.com/b2c/QDPWOVF7",
+  "youtubeChannelId": "UC7yyTIVhT-pBBSycUiJOYjQ",
+  "facebookUrl": "https://www.facebook.com/ShahporanMasjid",
+  "jumuah": {
+    "first": "13:20",
+    "second": "14:10"
+  }
+}
