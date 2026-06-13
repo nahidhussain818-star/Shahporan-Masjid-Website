@@ -806,39 +806,9 @@
         <div class="gold-divider mt-6 mx-auto max-w-xs"></div>
       </div>
 
-      <div class="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-5 reveal">
-        <div class="card hover:-translate-y-1 transition">
-          <h4 class="font-semibold text-masjid-800 dark:text-white">Daily &amp; Jumu'ah Prayers</h4>
-          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Five daily Salah and two Friday khutbahs.</p>
-        </div>
-        <div class="card hover:-translate-y-1 transition">
-          <h4 class="font-semibold text-masjid-800 dark:text-white">Tarawih &amp; Ramadan</h4>
-          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Nightly Tarawih, Iftar gatherings, I'tikaf and Laylatul Qadr programmes.</p>
-        </div>
-        <div class="card hover:-translate-y-1 transition">
-          <h4 class="font-semibold text-masjid-800 dark:text-white">Eid Prayers</h4>
-          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Eid ul-Fitr and Eid ul-Adha congregational prayers, open to all.</p>
-        </div>
-        <div class="card hover:-translate-y-1 transition">
-          <h4 class="font-semibold text-masjid-800 dark:text-white">Janazah Services</h4>
-          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Funeral prayers and guidance for families during difficult times.</p>
-        </div>
-        <div class="card hover:-translate-y-1 transition">
-          <h4 class="font-semibold text-masjid-800 dark:text-white">Nikah &amp; Marriage</h4>
-          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Marriage ceremonies and counselling — contact the office to arrange.</p>
-        </div>
-        <div class="card hover:-translate-y-1 transition">
-          <h4 class="font-semibold text-masjid-800 dark:text-white">New Muslim Support</h4>
-          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Welcoming reverts with classes, mentorship and a Shahadah ceremony.</p>
-        </div>
-        <div class="card hover:-translate-y-1 transition">
-          <h4 class="font-semibold text-masjid-800 dark:text-white">Youth Programmes</h4>
-          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Halaqas, sports activities and mentoring for the next generation.</p>
-        </div>
-        <div class="card hover:-translate-y-1 transition">
-          <h4 class="font-semibold text-masjid-800 dark:text-white">Community Support</h4>
-          <p class="text-sm text-ink-700 dark:text-gray-400 mt-2">Hardship assistance, fitrah and zakat collection &amp; distribution.</p>
-        </div>
+      <!-- Activities — rendered from content/activities.json -->
+      <div id="activities-list" class="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-5 reveal">
+        <!-- populated by JS -->
       </div>
     </div>
   </section>
@@ -950,7 +920,7 @@
         <div class="gold-divider mt-6 mx-auto max-w-xs"></div>
       </div>
 
-      <!-- Edit window.MASJID_DOWNLOADS in script.js to manage these -->
+      <!-- Downloads — rendered from content/downloads.json -->
       <div id="downloads-list" class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5 reveal">
         <!-- populated by JS -->
       </div>
@@ -1462,7 +1432,7 @@
      module further down). The *_FALLBACK arrays are only used if a
      JSON file fails to load (e.g. opening the page from disk).
      ============================================================ */
-  window.SPM = window.SPM || { announcements: [], events: [], posters: [] };
+  window.SPM = window.SPM || { announcements: [], events: [], posters: [], activities: [], downloads: [] };
 
   const ANNOUNCEMENTS_FALLBACK = [
     { id:"a-0", title:"Eid ul-Adha prayer arrangements", body:"Eid ul-Adha prayer times will be announced here, and on our YouTube and Facebook pages, closer to the date.", date:"2026-05-20", pinned:true }
@@ -1476,6 +1446,26 @@
     { title:"Janazah Services",  date:"On request",                 time:"—",                 description:"Funeral prayers and bereavement support. Please contact the office.", type:"On request" }
   ];
   const POSTERS_FALLBACK = [];
+  const ACTIVITIES_FALLBACK = [
+    { title:"Daily & Jumu'ah Prayers",  description:"Five daily Salah and two Friday khutbahs." },
+    { title:"Tarawih & Ramadan",        description:"Nightly Tarawih, Iftar gatherings, I'tikaf and Laylatul Qadr programmes." },
+    { title:"Eid Prayers",              description:"Eid ul-Fitr and Eid ul-Adha congregational prayers, open to all." },
+    { title:"Janazah Services",         description:"Funeral prayers and guidance for families during difficult times." },
+    { title:"Nikah & Marriage",         description:"Marriage ceremonies and counselling — contact the office to arrange." },
+    { title:"New Muslim Support",       description:"Welcoming reverts with classes, mentorship and a Shahadah ceremony." },
+    { title:"Youth Programmes",         description:"Halaqas, sports activities and mentoring for the next generation." },
+    { title:"Community Support",        description:"Hardship assistance, fitrah and zakat collection & distribution." }
+  ];
+  const DOWNLOADS_FALLBACK = [
+    { title:"Monthly Prayer Timetable", desc:"Current month's begins & jamā'ah times.",   href:"https://shahporanmasjid.uk/prayer-time/",                          type:"PDF" },
+    { title:"Ramadan Timetable 2026",   desc:"Sehri & Iftar timings + Tarawih schedule.", href:"downloads/Shahporan-Majid-Islamic-Centre-Ramadan-2026.pdf",        type:"PDF" },
+    { title:"Hifz Admission Form",      desc:"Enrolment form for the Hifz programme.",   href:"downloads/ADMISION-FORM-for-Hifz-new311224.pdf",                   type:"PDF" },
+    { title:"Absence Request Form",     desc:"Notify the Madrasah of a student absence.", href:"downloads/Absent-Request-form.pdf",                                type:"PDF" },
+    { title:"Monthly Report Form",      desc:"Madrasah monthly progress report form.",   href:"downloads/Monthly-Report-form.pdf",                                type:"PDF" },
+    { title:"Nikah / Marriage Booking", desc:"Book a Nikah ceremony at the masjid.",     href:"downloads/Nikah-Marriage-booking-Form.pdf",                        type:"PDF" },
+    { title:"Charity Collection Form",  desc:"Authorise volunteers to collect donations.", href:"downloads/Charity-collection-form.pdf",                          type:"PDF" },
+    { title:"Donation QR Code",         desc:"Quick-scan QR for online donations.",      href:"downloads/QR-Code.pdf",                                            type:"PDF" }
+  ];
 
   let _spmSeq = 0;
   function spmId(prefix){ return prefix + '-n-' + Date.now() + '-' + (++_spmSeq); }
@@ -1490,7 +1480,13 @@
   }
   function b64(str){ return btoa(unescape(encodeURIComponent(str))); }
   function cleanArr(arr){ return (arr||[]).map(function(it){ const o={}; Object.keys(it).forEach(function(k){ if(k.charAt(0)!=='_') o[k]=it[k]; }); return o; }); }
-  function spmSnapshot(){ return { announcements:cleanArr(window.SPM.announcements), events:cleanArr(window.SPM.events), posters:cleanArr(window.SPM.posters) }; }
+  function spmSnapshot(){ return {
+    announcements:cleanArr(window.SPM.announcements),
+    events:cleanArr(window.SPM.events),
+    posters:cleanArr(window.SPM.posters),
+    activities:cleanArr(window.SPM.activities),
+    downloads:cleanArr(window.SPM.downloads)
+  }; }
   function spmNiceDate(d){
     const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d||''); if(!m) return d||'';
     const M=['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -1499,7 +1495,7 @@
   function countChanges(){
     let orig={}; try{ orig=JSON.parse(window.SPM_ORIGINAL||'{}'); }catch(e){}
     let n=0;
-    ['announcements','events','posters'].forEach(function(k){
+    ['announcements','events','posters','activities','downloads'].forEach(function(k){
       const o=orig[k]||[], c=cleanArr(window.SPM[k]||[]);
       const om={}, cm={};
       o.forEach(function(x){ om[x.id]=JSON.stringify(x); });
@@ -1583,6 +1579,41 @@
     }).join('') + (editing?spmAddTile('poster','Add poster'):'');
   }
 
+  function renderActivities(){
+    const list=document.getElementById('activities-list'); if(!list) return;
+    const editing=spmEditing();
+    list.innerHTML=(window.SPM.activities||[]).map(function(a){ return ''+
+      '<div class="card spm-editable hover:-translate-y-1 transition" data-type="activity" data-id="'+esc(a.id)+'">'+
+        (editing?spmHandle():'')+
+        '<h4 class="font-semibold text-masjid-800 dark:text-white">'+esc(a.title)+'</h4>'+
+        '<p class="text-sm text-ink-700 dark:text-gray-400 mt-2">'+esc(a.description)+'</p>'+
+      '</div>'; }).join('') + (editing?spmAddTile('activity','Add activity'):'');
+  }
+
+  function renderDownloads(){
+    const list=document.getElementById('downloads-list'); if(!list) return;
+    const editing=spmEditing();
+    list.innerHTML=(window.SPM.downloads||[]).map(function(d){
+      // In edit mode, render as a div so the whole card opens the editor instead of opening the link
+      const tag = editing ? 'div' : 'a';
+      const href = editing ? '' : (' href="'+esc(d.href||'#')+'" target="_blank" rel="noopener"');
+      return '<'+tag+href+' class="card spm-editable hover:-translate-y-1 transition group" data-type="download" data-id="'+esc(d.id)+'">'+
+        (editing?spmHandle():'')+
+        '<div class="flex items-start justify-between">'+
+          '<div class="w-10 h-10 rounded-lg bg-masjid-50 dark:bg-masjid-700/30 flex items-center justify-center text-masjid-700 dark:text-gold-400">'+
+            '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>'+
+          '</div>'+
+          '<span class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400 font-semibold">'+esc(d.type||'PDF')+'</span>'+
+        '</div>'+
+        '<h4 class="font-semibold text-masjid-800 dark:text-white mt-3 group-hover:text-gold-600">'+esc(d.title)+'</h4>'+
+        '<p class="text-sm text-ink-700 dark:text-gray-400 mt-1">'+esc(d.desc||'')+'</p>'+
+        '<div class="mt-4 text-sm text-masjid-700 dark:text-gold-400 inline-flex items-center gap-1">Download'+
+          '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>'+
+        '</div>'+
+      '</'+tag+'>';
+    }).join('') + (editing?spmAddTile('download','Add download'):'');
+  }
+
   function updateNotices(){
     const b=document.getElementById('notice-bell'), c=document.getElementById('notice-count');
     if(!b) return;
@@ -1591,7 +1622,7 @@
     if(c) c.textContent=n;
   }
 
-  function spmRenderAll(){ renderAnnouncements(); renderEvents(); renderPosters(); updateNotices(); }
+  function spmRenderAll(){ renderAnnouncements(); renderEvents(); renderPosters(); renderActivities(); renderDownloads(); updateNotices(); }
 
   function spmLoad(file,fallback,key,prefix){
     return fetch(file,{cache:'no-store'})
@@ -1604,6 +1635,8 @@
     spmLoad('content/announcements.json',ANNOUNCEMENTS_FALLBACK,'announcements','a'),
     spmLoad('content/events.json',EVENTS_FALLBACK,'events','e'),
     spmLoad('content/posters.json',POSTERS_FALLBACK,'posters','p'),
+    spmLoad('content/activities.json',ACTIVITIES_FALLBACK,'activities','act'),
+    spmLoad('content/downloads.json',DOWNLOADS_FALLBACK,'downloads','dl'),
     fetch('content/admins.json',{cache:'no-store'})
       .then(function(r){ return r.ok?r.json():null; })
       .then(function(d){ if(d&&Array.isArray(d.admins)) window.SPM_ADMINS=d.admins; })
@@ -1612,48 +1645,6 @@
     window.SPM_ORIGINAL = JSON.stringify(spmSnapshot());
     spmRenderAll();
   });
-
-  /* ============================================================
-     DOWNLOADS — content now lives in content/downloads.json
-     The masjid edits that file through the /admin/ panel.
-     The array below is only a fallback used if the JSON fails to load.
-     ============================================================ */
-  const DOWNLOADS_FALLBACK = [
-    { title:"Monthly Prayer Timetable", desc:"Current month's begins &amp; jamā'ah times.",         href:"https://shahporanmasjid.uk/prayer-time/",                          type:"PDF" },
-    { title:"Ramadan Timetable 2026",   desc:"Sehri &amp; Iftar timings + Tarawih schedule.",       href:"downloads/Shahporan-Majid-Islamic-Centre-Ramadan-2026.pdf",        type:"PDF" },
-    { title:"Hifz Admission Form",      desc:"Enrolment form for the Hifz programme.",              href:"downloads/ADMISION-FORM-for-Hifz-new311224.pdf",                   type:"PDF" },
-    { title:"Absence Request Form",     desc:"Notify the Madrasah of a student absence.",           href:"downloads/Absent-Request-form.pdf",                                type:"PDF" },
-    { title:"Monthly Report Form",      desc:"Madrasah monthly progress report form.",              href:"downloads/Monthly-Report-form.pdf",                                type:"PDF" },
-    { title:"Nikah / Marriage Booking", desc:"Book a Nikah ceremony at the masjid.",                href:"downloads/Nikah-Marriage-booking-Form.pdf",                        type:"PDF" },
-    { title:"Charity Collection Form",  desc:"Authorise volunteers to collect donations.",          href:"downloads/Charity-collection-form.pdf",                            type:"PDF" },
-    { title:"Donation QR Code",         desc:"Quick-scan QR for online donations.",                 href:"downloads/QR-Code.pdf",                                            type:"PDF" }
-  ];
-  function renderDownloads(){
-    const list = document.getElementById('downloads-list');
-    list.innerHTML = (window.MASJID_DOWNLOADS || []).map(d => `
-      <a href="${d.href}" target="_blank" rel="noopener"
-         class="card hover:-translate-y-1 transition group">
-        <div class="flex items-start justify-between">
-          <div class="w-10 h-10 rounded-lg bg-masjid-50 dark:bg-masjid-700/30 flex items-center justify-center text-masjid-700 dark:text-gold-400">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-          </div>
-          <span class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400 font-semibold">${d.type}</span>
-        </div>
-        <h4 class="font-semibold text-masjid-800 dark:text-white mt-3 group-hover:text-gold-600">${d.title}</h4>
-        <p class="text-sm text-ink-700 dark:text-gray-400 mt-1">${d.desc}</p>
-        <div class="mt-4 text-sm text-masjid-700 dark:text-gold-400 inline-flex items-center gap-1">
-          Download
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-        </div>
-      </a>
-    `).join('');
-  }
-  // Try to load CMS-managed downloads, fall back to inline data
-  fetch('content/downloads.json')
-    .then(r => r.ok ? r.json() : Promise.reject())
-    .then(data => { window.MASJID_DOWNLOADS = data.items || DOWNLOADS_FALLBACK; })
-    .catch(() => { window.MASJID_DOWNLOADS = DOWNLOADS_FALLBACK; })
-    .finally(renderDownloads);
 
   /* ============================================================
      REVEAL-ON-SCROLL
@@ -1726,6 +1717,16 @@
         {name:'title',   label:'Title',   type:'text',  hint:'Shown beneath the poster.'},
         {name:'caption', label:'Caption', type:'text',  hint:'Optional — one short line.'},
         {name:'image',   label:'Image',   type:'image'}
+      ]},
+      activity: { label:'Activity', store:'activities', prefix:'act', fields:[
+        {name:'title',       label:'Title',       type:'text',     hint:'e.g. "Youth Programmes".'},
+        {name:'description', label:'Description', type:'textarea', hint:'One short sentence.'}
+      ]},
+      download: { label:'Download', store:'downloads', prefix:'dl', fields:[
+        {name:'title', label:'Title',       type:'text',   hint:'e.g. "Ramadan Timetable 2026".'},
+        {name:'desc',  label:'Description', type:'text',   hint:'Short sentence shown under the title.'},
+        {name:'href',  label:'File or link', type:'fileOrLink', hint:'Upload a PDF or image (up to 8 MB), or paste an external URL below.'},
+        {name:'type',  label:'Type label',  type:'select', options:['PDF','Image','Link']}
       ]}
     };
 
@@ -1746,6 +1747,7 @@
       if(f.type==='checkbox')
         return '<div class="spm-field"><label class="spm-check"><input type="checkbox" data-f="'+f.name+'" '+(val?'checked':'')+'/><span>'+esc(f.label)+'</span></label>'+(f.hint?'<div class="hint">'+esc(f.hint)+'</div>':'')+'</div>';
       if(f.type==='image') return imageFieldHtml();
+      if(f.type==='fileOrLink') return fileOrLinkFieldHtml(f,v);
       if(f.type==='textarea' && f.format){
         return '<div class="spm-field"><label>'+esc(f.label)+'</label>'+
           '<div class="spm-fmt">'+
@@ -1802,6 +1804,46 @@
       dz.addEventListener('drop',function(e){ e.preventDefault(); dz.classList.remove('drag'); if(e.dataTransfer.files[0]) readImg(e.dataTransfer.files[0]); });
       fi.addEventListener('change',function(){ if(fi.files[0]) readImg(fi.files[0]); });
     }
+    function fileOrLinkFieldHtml(f,val){
+      const cur = val||'';
+      const isLocalPath = cur && !/^https?:\/\//.test(cur);
+      const filename = isLocalPath ? cur.split('/').pop() : '';
+      return '<div class="spm-field"><label>'+esc(f.label)+'</label>'+
+        '<div class="spm-drop" id="spm-fdz">'+
+          (filename
+            ? '<div class="font-semibold text-sm">Current file</div><div class="text-xs mt-1 opacity-80">'+esc(filename)+'</div><div class="text-xs mt-2 opacity-70">Click or drop to replace</div>'
+            : '<svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg><div>Click, or drop a file (PDF or image) here</div>'
+          )+
+        '</div>'+
+        '<input type="file" id="spm-ffile" accept=".pdf,image/*" style="display:none"/>'+
+        '<div class="spm-prev-label">or paste an external link</div>'+
+        '<input class="spm-input" type="text" data-f="'+f.name+'" value="'+esc(cur)+'" placeholder="https://..."/>'+
+        (f.hint?'<div class="hint">'+esc(f.hint)+'</div>':'')+
+      '</div>';
+    }
+    function wireFileUpload(){
+      const dz=$('spm-fdz'), fi=$('spm-ffile'); if(!dz||!fi) return;
+      dz.addEventListener('click',function(){ fi.click(); });
+      dz.addEventListener('dragover',function(e){ e.preventDefault(); dz.classList.add('drag'); });
+      dz.addEventListener('dragleave',function(){ dz.classList.remove('drag'); });
+      dz.addEventListener('drop',function(e){ e.preventDefault(); dz.classList.remove('drag'); if(e.dataTransfer.files[0]) readFileUpload(e.dataTransfer.files[0]); });
+      fi.addEventListener('change',function(){ if(fi.files[0]) readFileUpload(fi.files[0]); });
+    }
+    function readFileUpload(file){
+      if(file.size>8*1024*1024){ toast('That file is too large (the limit is 8 MB).',true); return; }
+      const fr=new FileReader();
+      fr.onload=function(){
+        const url=fr.result;
+        const safe = file.name.replace(/[^a-zA-Z0-9._-]/g,'-').replace(/-+/g,'-').replace(/^-+|-+$/g,'') || ('file-'+Date.now());
+        const path='downloads/'+safe;
+        E._ctx.draft._upload={ path:path, base64:url.split(',')[1] };
+        const inp = document.querySelector('#spm-panel-body [data-f="href"]');
+        if(inp) inp.value = path;
+        const dz=$('spm-fdz');
+        if(dz) dz.innerHTML='<div class="font-semibold text-sm">Ready to upload</div><div class="text-xs mt-1 opacity-80">'+esc(safe)+'</div><div class="text-xs mt-2 opacity-70">Click or drop to choose a different file</div>';
+      };
+      fr.readAsDataURL(file);
+    }
     function readImg(file){
       if(!/^image\//.test(file.type)){ toast('Please choose an image file.',true); return; }
       if(file.size>4*1024*1024){ toast('That image is too large (the limit is 4 MB).',true); return; }
@@ -1826,6 +1868,7 @@
       $('spm-panel-foot').style.display='';
       $('spm-panel-save').textContent=item?'Save changes':'Add '+sc.label.toLowerCase();
       if(type==='poster') wireDrop();
+      if(sc.fields.some(function(f){ return f.type==='fileOrLink'; })) wireFileUpload();
       wireRich();
       openOverlay();
       const first=$('spm-panel-body').querySelector('input,textarea,select');
@@ -1921,7 +1964,9 @@
         await pushChanges(token,user);
         setSubmit('Submit for review');
         window.SPM_ORIGINAL=JSON.stringify(spmSnapshot());
-        (window.SPM.posters||[]).forEach(function(p){ delete p._upload; });
+        ['announcements','events','posters','activities','downloads'].forEach(function(k){
+          (window.SPM[k]||[]).forEach(function(it){ delete it._upload; });
+        });
         try{ sessionStorage.removeItem('spm_pending'); }catch(e){}
         E.refresh();
         toast('Sent for review ✓  An administrator will approve it shortly.');
@@ -1950,14 +1995,21 @@
         const r=await fetch(api+'/contents/'+encodeURI(path),{method:'PUT',headers:H,body:JSON.stringify(body)});
         if(!r.ok) throw new Error('could not save '+path+' ('+r.status+')');
       }
-      const posters=window.SPM.posters||[];
-      for(let i=0;i<posters.length;i++){
-        const p=posters[i];
-        if(p._upload&&p._upload.base64) await put(p._upload.path,p._upload.base64,'Add poster image — '+who);
+      const uploadStores = ['announcements','events','posters','activities','downloads'];
+      for(const k of uploadStores){
+        const items = window.SPM[k] || [];
+        for(let i=0;i<items.length;i++){
+          const it = items[i];
+          if(it._upload && it._upload.base64){
+            await put(it._upload.path, it._upload.base64, 'Add file — '+who);
+          }
+        }
       }
       await put('content/announcements.json',b64(JSON.stringify({items:cleanArr(window.SPM.announcements)},null,2)+'\n'),'Update announcements — '+who);
       await put('content/events.json',b64(JSON.stringify({items:cleanArr(window.SPM.events)},null,2)+'\n'),'Update events — '+who);
       await put('content/posters.json',b64(JSON.stringify({items:cleanArr(window.SPM.posters)},null,2)+'\n'),'Update posters — '+who);
+      await put('content/activities.json',b64(JSON.stringify({items:cleanArr(window.SPM.activities)},null,2)+'\n'),'Update activities — '+who);
+      await put('content/downloads.json',b64(JSON.stringify({items:cleanArr(window.SPM.downloads)},null,2)+'\n'),'Update downloads — '+who);
       return gj(await fetch(api+'/pulls',{method:'POST',headers:H,body:JSON.stringify({
         title:'Website update — '+new Date().toLocaleDateString('en-GB'),
         head:branch, base:'main',
@@ -2003,7 +2055,7 @@
     }
     async function summariseBranch(branch,H){
       const out=[];
-      const files=[['content/announcements.json','announcement'],['content/events.json','event'],['content/posters.json','poster']];
+      const files=[['content/announcements.json','announcement'],['content/events.json','event'],['content/posters.json','poster'],['content/activities.json','activity'],['content/downloads.json','download']];
       for(let i=0;i<files.length;i++){
         const newD=await ghJson(files[i][0],branch,H);
         if(!newD) continue;
