@@ -4,49 +4,57 @@
       "title": "Monthly Prayer Timetable",
       "desc": "Full year of Adhan & Jamā'ah times — viewable online.",
       "href": "prayer-calendar.html",
-      "type": "Link"
+      "type": "Link",
+      "id": "dl-0"
     },
     {
       "title": "Ramadan Timetable 2026",
       "desc": "Sehri & Iftar timings + Tarawih schedule.",
       "href": "/downloads/Shahporan-Majid-Islamic-Centre-Ramadan-2026.pdf",
-      "type": "PDF"
+      "type": "PDF",
+      "id": "dl-1"
     },
     {
       "title": "Hifz Admission Form",
       "desc": "Enrolment form for the Hifz programme.",
       "href": "/downloads/ADMISION-FORM-for-Hifz-new311224.pdf",
-      "type": "PDF"
+      "type": "PDF",
+      "id": "dl-2"
     },
     {
       "title": "Absence Request Form",
       "desc": "Notify the Madrasah of a student absence.",
       "href": "/downloads/Absent-Request-form.pdf",
-      "type": "PDF"
+      "type": "PDF",
+      "id": "dl-3"
     },
     {
       "title": "Monthly Report Form",
       "desc": "Madrasah monthly progress report form.",
       "href": "/downloads/Monthly-Report-form.pdf",
-      "type": "PDF"
+      "type": "PDF",
+      "id": "dl-4"
     },
     {
       "title": "Nikah / Marriage Booking",
       "desc": "Book a Nikah ceremony at the masjid.",
       "href": "/downloads/Nikah-Marriage-booking-Form.pdf",
-      "type": "PDF"
+      "type": "PDF",
+      "id": "dl-5"
     },
     {
       "title": "Charity Collection Form",
       "desc": "Authorise volunteers to collect donations.",
       "href": "/downloads/Charity-collection-form.pdf",
-      "type": "PDF"
+      "type": "PDF",
+      "id": "dl-6"
     },
     {
       "title": "Donation QR Code",
       "desc": "Quick-scan QR for online donations.",
       "href": "/downloads/QR-Code.pdf",
-      "type": "PDF"
+      "type": "PDF",
+      "id": "dl-7"
     }
   ]
 }

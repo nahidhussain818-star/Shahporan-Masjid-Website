@@ -1,12 +1,44 @@
 {
   "items": [
-    { "id": "act-0", "title": "Daily & Jumu'ah Prayers",  "description": "Five daily Salah and two Friday khutbahs." },
-    { "id": "act-1", "title": "Tarawih & Ramadan",        "description": "Nightly Tarawih, Iftar gatherings, I'tikaf and Laylatul Qadr programmes." },
-    { "id": "act-2", "title": "Eid Prayers",              "description": "Eid ul-Fitr and Eid ul-Adha congregational prayers, open to all." },
-    { "id": "act-3", "title": "Janazah Services",         "description": "Funeral prayers and guidance for families during difficult times." },
-    { "id": "act-4", "title": "Nikah & Marriage",         "description": "Marriage ceremonies and counselling — contact the office to arrange." },
-    { "id": "act-5", "title": "New Muslim Support",       "description": "Welcoming reverts with classes, mentorship and a Shahadah ceremony." },
-    { "id": "act-6", "title": "Youth Programmes",         "description": "Halaqas, sports activities and mentoring for the next generation." },
-    { "id": "act-7", "title": "Community Support",        "description": "Hardship assistance, fitrah and zakat collection & distribution." }
+    {
+      "id": "act-0",
+      "title": "Daily & Jumu'ah Prayers",
+      "description": "Five daily Salah and two Friday khutbahs."
+    },
+    {
+      "id": "act-1",
+      "title": "Tarawih & Ramadan",
+      "description": "Nightly Tarawih, Iftar gatherings, I'tikaf and Laylatul Qadr programmes."
+    },
+    {
+      "id": "act-2",
+      "title": "Eid Prayers",
+      "description": "Eid ul-Fitr and Eid ul-Adha congregational prayers, open to all."
+    },
+    {
+      "id": "act-3",
+      "title": "Janazah Services",
+      "description": "Funeral prayers and guidance for families during difficult times."
+    },
+    {
+      "id": "act-4",
+      "title": "Nikah & Marriage",
+      "description": "Marriage ceremonies and counselling — contact the office to arrange."
+    },
+    {
+      "id": "act-5",
+      "title": "New Muslim Support",
+      "description": "Welcoming reverts with classes, mentorship and a Shahadah ceremony."
+    },
+    {
+      "id": "act-6",
+      "title": "Youth Programmes",
+      "description": "Halaqas, sports activities and mentoring for the next generation."
+    },
+    {
+      "id": "act-7",
+      "title": "Community Support",
+      "description": "Hardship assistance, fitrah and zakat collection & distribution."
+    }
   ]
 }
