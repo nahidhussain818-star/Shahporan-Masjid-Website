@@ -18,5 +18,12 @@
   "jumuah": {
     "first": "13:20",
     "second": "14:10"
+  },
+  "banner": {
+    "enabled": false,
+    "message": "",
+    "linkText": "",
+    "linkToEvent": "",
+    "linkUrl": ""
   }
 }

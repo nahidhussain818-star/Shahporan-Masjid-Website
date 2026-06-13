@@ -359,6 +359,21 @@
     #spm-toast.err{background:#8a1f17}
     .spm-pinned-tag{display:inline-flex;align-items:center;gap:.3rem;font-size:.66rem;font-weight:700;
       text-transform:uppercase;letter-spacing:.08em;color:#a98432}
+    .spm-featured-tag{display:inline-flex;align-items:center;gap:.3rem;font-size:.66rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:.08em;color:#a98432}
+    /* featured event card — gold ring + subtle gold tint to stand out from regular events */
+    .card.spm-featured{box-shadow:0 0 0 2px #d8b766 inset, 0 10px 30px -12px rgba(14,92,59,0.18);
+      background-image:linear-gradient(180deg, rgba(216,183,102,0.06), transparent 80%)}
+
+    /* site banner — restrained notice strip; .spm-sticky pins it to the viewport top */
+    #spm-banner{background:#f1f7f3;color:#073522;border-bottom:2px solid #d8b766}
+    #spm-banner.spm-sticky{position:sticky;top:0;z-index:50}
+    #spm-banner.hidden{display:none}
+    .dark #spm-banner{background:#1a2d24;color:#f1f7f3;border-bottom-color:#d8b766}
+    #spm-banner svg{color:#a98432;flex:none}
+    .dark #spm-banner svg{color:#d8b766}
+    #spm-banner a{color:#a98432;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+    .dark #spm-banner a{color:#d8b766}
 
     /* admin: settings panel section headings */
     .spm-section-title{font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
@@ -422,6 +437,19 @@
 </head>
 
 <body class="antialiased">
+
+  <!-- ============================================ -->
+  <!-- SITE BANNER: shown when settings.banner.enabled -->
+  <!-- ============================================ -->
+  <div id="spm-banner" class="hidden" role="region" aria-label="Important notice">
+    <div class="max-w-7xl mx-auto px-4 py-2 flex items-center justify-center gap-2.5 text-sm font-medium text-center">
+      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>
+      </svg>
+      <span id="spm-banner-message"></span>
+      <a id="spm-banner-link" target="_blank" rel="noopener" class="underline underline-offset-2 hover:no-underline" style="display:none"></a>
+    </div>
+  </div>
 
   <!-- ============================================ -->
   <!-- TOP BAR: Next-prayer countdown + Hijri date  -->
@@ -1568,11 +1596,14 @@
   function renderEvents(){
     const list=document.getElementById('events-list'); if(!list) return;
     const editing=spmEditing();
-    list.innerHTML=(window.SPM.events||[]).map(function(ev){ return ''+
-      '<div class="card spm-editable hover:-translate-y-1 transition" data-type="event" data-id="'+esc(ev.id)+'">'+
+    /* featured events float to the top of the list so guest speakers etc. are seen first */
+    const items=(window.SPM.events||[]).slice().sort(function(a,b){ return (b.featured?1:0)-(a.featured?1:0); });
+    list.innerHTML=items.map(function(ev){ return ''+
+      '<div id="event-'+esc(ev.id)+'" class="card spm-editable hover:-translate-y-1 transition scroll-mt-32 '+(ev.featured?'spm-featured':'')+'" data-type="event" data-id="'+esc(ev.id)+'">'+
         (editing?spmHandle():'')+
-        '<div class="flex items-center justify-between gap-2">'+
+        '<div class="flex items-center justify-between gap-2 flex-wrap">'+
           '<span class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400 font-semibold">'+esc(ev.type)+'</span>'+
+          (ev.featured?'<span class="spm-featured-tag">★ Featured</span>':'')+
           '<span class="text-xs text-ink-700 dark:text-gray-400">'+esc(ev.date)+'</span>'+
         '</div>'+
         '<h4 class="font-display text-xl text-masjid-800 dark:text-white mt-2">'+esc(ev.title)+'</h4>'+
@@ -1678,7 +1709,65 @@
     if (s.jumuah && s.jumuah.first)  JUMUAH_FIRST  = s.jumuah.first;
     if (s.jumuah && s.jumuah.second) JUMUAH_SECOND = s.jumuah.second;
     if (_spmLastTimes && typeof renderPrayerCards === 'function') renderPrayerCards(_spmLastTimes);
+    /* top-of-page banner — message decides visibility; "enabled" decides sticky */
+    const banner = document.getElementById('spm-banner');
+    if (banner){
+      const b = s.banner || {};
+      if (b.message){
+        banner.classList.remove('hidden');
+        if (b.enabled) banner.classList.add('spm-sticky');
+        else banner.classList.remove('spm-sticky');
+        const msg = document.getElementById('spm-banner-message');
+        if (msg) msg.textContent = b.message;
+        const link = document.getElementById('spm-banner-link');
+        if (link){
+          let href='', text=b.linkText||'';
+          if (b.linkToEvent){
+            href = '#event-' + b.linkToEvent;
+            if (!text){
+              const ev = (window.SPM.events||[]).find(function(e){ return e.id === b.linkToEvent; });
+              text = ev ? ev.title : 'See event';
+            }
+          } else if (b.linkUrl){
+            href = b.linkUrl;
+            if (!text) text = 'Learn more';
+          }
+          if (href){
+            link.style.display = '';
+            link.textContent = text;
+            link.setAttribute('href', href);
+            /* internal anchors open in place; external URLs in a new tab */
+            if (href.charAt(0) === '#'){
+              link.removeAttribute('target');
+              link.removeAttribute('rel');
+            } else {
+              link.setAttribute('target','_blank');
+              link.setAttribute('rel','noopener');
+            }
+          } else {
+            link.style.display = 'none';
+          }
+        }
+      } else {
+        banner.classList.add('hidden');
+        banner.classList.remove('spm-sticky');
+      }
+      /* Only the sticky banner needs the nav offset; if it just scrolls away, nav stays at top:0 */
+      requestAnimationFrame(function(){
+        const nav = document.querySelector('header.sticky');
+        if (!nav) return;
+        if (banner.classList.contains('hidden') || !banner.classList.contains('spm-sticky')) nav.style.top = '';
+        else nav.style.top = banner.offsetHeight + 'px';
+      });
+    }
   }
+  /* Recompute the nav's sticky top offset on viewport resize (banner may rewrap) */
+  window.addEventListener('resize', function(){
+    const b = document.getElementById('spm-banner'); const n = document.querySelector('header.sticky');
+    if (!b || !n) return;
+    if (b.classList.contains('hidden') || !b.classList.contains('spm-sticky')) n.style.top = '';
+    else n.style.top = b.offsetHeight + 'px';
+  });
 
   function updateNotices(){
     const b=document.getElementById('notice-bell'), c=document.getElementById('notice-count');
@@ -1781,7 +1870,8 @@
         {name:'date',        label:'When',        type:'text',     hint:'e.g. "Every Friday", "Ramadan 1447 AH".'},
         {name:'time',        label:'Time',        type:'text',     hint:'e.g. "After Isha", "1:20 PM".'},
         {name:'description', label:'Description', type:'textarea', format:true, hint:'Select text and use Bold or Gold to emphasise it.'},
-        {name:'type',        label:'Label',       type:'select',   options:['Weekly','Annual','Ongoing','Special','One-off','On request']}
+        {name:'type',        label:'Label',       type:'select',   options:['Weekly','Annual','Ongoing','Special','One-off','On request']},
+        {name:'featured',    label:'Mark as Featured / Special',   type:'checkbox', hint:'Featured events get a gold border so they stand out — good for guest speakers and one-off events.'}
       ]},
       poster: { label:'Poster', store:'posters', prefix:'p', fields:[
         {name:'title',   label:'Title',   type:'text',  hint:'Shown beneath the poster.'},
@@ -1822,6 +1912,13 @@
           {name:'charityNumber',    label:'Registered charity number', type:'text'},
           {name:'youtubeChannelId', label:'YouTube channel ID',        type:'text', hint:'For the live khutbah embed and YouTube link, e.g. UC7yyTIVhT-pBBSycUiJOYjQ'},
           {name:'facebookUrl',      label:'Facebook page URL',         type:'text'}
+        ]},
+        { heading:'Top-of-page banner', fields:[
+          {name:'banner.message',      label:'Banner message',                            type:'text',        hint:'Type a message to show a banner at the top of the page. Leave it empty to hide the banner.'},
+          {name:'banner.enabled',      label:'Keep the banner pinned as you scroll',      type:'checkbox',    hint:'When ticked, the banner stays at the top of the screen the whole time. When unticked, it sits at the top and scrolls away with the page.'},
+          {name:'banner.linkText',     label:'Link text (optional)',                      type:'text',        hint:'e.g. "More details". If left blank, the linked event title is used.'},
+          {name:'banner.linkToEvent',  label:'Link to event (optional)',                  type:'eventPicker', hint:'Pick an event for the banner to link to. Takes precedence over Link URL below.'},
+          {name:'banner.linkUrl',      label:'Or link to a URL (optional)',               type:'text',        hint:'Full URL, or an internal anchor like #events'}
         ]}
       ]}
     };
@@ -1844,6 +1941,17 @@
         return '<div class="spm-field"><label class="spm-check"><input type="checkbox" data-f="'+f.name+'" '+(val?'checked':'')+'/><span>'+esc(f.label)+'</span></label>'+(f.hint?'<div class="hint">'+esc(f.hint)+'</div>':'')+'</div>';
       if(f.type==='image') return imageFieldHtml();
       if(f.type==='fileOrLink') return fileOrLinkFieldHtml(f,v);
+      if(f.type==='eventPicker'){
+        const cur = v || '';
+        const evs = window.SPM.events || [];
+        const opts = ['<option value="">— None —</option>'].concat(evs.map(function(ev){
+          return '<option value="'+esc(ev.id)+'"'+(ev.id===cur?' selected':'')+'>'+esc(ev.title)+'</option>';
+        }));
+        return '<div class="spm-field"><label>'+esc(f.label)+'</label>'+
+          '<select class="spm-input" data-f="'+f.name+'">'+opts.join('')+'</select>'+
+          (f.hint?'<div class="hint">'+esc(f.hint)+'</div>':'')+
+        '</div>';
+      }
       if(f.type==='textarea' && f.format){
         return '<div class="spm-field"><label>'+esc(f.label)+'</label>'+
           '<div class="spm-fmt">'+
