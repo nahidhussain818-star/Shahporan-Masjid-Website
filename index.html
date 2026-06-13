@@ -1581,7 +1581,7 @@
     if(!items.length && !editing){ list.innerHTML=''; list.classList.add('hidden'); return; }
     list.classList.remove('hidden');
     list.innerHTML = items.map(function(a){ return ''+
-      '<div class="card spm-editable '+(a.pinned?'ring-1 ring-gold-400/60':'')+'" data-type="announcement" data-id="'+esc(a.id)+'">'+
+      '<div id="announcement-'+esc(a.id)+'" class="card spm-editable scroll-mt-32 '+(a.pinned?'ring-1 ring-gold-400/60':'')+'" data-type="announcement" data-id="'+esc(a.id)+'">'+
         (editing?spmHandle():'')+
         '<div class="flex items-center gap-2 flex-wrap">'+
           '<span class="text-[11px] uppercase tracking-widest text-gold-600 dark:text-gold-400 font-semibold">Announcement</span>'+
@@ -1727,6 +1727,12 @@
             if (!text){
               const ev = (window.SPM.events||[]).find(function(e){ return e.id === b.linkToEvent; });
               text = ev ? ev.title : 'See event';
+            }
+          } else if (b.linkToAnnouncement){
+            href = '#announcement-' + b.linkToAnnouncement;
+            if (!text){
+              const an = (window.SPM.announcements||[]).find(function(a){ return a.id === b.linkToAnnouncement; });
+              text = an ? an.title : 'See announcement';
             }
           } else if (b.linkUrl){
             href = b.linkUrl;
@@ -1917,8 +1923,9 @@
           {name:'banner.message',      label:'Banner message',                            type:'text',        hint:'Type a message to show a banner at the top of the page. Leave it empty to hide the banner.'},
           {name:'banner.enabled',      label:'Keep the banner pinned as you scroll',      type:'checkbox',    hint:'When ticked, the banner stays at the top of the screen the whole time. When unticked, it sits at the top and scrolls away with the page.'},
           {name:'banner.linkText',     label:'Link text (optional)',                      type:'text',        hint:'e.g. "More details". If left blank, the linked event title is used.'},
-          {name:'banner.linkToEvent',  label:'Link to event (optional)',                  type:'eventPicker', hint:'Pick an event for the banner to link to. Takes precedence over Link URL below.'},
-          {name:'banner.linkUrl',      label:'Or link to a URL (optional)',               type:'text',        hint:'Full URL, or an internal anchor like #events'}
+          {name:'banner.linkToEvent',        label:'Link to event (optional)',         type:'eventPicker',        hint:'Pick an event for the banner to link to. Wins over the announcement and URL below.'},
+          {name:'banner.linkToAnnouncement', label:'Link to announcement (optional)',  type:'announcementPicker', hint:'Pick an announcement to link to. Used if no event is picked.'},
+          {name:'banner.linkUrl',            label:'Or link to a URL (optional)',      type:'text',               hint:'Full URL, or an internal anchor like #events. Used only if neither event nor announcement is picked.'}
         ]}
       ]}
     };
@@ -1941,11 +1948,11 @@
         return '<div class="spm-field"><label class="spm-check"><input type="checkbox" data-f="'+f.name+'" '+(val?'checked':'')+'/><span>'+esc(f.label)+'</span></label>'+(f.hint?'<div class="hint">'+esc(f.hint)+'</div>':'')+'</div>';
       if(f.type==='image') return imageFieldHtml();
       if(f.type==='fileOrLink') return fileOrLinkFieldHtml(f,v);
-      if(f.type==='eventPicker'){
+      if(f.type==='eventPicker' || f.type==='announcementPicker'){
         const cur = v || '';
-        const evs = window.SPM.events || [];
-        const opts = ['<option value="">— None —</option>'].concat(evs.map(function(ev){
-          return '<option value="'+esc(ev.id)+'"'+(ev.id===cur?' selected':'')+'>'+esc(ev.title)+'</option>';
+        const list = (f.type==='eventPicker') ? (window.SPM.events || []) : (window.SPM.announcements || []);
+        const opts = ['<option value="">— None —</option>'].concat(list.map(function(it){
+          return '<option value="'+esc(it.id)+'"'+(it.id===cur?' selected':'')+'>'+esc(it.title)+'</option>';
         }));
         return '<div class="spm-field"><label>'+esc(f.label)+'</label>'+
           '<select class="spm-input" data-f="'+f.name+'">'+opts.join('')+'</select>'+
