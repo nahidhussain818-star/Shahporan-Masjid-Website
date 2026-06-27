@@ -671,14 +671,17 @@
       </div>
 
       <div class="mt-10 reveal">
-        <!-- Player: shows a poster until the visitor clicks play, then loads the live embed -->
+        <!-- Player: two posters swapped by JS based on whether we're inside the Jumu'ah live window -->
         <div id="khutbah-player" class="relative w-full aspect-video rounded-2xl overflow-hidden shadow-lg bg-ink-900">
-          <!-- The whole poster is one button — clicking anywhere (the play circle included) loads the stream -->
+          <!-- LIVE NOW poster — visible Friday around khutbah time; clicking loads the embed -->
           <button id="khutbah-poster" type="button" aria-label="Watch the Friday khutbah live stream"
-                  class="group absolute inset-0 flex flex-col items-center justify-center text-center px-6 cursor-pointer
+                  class="group absolute inset-0 hidden flex-col items-center justify-center text-center px-6 cursor-pointer
                          bg-gradient-to-br from-masjid-800 to-masjid-900 transition-colors duration-300
                          hover:from-masjid-700 hover:to-masjid-800
                          focus:outline-none focus-visible:ring-4 focus-visible:ring-gold-400/60 focus-visible:ring-inset">
+            <span class="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full bg-red-600 text-white text-xs font-semibold uppercase tracking-wider">
+              <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>Live now
+            </span>
             <span class="flex items-center justify-center w-16 h-16 rounded-full bg-white/15 ring-1 ring-white/25
                          transition-transform duration-300 group-hover:scale-110">
               <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M9.5 7v10l7.5-5z"/></svg>
@@ -687,6 +690,22 @@
             <p class="text-gray-300 text-sm mt-1">Streamed live every Friday, after the Dhuhr adhān</p>
             <span class="btn-gold mt-5">Watch the live stream</span>
           </button>
+          <!-- OFFLINE poster — visible the rest of the time; links straight to the YouTube streams page -->
+          <a id="khutbah-offline" href="https://www.youtube.com/@shahporanmasjid/streams" target="_blank" rel="noopener"
+             aria-label="Browse past khutbahs on YouTube"
+             class="group absolute inset-0 flex flex-col items-center justify-center text-center px-6
+                    bg-gradient-to-br from-masjid-800 to-masjid-900 transition-colors duration-300
+                    hover:from-masjid-700 hover:to-masjid-800">
+            <span class="flex items-center justify-center w-16 h-16 rounded-full bg-white/15 ring-1 ring-white/25
+                         transition-transform duration-300 group-hover:scale-110">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z" fill="currentColor"/>
+              </svg>
+            </span>
+            <p class="text-white font-display text-xl md:text-2xl mt-5">Live every Friday — after Dhuhr</p>
+            <p class="text-gray-300 text-sm mt-1 max-w-md">Not currently streaming. Browse past khutbahs and recordings on our YouTube channel.</p>
+            <span class="btn-gold mt-5">Open YouTube channel</span>
+          </a>
         </div>
         <p class="text-center text-sm text-ink-700 dark:text-gray-400 mt-4">
           Not live at the moment? Browse past khutbahs, tafsīr and recordings on our
@@ -1709,6 +1728,8 @@
     if (s.jumuah && s.jumuah.first)  JUMUAH_FIRST  = s.jumuah.first;
     if (s.jumuah && s.jumuah.second) JUMUAH_SECOND = s.jumuah.second;
     if (_spmLastTimes && typeof renderPrayerCards === 'function') renderPrayerCards(_spmLastTimes);
+    /* refresh the khutbah-live poster (channel ID or Jumu'ah times may have changed) */
+    if (typeof updateKhutbahState === 'function') updateKhutbahState();
     /* top-of-page banner — message decides visibility; "enabled" decides sticky */
     const banner = document.getElementById('spm-banner');
     if (banner){
@@ -2568,24 +2589,65 @@
 
   /* ============================================================
      FRIDAY KHUTBAH — load the YouTube live embed on click.
-     We don't auto-load YouTube (keeps the page fast & private).
-     The "live_stream?channel=" URL always shows whatever is
-     currently live on the channel — no link to update each week.
+     Two states: "live now" (in the Jumu'ah window) shows the play
+     button + loads the embed; otherwise the visitor sees a clear
+     "live every Friday" card that links straight to the channel's
+     streams page so they aren't met with YouTube's error frame.
      ============================================================ */
+  function spmChannelId(){
+    return (window.SPM && window.SPM.settings && window.SPM.settings.youtubeChannelId)
+      || 'UC7yyTIVhT-pBBSycUiJOYjQ';
+  }
+  function isKhutbahWindow(){
+    /* Window: 30 minutes before the first khutbah → 60 minutes after the second */
+    if (!isFriday()) return false;
+    const now = new Date();
+    const [fh, fm] = String(JUMUAH_FIRST  || '13:20').split(':').map(Number);
+    const [sh, sm] = String(JUMUAH_SECOND || '14:10').split(':').map(Number);
+    const start = new Date(now); start.setHours(fh, fm - 30, 0, 0);
+    const end   = new Date(now); end.setHours(sh, sm + 60, 0, 0);
+    return now >= start && now <= end;
+  }
+  function updateKhutbahState(){
+    const live = document.getElementById('khutbah-poster');
+    const off  = document.getElementById('khutbah-offline');
+    if (!live || !off) return;
+    /* Update the offline link's href in case the channel ID changed in settings */
+    off.setAttribute('href', 'https://www.youtube.com/channel/' + spmChannelId() + '/streams');
+    if (isKhutbahWindow()) {
+      live.classList.remove('hidden'); live.classList.add('flex');
+      off.classList.add('hidden');     off.classList.remove('flex');
+    } else {
+      live.classList.add('hidden');    live.classList.remove('flex');
+      off.classList.remove('hidden');  off.classList.add('flex');
+    }
+  }
+  updateKhutbahState();
+  /* Re-check once a minute so the live state appears/disappears around the khutbah window */
+  setInterval(updateKhutbahState, 60 * 1000);
+
   const khutbahPlay = document.getElementById('khutbah-poster');
   if (khutbahPlay) {
     khutbahPlay.addEventListener('click', () => {
       const player = document.getElementById('khutbah-player');
+      const ch = spmChannelId();
       const iframe = document.createElement('iframe');
       iframe.className = 'absolute inset-0 w-full h-full';
-      const ch = (window.SPM && window.SPM.settings && window.SPM.settings.youtubeChannelId) || 'UC7yyTIVhT-pBBSycUiJOYjQ';
-      iframe.src = 'https://www.youtube.com/embed/live_stream?channel=' + ch + '&autoplay=1';
+      /* No autoplay — browsers block autoplay with sound; the visitor has already clicked
+         our poster, they'll just press YouTube's play button once it loads. */
+      iframe.src = 'https://www.youtube.com/embed/live_stream?channel=' + ch;
       iframe.title = 'Shahporan Masjid — Friday Khutbah Live';
       iframe.setAttribute('frameborder', '0');
-      iframe.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture');
+      iframe.setAttribute('allow', 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen');
       iframe.setAttribute('allowfullscreen', '');
       player.innerHTML = '';
       player.appendChild(iframe);
+      /* Small fallback below the embed: if YouTube says "video unavailable"
+         (no actual stream live), the visitor can still click straight through. */
+      const fb = document.createElement('p');
+      fb.className = 'absolute bottom-2 right-2 text-xs text-white/80 bg-black/40 backdrop-blur px-2 py-1 rounded';
+      fb.innerHTML = 'Trouble loading? <a class="underline" target="_blank" rel="noopener" href="https://www.youtube.com/channel/' + ch + '/live">Open in YouTube</a>';
+      player.appendChild(fb);
     });
   }
   </script>
