@@ -1,15 +1,6 @@
 {
   "items": [
     {
-      "title": "Friday Khutbah",
-      "date": "Recurring",
-      "time": "1:20 PM & 2:10 PM",
-      "description": "Two khutbahs every Friday — first at 1:20pm, second at 2:10pm.",
-      "type": "Weekly",
-      "id": "e-0",
-      "featured": true
-    },
-    {
       "title": "Tafsir Circle",
       "date": "Every weekday",
       "time": "After Isha",
