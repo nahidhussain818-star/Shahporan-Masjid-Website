@@ -22,8 +22,8 @@
     "second": "14:10"
   },
   "banner": {
-    "enabled": false,
-    "message": "",
+    "enabled": true,
+    "message": "hello",
     "linkText": "",
     "linkToEvent": "",
     "linkToAnnouncement": "",
