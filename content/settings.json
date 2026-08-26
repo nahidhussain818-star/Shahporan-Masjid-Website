@@ -1,11 +1,13 @@
 {
   "bank": {
-    "name": "Shahporan Masjid Trust",
-    "sortCode": "50-10-05",
-    "accountNo": "83711937"
+    "name": "Shahporan Masjid & Islamic Centre Trust",
+    "bankName": "Metro Bank",
+    "sortCode": "23-05-80",
+    "accountNo": "54329598"
   },
   "contact": {
-    "phone": "+44 7472 785476",
+    "phone": "020 7033 1843",
+    "whatsapp": "07474 004642",
     "email": "shahporanmasjid24@gmail.com",
     "addressLine1": "Shahporan Masjid",
     "addressLine2": "444 Hackney Road",
