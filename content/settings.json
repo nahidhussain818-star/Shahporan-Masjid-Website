@@ -22,10 +22,10 @@
     "second": "14:10"
   },
   "banner": {
-    "enabled": true,
-    "message": "test",
+    "enabled": false,
+    "message": "",
     "linkText": "",
-    "linkToEvent": "e-0",
+    "linkToEvent": "",
     "linkToAnnouncement": "",
     "linkUrl": ""
   }
